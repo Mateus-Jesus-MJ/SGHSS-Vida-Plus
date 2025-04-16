@@ -1,0 +1,20 @@
+<div class="bg-white shadow rounded-3 p-2 pt-3 px-3 mb-3" style="display: inline-block; width: auto !important; max-width: 100%;">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb d-inline-flex flex-wrap">
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/']">
+          <i class="fa fa-home me-1"></i>Home
+        </a>
+      </li>
+      <li *ngFor="let item of breadcrumbService.breadcrumbs; let last = last" class="breadcrumb-item text-capitalize"s
+        [class.active]="last" [attr.aria-current]="last ? 'page' : null">
+        <ng-container *ngIf="!last">
+          <a [routerLink]="item.url">{{ item.label }}</a>
+        </ng-container>
+        <ng-container *ngIf="last">
+          {{ item.label }}
+        </ng-container>
+      </li>
+    </ol>
+  </nav>
+</div>
