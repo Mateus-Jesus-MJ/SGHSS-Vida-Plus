@@ -12974,6 +12974,48 @@ body {
   background-color: #343a40;
 }
 
+//Azul aqui
+.sb-sidenav-primary {
+  background-color: rgb(13,110,253);
+  color: white;
+}
+
+.sb-sidenav-primary .sb-sidenav-menu .sb-sidenav-menu-heading {
+  color: rgba(255, 255, 255, 1);
+}
+
+.sb-sidenav-primary .sb-sidenav-menu .nav-link {
+  color: rgba(255, 255, 255, 1);
+}
+
+.sb-sidenav-primary .sb-sidenav-menu .nav-link .sb-nav-link-icon {
+  color: rgba(255, 255, 255, 1);
+}
+
+.sb-sidenav-primary .sb-sidenav-menu .nav-link .sb-sidenav-collapse-arrow {
+  color: rgba(255, 255, 255, 1);
+}
+
+.sb-sidenav-primary .sb-sidenav-menu .nav-link:hover {
+  color: #fff;
+}
+
+.sb-sidenav-primary .sb-sidenav-menu .nav-link.active {
+  color: #fff;
+}
+
+.sb-sidenav-primary .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
+  color: #fff;
+}
+
+.sb-sidenav-primary .sb-sidenav-footer {
+  background-color: #343a40;
+}
+
+
+//Até aqui
+
+
 .sb-sidenav-light {
   background-color: #f8f9fa;
   color: #212529;
