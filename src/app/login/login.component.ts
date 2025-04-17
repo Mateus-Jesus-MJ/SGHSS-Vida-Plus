@@ -7,6 +7,21 @@ import { Component } from '@angular/core';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  labelUser : string = "Email";
+  labelUser: string = "Email";
   placeHolderUser: string = "Email";
+
+
+  tipoUsuarioLabel(event: Event): void {
+    const select = event.target as HTMLInputElement;
+    const value = select.value;
+
+    if (value == "pc") {
+      this.labelUser = "Email";
+      this.placeHolderUser = "Email";
+    } else {
+      this.labelUser = "Usuário";
+      this.placeHolderUser = "Usuário";
+    }
+  }
+
 }

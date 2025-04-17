@@ -19,7 +19,7 @@
                                         <form>
                                             <h3 class="mb-5">Seja bem vindo ao SGHSS Vida Plus</h3>
                                             <div class="form-floating mb-3">
-                                              <select class="form-select">
+                                              <select class="form-select" (input)="tipoUsuarioLabel($event)">
                                                 <option value="pc">Paciente</option>
                                                 <option value="ps">Profissional de Saúde</option>
                                                 <option value="ps">Profissional de Administração</option>
