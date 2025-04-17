@@ -1,141 +1,135 @@
 <div class="tela-toda">
-    <div id="layoutAuthentication">
-        <div id="layoutAuthentication_content">
-            <main>
-                <div class="container">
-                    <!-- ------------------------------ -->
-                    <!--                                -->
-                    <!-- Tela para dispositivos grandes -->
-                    <!--                                -->
-                    <!-- ------------------------------ -->
-                    <div class="row justify-content-center d-none d-md-flex">
-                        <div class="col-lg-10">
-                            <div class="card shadow-lg border-0 rounded-lg mt-5 p-3">
-                                <div class="row">
-                                    <div class="col">
-                                        <img src="assets/img/LogoAzulSemFundo.png" class="img-fluid" />
-                                    </div>
-                                    <div class="col d-flex align-items-center">
-                                        <form>
-                                            <h3 class="mb-5">Seja bem vindo ao SGHSS Vida Plus</h3>
-                                            <div class="form-floating mb-3">
-                                              <select class="form-select" (input)="tipoUsuarioLabel($event)">
-                                                <option value="pc">Paciente</option>
-                                                <option value="ps">Profissional de Saúde</option>
-                                                <option value="ps">Profissional de Administração</option>
-                                              </select>
-                                              <label for="inputPassword">Tipo de usúario</label>
-                                            </div>
-                                            <div class="form-floating mb-3">
-                                                <input class="form-control" id="inputEmail" type="email"
-                                                    placeholder="name@example.com" />
-                                                <label for="inputEmail">{{placeHolderUser}}</label>
-                                            </div>
-                                            <div class="form-floating">
-                                                <input class="form-control" id="inputPassword" type="password"
-                                                    placeholder="Password" />
-                                                <label for="inputPassword">Senha</label>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between mt-0">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" id="inputRememberPassword"
-                                                        type="checkbox" value="" />
-                                                    <label class="form-check-label" for="inputRememberPassword">Lembrar
-                                                        Senha</label>
-                                                </div>
-                                                <a href="password.html">Esqueceu sua senha?</a>
-                                            </div>
-                                            <div class="mt-4 mb-3">
-                                                <a class="btn btn-primary" href="index.html">Entrar</a>
-                                            </div>
-                                            <div class="py-3 d-flex justify-content-center">
-                                                <div class="small"><a href="register.html">Não possui uma conta?
-                                                        cadastre-se!</a>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+  <div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+      <main>
+        <div class="container">
+          <!-- ------------------------------ -->
+          <!--                                -->
+          <!-- Tela para dispositivos grandes -->
+          <!--                                -->
+          <!-- ------------------------------ -->
+          <div class="row justify-content-center d-none d-md-flex">
+            <div class="col-lg-10">
+              <div class="card shadow-lg border-0 rounded-lg mt-5 p-3">
+                <div class="row">
+                  <div class="col">
+                    <img src="assets/img/LogoAzulSemFundo.png" class="img-fluid" />
+                  </div>
+                  <div class="col d-flex align-items-center">
+                    <form>
+                      <h3 class="mb-5">Seja bem vindo ao SGHSS Vida Plus</h3>
+                      <div class="form-floating mb-3">
+                        <select class="form-select" (input)="tipoUsuarioLabel($event)">
+                          <option value="pc">Paciente</option>
+                          <option value="ps">Profissional de Saúde</option>
+                          <option value="ps">Profissional de Administração</option>
+                        </select>
+                        <label for="inputPassword">Tipo de usúario</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input class="form-control" id="inputEmail" type="email" />
+                        <label for="inputEmail">{{placeHolderUser}}</label>
+                      </div>
+                      <div class="form-floating">
+                        <input class="form-control" id="inputPassword" type="password" placeholder="Password" />
+                        <label for="inputPassword">Senha</label>
+                      </div>
+                      <div class="d-flex align-items-center justify-content-between mt-0">
+                        <div class="form-check">
+                          <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
+                          <label class="form-check-label" for="inputRememberPassword">Lembrar
+                            Senha</label>
                         </div>
-                    </div>
+                        <a href="password.html">Esqueceu sua senha?</a>
+                      </div>
+                      <div class="mt-4 mb-3">
+                        <a class="btn btn-primary" href="index.html">Entrar</a>
+                      </div>
+                      <div class="py-3 d-flex justify-content-center">
+                        <div class="small"><a href="register.html">Não possui uma conta?
+                            cadastre-se!</a>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-                <!-- ------------------------------ -->
-                <!--                                -->
-                <!-- Tela para dispositivos moveis  -->
-                <!--                                -->
-                <!-- ------------------------------ -->
-                <!-- Container mobile full-screen -->
-                <div class="d-block d-md-none d-flex flex-column bg-primary">
-                    <!-- Splash-like header -->
-                    <div class="d-flex flex-shrink justify-content-center align-items-center bg-primary">
-                        <img src="assets/img/logobrancasemfundo.png" style="height:30vh;" alt="VidaPlus Logo" />
-                    </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ------------------------------ -->
+        <!--                                -->
+        <!-- Tela para dispositivos moveis  -->
+        <!--                                -->
+        <!-- ------------------------------ -->
+        <!-- Container mobile full-screen -->
+        <div class="d-block d-md-none d-flex flex-column bg-primary">
+          <!-- Splash-like header -->
+          <div class="d-flex flex-shrink justify-content-center align-items-center bg-primary">
+            <img src="assets/img/logobrancasemfundo.png" style="height:30vh;" alt="VidaPlus Logo" />
+          </div>
 
-                    <!-- Conteúdo scrollable -->
-                    <div class="flex-grow-1 d-flex align-items-start justify-content-center px-3 overflow-auto bg-primary border-0">
-                        <div class="card shadow border-0 rounded-lg w-100">
-                            <form class="p-4">
-                                <h3 class="text-center mb-4">Seja bem vindo ao SGHSS!</h3>
-                                <div class="form-floating mb-3">
-                                  <select class="form-select">
-                                    <option value="pc">Paciente</option>
-                                    <option value="ps">Profissional de Saúde</option>
-                                    <option value="ps">Profissional de Administração</option>
-                                  </select>
-                                  <label for="inputPassword">Tipo de usúario</label>
-                                </div>
-                                <!-- Rótulo flutuante com validação -->
-                                <div class="form-floating mb-3 position-relative">
-                                    <input class="form-control" id="inputEmail" type="email" placeholder=" " required />
-                                    <label for="inputEmail">{{placeHolderUser}}</label>
-                                    <div class="valid-feedback">Email válido! 👍</div>
-                                    <div class="invalid-feedback">Informe um email válido.</div>
-                                </div>
+          <!-- Conteúdo scrollable -->
+          <div
+            class="flex-grow-1 d-flex align-items-start justify-content-center px-3 overflow-auto bg-primary border-0">
+            <div class="card shadow border-0 rounded-lg w-100">
+              <form class="p-4">
+                <h3 class="text-center mb-4">Seja bem vindo ao SGHSS!</h3>
+                <div class="form-floating mb-3">
+                  <select class="form-select" (input)="tipoUsuarioLabel($event)">
+                    <option value="pc">Paciente</option>
+                    <option value="ps">Profissional de Saúde</option>
+                    <option value="ps">Profissional de Administração</option>
+                  </select>
+                  <label for="inputPassword">Tipo de usúario</label>
+                </div>
+                <!-- Rótulo flutuante com validação -->
+                <div class="form-floating mb-3 position-relative">
 
-                                <div class="form-floating mb-4 position-relative">
-                                    <input class="form-control" id="inputPassword" type="password" placeholder=" "
-                                        required />
-                                    <label for="inputPassword">Senha</label>
-                                </div>
+                  <input class="form-control" id="inputEmail" />
+                  <label for="inputEmail">{{placeHolderUser}}</label>
+                </div>
 
-                                <!-- Botão principal full-width -->
-                                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                                    Entrar
-                                </button>
+                <div class="form-floating mb-4 position-relative">
+                  <input class="form-control" id="inputPassword" type="password" placeholder=" " required />
+                  <label for="inputPassword">Senha</label>
+                </div>
 
-                                <!-- Autenticação Biométrica e Social -->
-                                <div class="d-flex flex-column gap-2 mb-3">
-                                    <!-- <button type="button" class="btn btn-outline-secondary btn-sm w-100">
+                <!-- Botão principal full-width -->
+                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                  Entrar
+                </button>
+
+                <!-- Autenticação Biométrica e Social -->
+                <div class="d-flex flex-column gap-2 mb-3">
+                  <!-- <button type="button" class="btn btn-outline-secondary btn-sm w-100">
                                         🔒 Usar Biometria
                                     </button>
                                     <button type="button" class="btn btn-outline-danger btn-sm w-100">
                                         <i class="fab fa-google"></i> Entrar com Google
                                     </button> -->
-                                </div>
-
-                                <!-- Links secundários -->
-                                <div class="d-flex justify-content-between small mb-0">
-                                    <a href="password.html">Esqueceu sua senha?</a>
-                                    <a href="register.html">Cadastre-se</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Navigation Bar estilo app -->
-                    <nav class="navbar navbar-light bg-white border-top fixed-bottom">
-                        <div class="container-fluid justify-content-around">
-                            <a class="nav-link" href="#"><i
-                                    class="fas fa-sign-in-alt"></i><br /><small>Entrar</small></a>
-                            <a class="nav-link" href="register.html"><i
-                                    class="fas fa-user-plus"></i><br /><small>Registrar</small></a>
-                            <a class="nav-link" href="#"><i
-                                    class="fas fa-question-circle"></i><br /><small>Ajuda</small></a>
-                        </div>
-                    </nav>
                 </div>
-            </main>
+
+                <!-- Links secundários -->
+                <div class="d-flex justify-content-between small mb-0">
+                  <a href="password.html">Esqueceu sua senha?</a>
+                  <a href="register.html">Cadastre-se</a>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Bottom Navigation Bar estilo app -->
+          <nav class="navbar navbar-light bg-white border-top fixed-bottom">
+            <div class="container-fluid justify-content-around">
+              <a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i><br /><small>Entrar</small></a>
+              <a class="nav-link" href="register.html"><i
+                  class="fas fa-user-plus"></i><br /><small>Registrar</small></a>
+              <a class="nav-link" href="#"><i class="fas fa-question-circle"></i><br /><small>Ajuda</small></a>
+            </div>
+          </nav>
         </div>
+      </main>
     </div>
+  </div>
 </div>
