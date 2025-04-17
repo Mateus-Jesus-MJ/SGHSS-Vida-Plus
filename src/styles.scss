@@ -13333,3 +13333,8 @@ body {
 .text-bold{
   font-weight: bold;
 }
+
+.fixed-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
