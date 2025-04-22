@@ -1,0 +1,61 @@
+<div class="bg-primary">
+  <div class="d-flex justify-content-center px-5 py-3">
+    <img src="assets/img/logobrancasemfundo.png" style="height: 20vh;">
+  </div>
+  <div class="d-flex justify-content-center py-5 px-3">
+    <div class="col-lg-8 col-12 card shadow border-0 rounded-lg text-center py-3">
+      <h3>Criar uma conta</h3>
+      <p class="small text-secondary">É Rapido, é fácil, é Vida Plus</p>
+      <hr />
+      <form class="px-3 text-start">
+        <h5 class="mb-3">Dados Gerais</h5>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="nome" placeholder="" formControlName="nome">
+              <label for="nome">Nome completo</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input type="date" class="form-control" id="dataNascimento" placeholder="o" formControlName="nome">
+              <label for="dataNascimento">Data de Nascimento</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="cpf" placeholder="o" formControlName="cpf">
+              <label for="dataNascimento">CPF</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="identidade" placeholder="o" formControlName="identidade">
+              <label for="identidade">RG</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email">
+          <label for="email">Email</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" id="senha" placeholder="Senha" formControlName="senha">
+          <label for="senha">Senha</label>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<nav class="navbar navbar-light bg-white border-top fixed-bottom">
+  <div class="container-fluid justify-content-around">
+    <a class="nav-link" [routerLink]="['/']" routerLinkActive="router-link-active">
+      <i class="fas fa-sign-in-alt"></i><br />
+      <small>Entrar</small>
+    </a>
+
+    <button class="nav-link"><i class="fas fa-user-plus"></i><br /><small>Registrar</small></button>
+    <a class="nav-link" href="#"><i class="fas fa-question-circle"></i><br /><small>Ajuda</small></a>
+  </div>
+</nav>

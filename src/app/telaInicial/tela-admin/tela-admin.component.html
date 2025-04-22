@@ -1,17 +1,13 @@
-
 <div id="layoutSidenav">
-    <app-navbar></app-navbar>
-    <app-sidebar></app-sidebar>
-    <div id="layoutSidenav_content" class="bg-defaut">
-      <main>
-        <div class="container-fluid px-3 py-4">
-          <app-breadcrumb></app-breadcrumb>
-          <div class="bg-white w-100 shadow rounded-3 p-3 pb-5">
-             <!-- *ngIf="showContent"> -->
-          <router-outlet></router-outlet>
-        </div>
-        </div>
-      </main>
-    </div>
+  <app-navbar></app-navbar>
+  <app-sidebar></app-sidebar>
+  <div id="layoutSidenav_content" class="bg-defaut">
+    <main>
+      <div class="container-fluid px-3 py-4">
+        <app-breadcrumb></app-breadcrumb>
+        <!-- *ngIf="showContent"> -->
+        <router-outlet></router-outlet>
+      </div>
+    </main>
   </div>
-  
+</div>

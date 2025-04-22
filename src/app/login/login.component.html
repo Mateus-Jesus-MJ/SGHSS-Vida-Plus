@@ -8,43 +8,56 @@
           <!-- Tela para dispositivos grandes -->
           <!--                                -->
           <!-- ------------------------------ -->
-          <div class="row justify-content-center d-none d-md-flex">
+          <!-- Tela para dispositivos grandes -->
+          <div class="row min-vh-100 d-none d-md-flex align-items-center justify-content-center">
             <div class="col-lg-10">
-              <div class="card shadow-lg border-0 rounded-lg mt-5 p-3 min-h-80">
-                <div class="row">
+              <div class="card shadow-lg border-0 rounded-lg mt-5 p-3">
+                <div class="row h-100">
+                  <!-- Lado da logo -->
                   <div class="col d-flex justify-content-center align-items-center">
                     <img src="assets/img/LogoAzulSemFundo.png" class="img-mxh-50" />
                   </div>
-                  <div class="col d-flex align-items-center py-5">
-                    <form [formGroup]="loginForm" (ngSubmit)="submit()">
-                      <h3 class="mb-3 text-title">Seja bem vindo ao SGHSS Vida Plus</h3>
-                      <div class="form-floating mb-3">
-                        <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
-                          <option value="pc">Paciente</option>
-                          <option value="ps">Profissional de Saúde</option>
-                          <option value="pa">Profissional de Administração</option>
-                        </select>
-                        <label for="inputPassword">Tipo de usuário</label>
-                      </div>
-                      <div class="form-floating mb-3">
-                        <input class="form-control" id="inputEmail" type="email" placeholder=" " formControlName="usuario"/>
-                        <label for="inputEmail">{{placeHolderUser}}</label>
-                      </div>
-                      <div class="form-floating">
-                        <input class="form-control" id="inputPassword" type="password" placeholder="Password" formControlName="senha"/>
-                        <label for="inputPassword">Senha</label>
-                      </div>
-                      <div class="d-flex align-items-center justify-content-end mt-0">
-                        <button class="text-link" (click)="navigate('esqueceu-a-senha')"><u>Esqueceu sua senha?</u></button>
-                      </div>
-                      <div class="mt-4 mb-3 text-center">
-                        <button class="btn btn-primary px-5" (click)="submit()" [disabled]="!loginForm.valid">Entrar</button>
-                      </div>
-                      <div class="pt-3 d-flex justify-content-center">
-                        <div class="small text-link"><button (click)="navigate('novo-usuario-ps')"><u>Não possui uma conta? cadastre-se!</u></button>
+
+                  <!-- Lado do formulário -->
+                  <div class="col d-flex align-items-center justify-content-center h-100">
+                    <div class="w-100 px-4" style="max-width: 400px;">
+                      <form [formGroup]="loginForm">
+                        <h5 class="mb-3 text-title text-center" >Seja bem vindo ao SGHSS Vida&nbsp;Plus</h5>
+
+                        <div class="form-floating mb-3">
+                          <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
+                            <option value="pc">Paciente</option>
+                            <option value="ps">Profissional de Saúde</option>
+                            <option value="pa">Profissional de Administração</option>
+                          </select>
+                          <label for="inputPassword">Tipo de usuário</label>
                         </div>
-                      </div>
-                    </form>
+
+                        <div class="form-floating mb-3">
+                          <input class="form-control" id="inputEmail" type="email" placeholder="" formControlName="usuario" />
+                          <label for="inputEmail">{{placeHolderUser}}</label>
+                        </div>
+
+                        <div class="form-floating">
+                          <input class="form-control" id="inputPassword" type="password" placeholder="Password" formControlName="senha" />
+                          <label for="inputPassword">Senha</label>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-end mt-2">
+                          <button class="text-link" (click)="navigate('esqueceu-a-senha')"><u>Esqueceu sua senha?</u></button>
+                        </div>
+
+                        <div class="mt-4 mb-3 text-center">
+                          <button class="btn btn-primary px-5" (click)="submit()" [disabled]="!loginForm.valid || buscandoLogin">Entrar</button>
+                        </div>
+
+                        <div class="pt-3 d-flex justify-content-center">
+                          <div class="small text-link">
+                            <button (click)="navigate('paciente/cadastro')"><u>Não possui uma conta? Cadastre-se!</u></button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -59,15 +72,14 @@
         <!-- Container mobile full-screen -->
         <div class="d-block d-md-none d-flex flex-column bg-primary">
           <!-- Splash-like header -->
-          <div class="d-flex flex-shrink justify-content-center align-items-center bg-primary">
-            <img src="assets/img/logobrancasemfundo.png" style="height:30vh;" alt="VidaPlus Logo" />
+          <div class="d-flex justify-content-center px-5 py-3">
+            <img src="assets/img/logobrancasemfundo.png" style="height: 20vh;">
           </div>
 
           <!-- Conteúdo scrollable -->
-          <div
-            class="flex-grow-1 d-flex align-items-start justify-content-center px-3 overflow-auto bg-primary border-0">
-            <div class="card shadow border-0 rounded-lg w-100">
-              <form class="p-4" [formGroup]="loginForm" (ngSubmit)="submit()">
+          <div class="d-flex justify-content-center py-5 px-3">
+            <div class="col-lg-8 col-12 card shadow border-0 rounded-lg text-center py-3">
+              <form class="p-4" [formGroup]="loginForm">
                 <h3 class="text-center mb-4">Seja bem vindo ao SGHSS!</h3>
                 <div class="form-floating mb-3">
                   <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
@@ -79,17 +91,18 @@
                 </div>
                 <!-- Rótulo flutuante com validação -->
                 <div class="form-floating mb-3 position-relative">
-                  <input class="form-control" id="inputEmail" type="email" placeholder=" " formControlName="usuario"/>
+                  <input class="form-control" id="inputEmail" type="email" placeholder=" " formControlName="usuario" />
                   <label for="inputEmail">{{placeHolderUser}}</label>
                 </div>
                 <div class="form-floating mb-4 position-relative">
-                  <input class="form-control" id="inputPassword" type="password" placeholder="Password" formControlName="senha"/>
+                  <input class="form-control" id="inputPassword" type="password" placeholder="Password"
+                    formControlName="senha" />
                   <label for="inputPassword">Senha</label>
                 </div>
-                <!-- Botão principal full-width -->
-                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" (click)="submit()">
-                  Entrar
-                </button>
+                <div class="d-flex justify-content-center">
+                  <button class="btn btn-primary px-5" (click)="submit()"
+                    [disabled]="!loginForm.valid || buscandoLogin">Entrar</button>
+                </div>
 
                 <!-- Autenticação Biométrica e Social -->
                 <div class="d-flex flex-column gap-2 mb-3">
@@ -104,7 +117,7 @@
                 <!-- Links secundários -->
                 <div class="d-flex justify-content-between small mb-0">
                   <a href="password.html">Esqueceu sua senha?</a>
-                  <a href="register.html">Cadastre-se</a>
+                  <p (click)="navigate('paciente/cadastro')">Cadastre-se</p>
                 </div>
               </form>
             </div>
@@ -113,10 +126,9 @@
           <!-- Bottom Navigation Bar estilo app -->
           <nav class="navbar navbar-light bg-white border-top fixed-bottom">
             <div class="container-fluid justify-content-around">
-              <a class="nav-link" href="#"><i class="fas fa-sign-in-alt"></i><br /><small>Entrar</small></a>
-              <a class="nav-link" href="register.html"><i
-                  class="fas fa-user-plus"></i><br /><small>Registrar</small></a>
-              <a class="nav-link" href="#"><i class="fas fa-question-circle"></i><br /><small>Ajuda</small></a>
+              <button class="nav-link"><i class="fas fa-sign-in-alt"></i><br /><small>Entrar</small></button>
+              <button class="nav-link" (click)="navigate('paciente/cadastro')"><i class="fas fa-user-plus"></i><br /><small>Registrar</small></button>
+              <button class="nav-link"><i class="fas fa-question-circle"></i><br /><small>Ajuda</small></button>
             </div>
           </nav>
         </div>

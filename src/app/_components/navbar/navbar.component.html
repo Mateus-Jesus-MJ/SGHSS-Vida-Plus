@@ -18,12 +18,12 @@
     <li class="nav-item dropdown">
       <div class="dropdown">
         <button class="nav-link dropdown-toggle text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          User
+          {{nomeUsuario}}
         </button>
         <ul class="dropdown-menu">
           <li><a class="dropdown-item" href="#">Action</a></li>
           <li><a class="dropdown-item" href="#">Another action</a></li>
-          <li><a class="dropdown-item" href="#">Something else here</a></li>
+          <li><button class="dropdown-item"  (click)="sair()"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair </button></li>
         </ul>
       </div>
     </li>

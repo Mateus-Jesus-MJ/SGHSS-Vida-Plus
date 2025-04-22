@@ -1,19 +1,26 @@
 <div class="bg-white shadow rounded-3 p-2 pt-3 px-3 mb-3" style="display: inline-block; width: auto !important; max-width: 100%;">
   <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
     <ol class="breadcrumb d-inline-flex flex-wrap">
-      <li class="breadcrumb-item">
-        <a [routerLink]="['/']">
-          <i class="fa fa-home me-1"></i>Home
-        </a>
-      </li>
-      <li *ngFor="let item of breadcrumbService.breadcrumbs; let last = last" class="breadcrumb-item text-capitalize"s
-        [class.active]="last" [attr.aria-current]="last ? 'page' : null">
-        <ng-container *ngIf="!last">
+      <li *ngFor="let item of breadcrumbService.breadcrumbs; let last = last; let first = first"
+          class="breadcrumb-item text-capitalize"
+          [class.active]="last"
+          [attr.aria-current]="last ? 'page' : null">
+
+        <!-- Exibe ícone de home apenas no primeiro item -->
+        <ng-container *ngIf="first">
+          <a [routerLink]="item.url"><i class="fa fa-home me-1"></i>{{item.label}}</a>
+        </ng-container>
+
+        <ng-container *ngIf="!first">
+          <!-- Para os demais itens, exibe apenas o texto da breadcrumb -->
           <a [routerLink]="item.url">{{ item.label }}</a>
         </ng-container>
-        <ng-container *ngIf="last">
+
+        <!-- Para o último item, exibe sem link -->
+        <ng-container *ngIf="last && !first">
           {{ item.label }}
         </ng-container>
+
       </li>
     </ol>
   </nav>

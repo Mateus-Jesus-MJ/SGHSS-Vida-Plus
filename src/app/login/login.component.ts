@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { User } from '../_models/User';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LoginService } from '../_services/login.service';
 import { Login } from '../_models/Login';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../_services/auth.service';
 
 
 @Component({
@@ -22,12 +23,15 @@ import { ToastrService } from 'ngx-toastr';
 export class LoginComponent {
   labelUser: string = "Email";
   placeHolderUser: string = "Email";
+  rotaPaciente = "paciente";
+  rotaAdmin = "admin";
+  rotaAtendimento = "atendimento";
+  buscandoLogin: boolean = false;
   user!: User;
-  // form: FormGroup = new FormGroup({});
   loginForm!: FormGroup;
 
 
-  constructor(private loginService: LoginService, private router: Router, private toastService: ToastrService) {
+  constructor(private loginService: LoginService, private router: Router, private toastService: ToastrService, private authService: AuthService) {
     this.loginForm = new FormGroup({
       tipoUsuario: new FormControl('', [Validators.required]),
       usuario: new FormControl('', [Validators.required]),
@@ -60,21 +64,20 @@ export class LoginComponent {
         if (!user) {
           this.toastService.error("Usuário, senha ou tipo de usuário incorreto");
         } else {
-          console.log("Tipo de usuário: ", user.tipoUsuario);  // Verifique o valor aqui
+          // Armazenar o usuário autenticado
+          this.authService.authenticate(user);
 
-          switch (user.tipoUsuario.trim().toLowerCase()) {
+          // Redirecionar com base no tipo de usuário
+          switch (user.tipoUsuario) {
             case 'ps':
               this.toastService.success("Login feito com sucesso!");
-              console.log("Redirecionando para a página inicial...");
-              setTimeout(() => this.navigate(''), 0);  // Atrasar a navegação por um ciclo de evento
+              this.navigate('atendimento');
               break;
             case 'pc':
-              console.log("Redirecionando para admin/inicio...");
-              this.navigate('admin/inicio');
+              this.navigate('paciente');
               break;
             case 'pa':
-              console.log("Redirecionando para admin/inicio...");
-              this.navigate('admin/inicio');
+              this.navigate('admin');
               break;
             default:
               this.toastService.error("Tipo de usuário desconhecido, tente novamente mais tarde!");
