@@ -2,7 +2,8 @@
   "users":[
     {
     "id" : "1",
-    "username": "mjesus",
+    "nome":"Mateus de Jesus da Silva",
+    "usuario": "mjesus",
     "email": "mateusdejesus2602@gmail.com",
     "senha": "38205893",
     "tipoUsuario": "ps",

@@ -16,10 +16,10 @@
                     <img src="assets/img/LogoAzulSemFundo.png" class="img-fluid" />
                   </div>
                   <div class="col d-flex align-items-center">
-                    <form>
+                    <form [formGroup]="form" (ngSubmit)="logar()">
                       <h3 class="mb-5">Seja bem vindo ao SGHSS Vida Plus</h3>
                       <div class="form-floating mb-3">
-                        <select class="form-select" (input)="tipoUsuarioLabel($event)">
+                        <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
                           <option value="pc">Paciente</option>
                           <option value="ps">Profissional de Saúde</option>
                           <option value="ps">Profissional de Administração</option>
@@ -27,11 +27,11 @@
                         <label for="inputPassword">Tipo de usúario</label>
                       </div>
                       <div class="form-floating mb-3">
-                        <input class="form-control" id="inputEmail" type="email" placeholder=" "/>
+                        <input class="form-control" id="inputEmail" type="email" placeholder=" " formControlName="usuario"/>
                         <label for="inputEmail">{{placeHolderUser}}</label>
                       </div>
                       <div class="form-floating">
-                        <input class="form-control" id="inputPassword" type="password" placeholder="Password" />
+                        <input class="form-control" id="inputPassword" type="password" placeholder="Password" formControlName="senha"/>
                         <label for="inputPassword">Senha</label>
                       </div>
                       <div class="d-flex align-items-center justify-content-between mt-0">
@@ -43,7 +43,7 @@
                         <a href="password.html">Esqueceu sua senha?</a>
                       </div>
                       <div class="mt-4 mb-3">
-                        <a class="btn btn-primary" href="index.html">Entrar</a>
+                        <button class="btn btn-primary" (click)="logar()">Entrar</button>
                       </div>
                       <div class="py-3 d-flex justify-content-center">
                         <div class="small"><a href="register.html">Não possui uma conta?
@@ -73,10 +73,10 @@
           <div
             class="flex-grow-1 d-flex align-items-start justify-content-center px-3 overflow-auto bg-primary border-0">
             <div class="card shadow border-0 rounded-lg w-100">
-              <form class="p-4">
+              <form class="p-4" [formGroup]="form" (ngSubmit)="logar()">
                 <h3 class="text-center mb-4">Seja bem vindo ao SGHSS!</h3>
                 <div class="form-floating mb-3">
-                  <select class="form-select" (input)="tipoUsuarioLabel($event)">
+                  <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
                     <option value="pc">Paciente</option>
                     <option value="ps">Profissional de Saúde</option>
                     <option value="ps">Profissional de Administração</option>
@@ -85,16 +85,13 @@
                 </div>
                 <!-- Rótulo flutuante com validação -->
                 <div class="form-floating mb-3 position-relative">
-
-                  <input class="form-control" id="inputEmail" placeholder=" "/>
+                  <input class="form-control" id="inputEmail" type="email" placeholder=" " formControlName="usuario"/>
                   <label for="inputEmail">{{placeHolderUser}}</label>
                 </div>
-
                 <div class="form-floating mb-4 position-relative">
-                  <input class="form-control" id="inputPassword" type="password" placeholder=" " required />
+                  <input class="form-control" id="inputPassword" type="password" placeholder="Password" formControlName="senha"/>
                   <label for="inputPassword">Senha</label>
                 </div>
-
                 <!-- Botão principal full-width -->
                 <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
                   Entrar
