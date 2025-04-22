@@ -10,21 +10,21 @@
           <!-- ------------------------------ -->
           <div class="row justify-content-center d-none d-md-flex">
             <div class="col-lg-10">
-              <div class="card shadow-lg border-0 rounded-lg mt-5 p-3">
+              <div class="card shadow-lg border-0 rounded-lg mt-5 p-3 min-h-80">
                 <div class="row">
-                  <div class="col">
-                    <img src="assets/img/LogoAzulSemFundo.png" class="img-fluid" />
+                  <div class="col d-flex justify-content-center align-items-center">
+                    <img src="assets/img/LogoAzulSemFundo.png" class="img-mxh-50" />
                   </div>
-                  <div class="col d-flex align-items-center">
-                    <form [formGroup]="form" (ngSubmit)="logar()">
-                      <h3 class="mb-5">Seja bem vindo ao SGHSS Vida Plus</h3>
+                  <div class="col d-flex align-items-center py-5">
+                    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+                      <h3 class="mb-3 text-title">Seja bem vindo ao SGHSS Vida Plus</h3>
                       <div class="form-floating mb-3">
                         <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
                           <option value="pc">Paciente</option>
                           <option value="ps">Profissional de Saúde</option>
-                          <option value="ps">Profissional de Administração</option>
+                          <option value="pa">Profissional de Administração</option>
                         </select>
-                        <label for="inputPassword">Tipo de usúario</label>
+                        <label for="inputPassword">Tipo de usuário</label>
                       </div>
                       <div class="form-floating mb-3">
                         <input class="form-control" id="inputEmail" type="email" placeholder=" " formControlName="usuario"/>
@@ -34,20 +34,14 @@
                         <input class="form-control" id="inputPassword" type="password" placeholder="Password" formControlName="senha"/>
                         <label for="inputPassword">Senha</label>
                       </div>
-                      <div class="d-flex align-items-center justify-content-between mt-0">
-                        <div class="form-check">
-                          <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                          <label class="form-check-label" for="inputRememberPassword">Lembrar
-                            Senha</label>
-                        </div>
-                        <a href="password.html">Esqueceu sua senha?</a>
+                      <div class="d-flex align-items-center justify-content-end mt-0">
+                        <button class="text-link" (click)="navigate('esqueceu-a-senha')"><u>Esqueceu sua senha?</u></button>
                       </div>
-                      <div class="mt-4 mb-3">
-                        <button class="btn btn-primary" (click)="logar()">Entrar</button>
+                      <div class="mt-4 mb-3 text-center">
+                        <button class="btn btn-primary px-5" (click)="submit()" [disabled]="!loginForm.valid">Entrar</button>
                       </div>
-                      <div class="py-3 d-flex justify-content-center">
-                        <div class="small"><a href="register.html">Não possui uma conta?
-                            cadastre-se!</a>
+                      <div class="pt-3 d-flex justify-content-center">
+                        <div class="small text-link"><button (click)="navigate('novo-usuario-ps')"><u>Não possui uma conta? cadastre-se!</u></button>
                         </div>
                       </div>
                     </form>
@@ -73,7 +67,7 @@
           <div
             class="flex-grow-1 d-flex align-items-start justify-content-center px-3 overflow-auto bg-primary border-0">
             <div class="card shadow border-0 rounded-lg w-100">
-              <form class="p-4" [formGroup]="form" (ngSubmit)="logar()">
+              <form class="p-4" [formGroup]="loginForm" (ngSubmit)="submit()">
                 <h3 class="text-center mb-4">Seja bem vindo ao SGHSS!</h3>
                 <div class="form-floating mb-3">
                   <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
@@ -93,7 +87,7 @@
                   <label for="inputPassword">Senha</label>
                 </div>
                 <!-- Botão principal full-width -->
-                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" (click)="submit()">
                   Entrar
                 </button>
 

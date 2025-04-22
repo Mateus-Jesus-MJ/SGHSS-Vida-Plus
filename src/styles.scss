@@ -13338,3 +13338,19 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+.img-mxh-50 {
+  height: 50vh;
+  max-height: 50vh;
+}
+
+.text-title{
+  font-size: 1.5rem;
+}
+
+.min-h-80{
+  min-height: 80vh;
+}
+
+.text-link{
+  color: var(--bs-primary);
+}
