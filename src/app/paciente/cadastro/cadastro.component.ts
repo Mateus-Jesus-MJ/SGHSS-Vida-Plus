@@ -68,8 +68,6 @@ export class CadastroComponent implements OnInit {
         this.toastr.error("Erro ao buscar Estados");
       }
     })
-
-    console.log(this.isEstadoSelect)
   }
 
   validaCPF() {
@@ -170,8 +168,6 @@ export class CadastroComponent implements OnInit {
 
   buscarCEP(): void {
     const cepControl = this.cadastroForm.get('enderecoCep');
-
-    console.log(cepControl);
     const cep = cepControl?.value;
 
     if (!cep || cep.length < 8) return;
@@ -205,7 +201,6 @@ export class CadastroComponent implements OnInit {
         this.toastr.success('Endereço preenchido automaticamente');
       },
       error: (err) => {
-        console.error('Erro ao consultar CEP:', err);
         this.toastr.error('Erro ao consultar CEP. Tente novamente.');
       }
     });
