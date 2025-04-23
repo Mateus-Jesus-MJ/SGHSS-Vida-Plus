@@ -1,61 +1,153 @@
 <div class="bg-primary">
-  <div class="d-flex justify-content-center px-5 py-3">
-    <img src="assets/img/logobrancasemfundo.png" style="height: 20vh;">
-  </div>
-  <div class="d-flex justify-content-center py-5 px-3">
-    <div class="col-lg-8 col-12 card shadow border-0 rounded-lg text-center py-3">
-      <h3>Criar uma conta</h3>
-      <p class="small text-secondary">É Rapido, é fácil, é Vida Plus</p>
-      <hr />
-      <form class="px-3 text-start">
-        <h5 class="mb-3">Dados Gerais</h5>
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="nome" placeholder="" formControlName="nome">
-              <label for="nome">Nome completo</label>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="form-floating mb-3">
-              <input type="date" class="form-control" id="dataNascimento" placeholder="o" formControlName="nome">
-              <label for="dataNascimento">Data de Nascimento</label>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="cpf" placeholder="o" formControlName="cpf">
-              <label for="dataNascimento">CPF</label>
-            </div>
-          </div>
-          <div class="col-lg-4">
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="identidade" placeholder="o" formControlName="identidade">
-              <label for="identidade">RG</label>
-            </div>
-          </div>
+  <div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+      <div class="mb-4">
+        <div class="d-flex justify-content-center px-5 py-3 d-md-none">
+          <img src="assets/img/logobrancasemfundo.png" style="width: 80vw;">
         </div>
-        <div class="form-floating mb-3">
-          <input type="email" class="form-control" id="email" placeholder="Email" formControlName="email">
-          <label for="email">Email</label>
+        <div class="d-flex justify-content-center px-5 pt-3 pb-2 d-none d-md-flex">
+          <img src="assets/img/logobrancasemfundo.png" style="height: 10vh;">
         </div>
+        <div class="d-flex justify-content-center py-5 px-3">
+          <div class="col-lg-8 col-12 card shadow border-0 rounded-lg text-center py-3">
+            <h3>Criar uma conta</h3>
+            <p class="small text-secondary">É Rapido, é fácil, é Vida Plus</p>
+            <hr />
+            <form class="px-3 text-start" [formGroup]="cadastroForm">
+              <h5 class="mb-3">Dados Gerais</h5>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="nome" placeholder="" formControlName="nome">
+                    <label for="nome">Nome completo</label>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="dataNascimento" placeholder="" formControlName="dataNascimento">
+                    <label for="dataNascimento">Data de Nascimento</label>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="cpf" placeholder="" formControlName="cpf">
+                    <label for="dataNascimento">CPF</label>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="identidade" placeholder="" formControlName="identidade">
+                    <label for="identidade">RG</label>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <h5>Endereço</h5>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep">
+                    <label for="enderecoCep">CEP</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="enderecoLogradouro" placeholder="" formControlName="enderecoLogradouro">
+                    <label for="enderecoLogradouro">Logradouro</label>
+                  </div>
+                </div>
+                <div class="col-lg-2">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="enderecoNumero" placeholder="" formControlName="enderecoNumero">
+                    <label for="enderecoNumero">Número</label>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="enderecoComplemento" placeholder="" formControlName="enderecoComplemento">
+                    <label for="enderecoComplemento">Complemento</label>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro">
+                    <label for="enderecoBairro">Bairro</label>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <select class="form-select" formControlName="enderecoUF" (input)="buscarMunicipios($event)">
+                      <option value="" disabled selected>Selecione um estado</option>
+                      <option *ngFor="let estado of estados" [value]="estado.sigla">{{estado.nome}}</option>
+                    </select>
+                    <label for="enderecoBairro">Estado</label>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <select class="form-select" formControlName="enderecoMunicipio" (input)="buscarMunicipios($event)" [disabled]="!isEstadoSelect">
+                      <option value="" disabled selected>Selecione um município</option>
+                      <option *ngFor="let municipio of municipios" [value]="municipio.nome">{{municipio.nome}}</option>
+                    </select>
+                    <label for="enderecoMunicipio">Municipio</label>
+                  </div>
+                </div>
+              </div>
 
-        <div class="form-floating mb-3">
-          <input type="password" class="form-control" id="senha" placeholder="Senha" formControlName="senha">
-          <label for="senha">Senha</label>
+              <hr />
+              <h5>Contato</h5>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" placeholder="" formControlName="email">
+                    <label for="email">Email</label>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="telefone1" placeholder="" formControlName="telefone1">
+                    <label for="telefone1">Telefone</label>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2">
+                    <label for="telefone2">Telefone</label>
+                  </div>
+                </div>
+              </div>
+
+              <hr />
+              <h5>Senha de Acesso</h5>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="senha" placeholder="" formControlName="senha">
+                    <label for="senha">Senha</label>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-primary px-5" [disabled]="!isEstadoSelect" >Confirmar</button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
+      </div>
+      <div class="d-md-none">
+        <nav class="navbar navbar-light bg-white border-top fixed-bottom">
+          <div class="container-fluid justify-content-around">
+            <a class="nav-link" [routerLink]="['/']" routerLinkActive="router-link-active">
+              <i class="fas fa-sign-in-alt"></i><br />
+              <small>Entrar</small>
+            </a>
+            <button class="nav-link"><i class="fas fa-user-plus"></i><br /><small>Registrar</small></button>
+            <a class="nav-link" href="#"><i class="fas fa-question-circle"></i><br /><small>Ajuda</small></a>
+          </div>
+        </nav>
+      </div>
     </div>
   </div>
 </div>
-<nav class="navbar navbar-light bg-white border-top fixed-bottom">
-  <div class="container-fluid justify-content-around">
-    <a class="nav-link" [routerLink]="['/']" routerLinkActive="router-link-active">
-      <i class="fas fa-sign-in-alt"></i><br />
-      <small>Entrar</small>
-    </a>
-
-    <button class="nav-link"><i class="fas fa-user-plus"></i><br /><small>Registrar</small></button>
-    <a class="nav-link" href="#"><i class="fas fa-question-circle"></i><br /><small>Ajuda</small></a>
-  </div>
-</nav>
