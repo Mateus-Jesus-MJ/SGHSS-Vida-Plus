@@ -56,26 +56,65 @@ export class CadastroComponent implements OnInit {
     console.log(this.isEstadoSelect)
   }
 
-  buscarMunicipios(event: Event): void{
+  buscarMunicipios(event: Event): void {
     const select = event.target as HTMLInputElement;
     const value = select.value;
 
     const estadoSelecionado = this.estados.find(estado => estado.sigla === value);
 
-    if(estadoSelecionado != undefined){
+    if (estadoSelecionado != undefined) {
       this.consultaEstadoMunicipios.buscaMunicipios(estadoSelecionado).subscribe({
         next: (municipios: Municipo[] | null) => {
-          if(municipios != null)
+          if (municipios != null)
             this.municipios = municipios
         },
-        error:() => {
-          this.isEstadoSelect = false;      
+        error: () => {
+          this.isEstadoSelect = false;
         }
       })
       this.isEstadoSelect = true;
-    }else{
+    } else {
       this.isEstadoSelect = false;
     }
+  }
+
+  buscarCEP(): void {
+    const cepControl = this.cadastroForm.get('enderecoCep');
+
+    console.log(cepControl);
+    const cep = cepControl?.value;
+
+    if (!cep || cep.length < 8) return;
+
+    const cepNumerico = cep.replace(/\D/g, '');
+
+    if (cepNumerico.length !== 8) {
+      this.toastr.warning('CEP deve conter 8 dígitos');
+      return;
+    }
+
+    this.consultaEstadoMunicipios.buscaMunicipioCEP(cepNumerico).subscribe({
+      next: (endereco) => {
+        if (endereco.erro) {
+          this.toastr.warning('CEP não encontrado');
+          this.cadastroForm.get('enderecoCep')?.setValue('');
+          return;
+        }
+
+        this.cadastroForm.patchValue({
+          enderecoLogradouro: endereco.logradouro || '',
+          enderecoBairro: endereco.bairro || '',
+          enderecoUF: endereco.uf || '',
+          enderecoMunicipio: endereco.localidade || '',
+        })
+
+        this.toastr.success('Endereço preenchido automaticamente');
+      },
+      error: (err) => {
+        console.error('Erro ao consultar CEP:', err);
+        this.toastr.error('Erro ao consultar CEP. Tente novamente.');
+      }
+    });
   }
 
   submit() {
