@@ -11,6 +11,6 @@ export class PacienteService {
   private http = inject(HttpClient);
   
   novoPaciente(paciente : Paciente){
-    return this.http.post(`${this.api}/pacientes`, paciente);
+    return this.http.post(`${this.api}pacientes`, paciente);
   }
 }

@@ -14,6 +14,6 @@ export class UserServiceService extends BaseService {
   private http = inject(HttpClient);
 
   novouser(usuario :User){
-    return this.http.post(`${this.api}/users`, usuario);
+    return this.http.post(`${this.api}users`, usuario);
   }
 }
