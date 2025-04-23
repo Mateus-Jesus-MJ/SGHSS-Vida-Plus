@@ -101,12 +101,16 @@ export class CadastroComponent implements OnInit {
           return;
         }
 
+        const estadoSigla = endereco.uf;
+
         this.cadastroForm.patchValue({
           enderecoLogradouro: endereco.logradouro || '',
           enderecoBairro: endereco.bairro || '',
-          enderecoUF: endereco.uf || '',
-          enderecoMunicipio: endereco.localidade || '',
-        })
+          enderecoUF: estadoSigla || '',
+          
+        });
+
+        this.buscarMunicipiosPorSigla(estadoSigla, endereco.localidade);
 
         this.toastr.success('Endereço preenchido automaticamente');
       },
@@ -115,6 +119,34 @@ export class CadastroComponent implements OnInit {
         this.toastr.error('Erro ao consultar CEP. Tente novamente.');
       }
     });
+  }
+
+  buscarMunicipiosPorSigla(sigla: string, cidade?: string): void {
+    const estadoSelecionado = this.estados.find(estado => estado.sigla === sigla);
+
+    if (!estadoSelecionado) {
+      this.toastr.warning('Estado não encontrado');
+      return;
+    }
+
+    this.consultaEstadoMunicipios.buscaMunicipios(estadoSelecionado).subscribe({
+      next: (municipios: Municipo[] | null) => {
+        if (municipios) {
+          this.municipios = municipios;
+          if (cidade) {
+            const municipioEncontrado = municipios.find(m => m.nome.toLowerCase() === cidade.toLowerCase());
+            if (municipioEncontrado) {
+              this.cadastroForm.patchValue({ enderecoMunicipio: municipioEncontrado.nome });
+            }
+          }
+        }
+      },
+      error: () => {
+        this.toastr.error('Erro ao buscar municípios');
+      }
+    });
+
+    this.isEstadoSelect = true;
   }
 
   submit() {
