@@ -1,16 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { environment } from '../../../environments/environment.development';
+import { Component, forwardRef, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, MaxValidator, NG_VALUE_ACCESSOR, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Estado, Municipo } from '../../_models/Estado';
 import { ConsultaEstadosMunicipiosService } from '../../_services/consulta-estados-municipios.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 @Component({
   selector: 'app-cadastro',
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, ReactiveFormsModule, NgxMaskDirective],
+  providers: [
+    provideNgxMask(),
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CadastroComponent),
+      multi: true
+    }
+  ],
   templateUrl: './cadastro.component.html',
   styleUrl: './cadastro.component.scss'
 })
@@ -21,11 +29,11 @@ export class CadastroComponent implements OnInit {
   isEstadoSelect: boolean = false;
 
 
-  constructor(private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService, private toastr: ToastrService) {
+  constructor(private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService, private toastr: ToastrService, private router: Router) {
     this.cadastroForm = new FormGroup({
       nome: new FormControl('', Validators.required),
       dataNascimento: new FormControl('', Validators.required),
-      cpf: new FormControl('', [Validators.required]),
+      cpf: new FormControl('', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]),
       identidade: new FormControl('', [Validators.required]),
       enderecoCep: new FormControl('', [Validators.required]),
       enderecoLogradouro: new FormControl('', [Validators.required]),
@@ -55,6 +63,80 @@ export class CadastroComponent implements OnInit {
 
     console.log(this.isEstadoSelect)
   }
+
+  validaCPF() {
+    const control = this.cadastroForm.get('cpf');
+    if (!control) return;
+  
+    let cpf = control.value;
+  
+    // Remove máscara: pontos e traço
+    cpf = cpf.replace(/[^\d]/g, '');
+
+    if(cpf.length == 0){
+      control.setErrors({required: true})
+      return
+    }
+  
+    if (cpf.length !== 11) {
+      control.setErrors({ invalidCpf: true });
+      return;
+    }
+  
+    let numero: number = 0;
+    let caracter: string = '';
+    let numeros: string = '0123456789';
+    let j: number = 10;
+    let somatorio: number = 0;
+    let resto: number = 0;
+    let digito1: number = 0;
+    let digito2: number = 0;
+    let cpfAux: string = cpf.substring(0, 9);
+  
+    for (let i: number = 0; i < 9; i++) {
+      caracter = cpfAux.charAt(i);
+      if (numeros.search(caracter) === -1) {
+        control.setErrors({ invalidCpf: true });
+        return;
+      }
+      numero = Number(caracter);
+      somatorio = somatorio + (numero * j);
+      j--;
+    }
+  
+    resto = somatorio % 11;
+    digito1 = 11 - resto;
+    if (digito1 > 9) {
+      digito1 = 0;
+    }
+  
+    j = 11;
+    somatorio = 0;
+    cpfAux = cpfAux + digito1;
+  
+    for (let i: number = 0; i < 10; i++) {
+      caracter = cpfAux.charAt(i);
+      numero = Number(caracter);
+      somatorio = somatorio + (numero * j);
+      j--;
+    }
+  
+    resto = somatorio % 11;
+    digito2 = 11 - resto;
+    if (digito2 > 9) {
+      digito2 = 0;
+    }
+  
+    cpfAux = cpfAux + digito2;
+  
+    if (cpf === cpfAux) {
+      control.setErrors(null); // CPF válido
+    } else {
+      control.setErrors({ invalidCpf: true }); // CPF inválido
+    }
+  }
+  
+  
 
   buscarMunicipios(event: Event): void {
     const select = event.target as HTMLInputElement;
@@ -107,7 +189,7 @@ export class CadastroComponent implements OnInit {
           enderecoLogradouro: endereco.logradouro || '',
           enderecoBairro: endereco.bairro || '',
           enderecoUF: estadoSigla || '',
-          
+
         });
 
         this.buscarMunicipiosPorSigla(estadoSigla, endereco.localidade);
@@ -149,12 +231,14 @@ export class CadastroComponent implements OnInit {
     this.isEstadoSelect = true;
   }
 
+
+
   submit() {
 
   }
 
   navigate(rota: string) {
-
+    this.router.navigateByUrl(`/${rota}`);
   }
 
 }

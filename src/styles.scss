@@ -13354,3 +13354,8 @@ body {
 .text-link{
   color: var(--bs-primary);
 }
+
+label.label-required::after {
+  content: " *";
+  color: red;
+}
