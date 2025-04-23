@@ -13,12 +13,7 @@ export class UserServiceService extends BaseService {
   private api = environment.apiPrincipal;
   private http = inject(HttpClient);
 
-  buscaLogin(login: Login){
-    return this.http.get<User>(`${this.api}users?usuario=${login.usuario}&senha=${login.senha}&tipoUsuario=${login.tipoUsuario}`).pipe(
-      catchError(this.ServiceError),
-      map((response) => {
-        return response
-      })
-    )
+  novouser(usuario :User){
+    return this.http.post(`${this.api}/users`, usuario);
   }
 }

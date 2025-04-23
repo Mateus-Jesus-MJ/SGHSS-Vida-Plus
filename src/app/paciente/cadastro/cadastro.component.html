@@ -18,37 +18,29 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="form-floating mb-3">
-                    <input
-                      type="text"
-                      class="form-control text-uppercase"
-                      id="nome"
-                      formControlName="nome"
-                      placeholder="Nome"
-                      [class.is-invalid]="cadastroForm.get('nome')?.invalid && cadastroForm.get('nome')?.touched"
-                    />
+                    <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome"
+                      placeholder=""
+                      [class.is-invalid]="cadastroForm.get('nome')?.invalid && cadastroForm.get('nome')?.touched" />
                     <label for="nome" class="label-required">Nome</label>
-                  
-                    <div *ngIf="cadastroForm.get('nome')?.errors?.['required'] && cadastroForm.get('nome')?.touched" class="invalid-feedback">
-                      O nome é obrigatório
-                    </div>
                   </div>
                 </div>
                 <div class="col-lg-4">
                   <div class="form-floating mb-3">
                     <input type="date" class="form-control" id="dataNascimento" placeholder=""
-                      formControlName="dataNascimento">
+                      formControlName="dataNascimento"
+                      [class.is-invalid]="cadastroForm.get('dataNascimento')?.invalid && cadastroForm.get('dataNascimento')?.touched">
                     <label for="dataNascimento" class="label-required">Data de Nascimento</label>
+                  </div>
+                  <div *ngIf="cadastroForm.get('dataNascimento')?.errors?.['required'] && cadastroForm.get('dataNascimento')?.touched" class="invalid-feedback">
+                    informe a data de nascimento!
                   </div>
                 </div>
                 <div class="col-lg-4">
                   <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="cpf" formControlName="cpf" (blur)="validaCPF()"
                       [class.is-invalid]="cadastroForm.get('cpf')?.invalid && cadastroForm.get('cpf')?.touched"
-                      mask="CPF_CNPJ" maxlength="14"/>
-                      <label for="dataNascimento" class="label-required">CPF</label>
-                    <div *ngIf="cadastroForm.get('cpf')?.errors?.['required']" class="invalid-feedback">
-                      CPF é obrigatório
-                    </div>
+                      mask="CPF_CNPJ" maxlength="14" />
+                    <label for="dataNascimento" class="label-required">CPF</label>
                     <div *ngIf="cadastroForm.get('cpf')?.errors?.['invalidCpf']" class="invalid-feedback">
                       CPF inválido
                     </div>
@@ -58,7 +50,7 @@
                 <div class="col-lg-4">
                   <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="identidade" placeholder="" formControlName="identidade">
-                    <label for="identidade" class="label-required">RG</label>
+                    <label for="identidade">RG</label>
                   </div>
                 </div>
               </div>
@@ -77,14 +69,16 @@
                 <div class="col-lg-6">
                   <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
-                      formControlName="enderecoLogradouro">
+                      formControlName="enderecoLogradouro"
+                      [class.is-invalid]="cadastroForm.get('enderecoLogradouro')?.invalid && cadastroForm.get('enderecoLogradouro')?.touched">
                     <label for="enderecoLogradouro" class="label-required">Logradouro</label>
                   </div>
                 </div>
                 <div class="col-lg-2">
                   <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="enderecoNumero" placeholder=""
-                      formControlName="enderecoNumero">
+                      formControlName="enderecoNumero"
+                      [class.is-invalid]="cadastroForm.get('enderecoNumero')?.invalid && cadastroForm.get('enderecoNumero')?.touched">
                     <label for="enderecoNumero" class="label-required">Número</label>
                   </div>
                 </div>
@@ -98,14 +92,16 @@
                 <div class="col-lg-4">
                   <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="enderecoBairro" placeholder=""
-                      formControlName="enderecoBairro">
+                      formControlName="enderecoBairro"
+                      [class.is-invalid]="cadastroForm.get('enderecoBairro')?.invalid && cadastroForm.get('enderecoBairro')?.touched">
                     <label for="enderecoBairro" class="label-required">Bairro</label>
                   </div>
                 </div>
                 <div class="col-lg-4">
                   <div class="form-floating mb-3">
-                    <select class="form-select" formControlName="enderecoUF" (input)="buscarMunicipios($event)">
-                      <option value="" disabled selected>Selecione um estado</option>
+                    <select class="form-select" formControlName="enderecoUF" (input)="buscarMunicipios($event)"
+                    [class.is-invalid]="cadastroForm.get('enderecoUF')?.invalid && cadastroForm.get('enderecoUF')?.touched">
+                      <option value="" disabled selected></option>
                       <option *ngFor="let estado of estados" [value]="estado.sigla">{{estado.nome}}</option>
                     </select>
                     <label for="enderecoBairro" class="label-required">Estado</label>
@@ -114,8 +110,9 @@
                 <div class="col-lg-4">
                   <div class="form-floating mb-3">
                     <select class="form-select" formControlName="enderecoMunicipio" (input)="buscarMunicipios($event)"
-                      [disabled]="!isEstadoSelect">
-                      <option value="" disabled selected>Selecione um município</option>
+                      [disabled]="!isEstadoSelect"
+                      [class.is-invalid]="cadastroForm.get('enderecoMunicipio')?.invalid && cadastroForm.get('enderecoMunicipio')?.touched">
+                      <option value="" disabled selected></option>
                       <option *ngFor="let municipio of municipios" [value]="municipio.nome">{{municipio.nome}}</option>
                     </select>
                     <label for="enderecoMunicipio" class="label-required">Municipio</label>
@@ -128,13 +125,15 @@
               <div class="row">
                 <div class="col-lg-6">
                   <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="email" placeholder="" formControlName="email">
+                    <input type="email" class="form-control" id="email" placeholder="" formControlName="email"
+                    [class.is-invalid]="cadastroForm.get('email')?.invalid && cadastroForm.get('email')?.touched">
                     <label for="email" class="label-required">Email</label>
                   </div>
                 </div>
                 <div class="col-lg-3">
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="telefone1" placeholder="" formControlName="telefone1">
+                    <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55" mask=" (00) 0 0000-0000"
+                    [class.is-invalid]="cadastroForm.get('telefone1')?.invalid && cadastroForm.get('telefone1')?.touched">
                     <label for="telefone1" class="label-required">Telefone</label>
                   </div>
                 </div>
@@ -145,24 +144,37 @@
                   </div>
                 </div>
               </div>
-
               <hr />
               <h5>Senha de Acesso</h5>
               <div class="row">
                 <div class="col-lg-4">
-                  <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="senha" placeholder="" formControlName="senha">
+                  <div class="form-floating mb-5">
+                    <input type="password" class="form-control" id="senha" placeholder="" formControlName="senha"
+                    [class.is-invalid]="cadastroForm.get('senha')?.invalid && cadastroForm.get('senha')?.touched">
                     <label for="senha" class="label-required">Senha</label>
+                    <div *ngIf="cadastroForm.get('senha')?.errors?.['required'] && cadastroForm.get('senha')?.touched" class="invalid-feedback">
+                      A senha é obrigatória.
+                    </div>
+                    
+                    <div *ngIf="cadastroForm.get('senha')?.errors?.['minlength'] && cadastroForm.get('senha')?.touched" class="invalid-feedback">
+                      A senha deve ter no mínimo 8 caracteres.
+                    </div>
+                    
+                    <div *ngIf="cadastroForm.get('senha')?.errors?.['pattern'] && cadastroForm.get('senha')?.touched && !cadastroForm.get('senha')?.errors?.['minlength']" class="invalid-feedback">
+                      A senha deve conter letra maiúscula, minúscula, número e símbolo.
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="d-flex justify-content-center mb-3">
-                <button class="btn btn-primary px-5" [disabled]="!isEstadoSelect && cadastroForm.invalid">Confirmar</button>
+                <button class="btn btn-primary px-5" (click)="submit()" [disabled]="!isEstadoSelect && cadastroForm.invalid">
+                  Confirmar
+                </button>
               </div>
-              <hr />
-              <div class="pt-3 d-flex justify-content-center">
+              <hr class="d-none d-md-flex" />
+              <div class="pt-3 d-flex justify-content-center mb-3 d-none d-md-flex">
                 <div class="small text-link">
-                  <button (click)="navigate('')"><u>Já possui uma conta? faça login!</u></button>
+                  <a [routerLink]="['/']">Já possui uma conta? faça login!</a>
                 </div>
               </div>
             </form>

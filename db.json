@@ -9,5 +9,6 @@
     "tipoUsuario": "ps",
     "cargo": "medico"
     }
-  ]
+  ],
+  "pacientes":[]
 }

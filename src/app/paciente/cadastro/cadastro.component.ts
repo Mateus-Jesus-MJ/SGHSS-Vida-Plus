@@ -6,6 +6,10 @@ import { Estado, Municipo } from '../../_models/Estado';
 import { ConsultaEstadosMunicipiosService } from '../../_services/consulta-estados-municipios.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { UserServiceService } from '../../_services/user-service.service';
+import { User } from '../../_models/User';
+import { PacienteService } from '../../_services/paciente.service';
+import { Paciente } from '../../_models/Paciente';
 
 @Component({
   selector: 'app-cadastro',
@@ -29,12 +33,16 @@ export class CadastroComponent implements OnInit {
   isEstadoSelect: boolean = false;
 
 
-  constructor(private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService, private toastr: ToastrService, private router: Router) {
+  constructor(private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
+    private pacienteService: PacienteService,
+    private userService: UserServiceService,
+    private toastr: ToastrService,
+    private router: Router) {
     this.cadastroForm = new FormGroup({
       nome: new FormControl('', Validators.required),
       dataNascimento: new FormControl('', Validators.required),
       cpf: new FormControl('', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]),
-      identidade: new FormControl('', [Validators.required]),
+      identidade: new FormControl(''),
       enderecoCep: new FormControl('', [Validators.required]),
       enderecoLogradouro: new FormControl('', [Validators.required]),
       enderecoNumero: new FormControl('', [Validators.required]),
@@ -45,7 +53,7 @@ export class CadastroComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       telefone1: new FormControl('', [Validators.required]),
       telefone2: new FormControl(''),
-      senha: new FormControl('', [Validators.required, Validators.minLength(6)])
+      senha: new FormControl('', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)])
     });
   }
 
@@ -67,22 +75,22 @@ export class CadastroComponent implements OnInit {
   validaCPF() {
     const control = this.cadastroForm.get('cpf');
     if (!control) return;
-  
+
     let cpf = control.value;
-  
+
     // Remove máscara: pontos e traço
     cpf = cpf.replace(/[^\d]/g, '');
 
-    if(cpf.length == 0){
-      control.setErrors({required: true})
+    if (cpf.length == 0) {
+      control.setErrors({ required: true })
       return
     }
-  
+
     if (cpf.length !== 11) {
       control.setErrors({ invalidCpf: true });
       return;
     }
-  
+
     let numero: number = 0;
     let caracter: string = '';
     let numeros: string = '0123456789';
@@ -92,7 +100,7 @@ export class CadastroComponent implements OnInit {
     let digito1: number = 0;
     let digito2: number = 0;
     let cpfAux: string = cpf.substring(0, 9);
-  
+
     for (let i: number = 0; i < 9; i++) {
       caracter = cpfAux.charAt(i);
       if (numeros.search(caracter) === -1) {
@@ -103,40 +111,40 @@ export class CadastroComponent implements OnInit {
       somatorio = somatorio + (numero * j);
       j--;
     }
-  
+
     resto = somatorio % 11;
     digito1 = 11 - resto;
     if (digito1 > 9) {
       digito1 = 0;
     }
-  
+
     j = 11;
     somatorio = 0;
     cpfAux = cpfAux + digito1;
-  
+
     for (let i: number = 0; i < 10; i++) {
       caracter = cpfAux.charAt(i);
       numero = Number(caracter);
       somatorio = somatorio + (numero * j);
       j--;
     }
-  
+
     resto = somatorio % 11;
     digito2 = 11 - resto;
     if (digito2 > 9) {
       digito2 = 0;
     }
-  
+
     cpfAux = cpfAux + digito2;
-  
+
     if (cpf === cpfAux) {
       control.setErrors(null); // CPF válido
     } else {
       control.setErrors({ invalidCpf: true }); // CPF inválido
     }
   }
-  
-  
+
+
 
   buscarMunicipios(event: Event): void {
     const select = event.target as HTMLInputElement;
@@ -234,7 +242,62 @@ export class CadastroComponent implements OnInit {
 
 
   submit() {
+    if (this.cadastroForm.invalid) {
+      // Marca todos os campos como "tocados" para ativar as mensagens de erro
+      this.cadastroForm.markAllAsTouched();
+      return;
+    }
 
+    const formData = this.cadastroForm.value;
+
+    formData.nome = formData.nome.toUpperCase();
+    formData.enderecoLogradouro = formData.enderecoLogradouro.toUpperCase();
+    formData.enderecoNumero = formData.enderecoNumero.toUpperCase();
+    formData.enderecoComplemento = formData.enderecoComplemento.toUpperCase();
+    formData.enderecoBairro = formData.enderecoBairro.toUpperCase();
+    formData.enderecoMunicipio = formData.enderecoMunicipio.toUpperCase();
+    formData.enderecoUF = formData.enderecoUF.toUpperCase();
+
+    const usuario = new User();
+    usuario.nome = formData.nome;
+    usuario.usuario = formData.email;
+    usuario.email = formData.email;
+    usuario.senha = formData.senha;
+    usuario.tipoUsuario = 'pc'; 
+    usuario.cargo = '';
+
+    const paciente = new Paciente();
+    paciente.nome = formData.nome;
+    paciente.dataNascimento = formData.dataNascimento;
+    paciente.cpf = formData.cpf;
+    paciente.identidade = formData.identidade;
+    paciente.enderecoCep = formData.enderecoCep;
+    paciente.enderecoLogradouro = formData.enderecoLogradouro;
+    paciente.enderecoNumero = formData.enderecoNumero;
+    paciente.enderecoComplemento = formData.enderecoComplemento;
+    paciente.enderecoBairro = formData.enderecoBairro;
+    paciente.enderecoUF = formData.enderecoUF;
+    paciente.enderecoMunicipio = formData.enderecoMunicipio;
+    paciente.email = formData.email;
+    paciente.telefone1 = formData.telefone1;
+    paciente.telefone2 = formData.telefone2;
+    paciente.usuario = usuario;
+
+
+    this.pacienteService.novoPaciente(paciente).subscribe(
+      (response) => {
+        this.userService.novouser(usuario).subscribe(
+          (response) => {
+            this.toastr.success("Cadastro criado com sucesso!")
+            this.navigate('');
+          },
+          (error) => {
+            this.toastr.error("Falha ao criar cadastro!")
+          });
+      },
+      (error) => {
+        this.toastr.error("Falha ao criar cadastro!")
+      });
   }
 
   navigate(rota: string) {
