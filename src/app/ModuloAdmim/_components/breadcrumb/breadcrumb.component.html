@@ -11,7 +11,7 @@
           <a [routerLink]="item.url"><i class="fa fa-home me-1"></i>{{item.label}}</a>
         </ng-container>
 
-        <ng-container *ngIf="!first">
+        <ng-container *ngIf="!first && !last">
           <!-- Para os demais itens, exibe apenas o texto da breadcrumb -->
           <a [routerLink]="item.url">{{ item.label }}</a>
         </ng-container>

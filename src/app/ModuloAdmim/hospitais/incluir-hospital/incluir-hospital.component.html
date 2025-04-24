@@ -1,0 +1,119 @@
+<h3>Incluir Hospital</h3>
+<form class="px-3 text-start mt-3" [formGroup]="incluirForm">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
+          [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
+        <label for="nome" class="label-required">Razão Social</label>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
+          [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
+        <label for="nome" class="label-required">Nome Fantasia</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="cpf" formControlName="cpf"
+          [class.is-invalid]="incluirForm.get('cnpj')?.invalid && incluirForm.get('cnpj')?.touched" mask="000.000.000/0000-00"
+          maxlength="19" />
+        <label for="dataNascimento" class="label-required">CNPJ</label>
+        <div *ngIf="incluirForm.get('cnpj')?.errors?.['invalidCpf']" class="invalid-feedback">
+          CPF inválido
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep"
+          (blur)="buscarCEP()">
+        <label for="enderecoCep">CEP</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
+          formControlName="enderecoLogradouro"
+          [class.is-invalid]="incluirForm.get('enderecoLogradouro')?.invalid && incluirForm.get('enderecoLogradouro')?.touched">
+        <label for="enderecoLogradouro" class="label-required">Logradouro</label>
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="enderecoNumero" placeholder="" formControlName="enderecoNumero"
+          [class.is-invalid]="incluirForm.get('enderecoNumero')?.invalid && incluirForm.get('enderecoNumero')?.touched">
+        <label for="enderecoNumero" class="label-required">Número</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="enderecoComplemento" placeholder=""
+          formControlName="enderecoComplemento">
+        <label for="enderecoComplemento">Complemento</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro"
+          [class.is-invalid]="incluirForm.get('enderecoBairro')?.invalid && incluirForm.get('enderecoBairro')?.touched">
+        <label for="enderecoBairro" class="label-required">Bairro</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <select class="form-select" formControlName="enderecoUF" (input)="buscarMunicipios($event)"
+          [class.is-invalid]="incluirForm.get('enderecoUF')?.invalid && incluirForm.get('enderecoUF')?.touched">
+          <option value="" disabled selected></option>
+          <option *ngFor="let estado of estados" [value]="estado.sigla">{{estado.nome}}</option>
+        </select>
+        <label for="enderecoBairro" class="label-required">Estado</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <select class="form-select" formControlName="enderecoMunicipio" (input)="buscarMunicipios($event)"
+          [disabled]="!isEstadoSelect"
+          [class.is-invalid]="incluirForm.get('enderecoMunicipio')?.invalid && incluirForm.get('enderecoMunicipio')?.touched">
+          <option value="" disabled selected></option>
+          <option *ngFor="let municipio of municipios" [value]="municipio.nome">{{municipio.nome}}</option>
+        </select>
+        <label for="enderecoMunicipio" class="label-required">Municipio</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="email" placeholder="" formControlName="email"
+          [class.is-invalid]="incluirForm.get('email')?.invalid && incluirForm.get('email')?.touched">
+        <label for="email" class="label-required">Email</label>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-floating mb-3">
+        <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
+          mask="(00) 0 0000-0000"
+          [class.is-invalid]="incluirForm.get('telefone1')?.invalid && incluirForm.get('telefone1')?.touched">
+        <label for="telefone1" class="label-required">Telefone</label>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-floating mb-5">
+        <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2">
+        <label for="telefone2">Telefone</label>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center mb-3">
+    <button class="btn btn-primary px-5" (click)="submit()" [disabled]="!isEstadoSelect && incluirForm.invalid">
+      Confirmar
+    </button>
+  </div>
+</form>

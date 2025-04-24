@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../_services/auth.service';
+import { AuthService } from '../../../_services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -19,9 +19,7 @@ export class NavbarComponent implements OnInit {
 
 
   sair(){
-    console.log("aqui");
-    this.authService.clear();
+    this.authService.logout();
     this.router.navigateByUrl('./');
   }
-
 }

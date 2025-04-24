@@ -1,20 +1,47 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardService implements CanActivate {
+export class AuthGuardService implements CanActivate, CanActivateChild {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
-  constructor(private authService: AuthService, private router: Router) { }
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+    return this.checkAccess(route);
+  }
 
-  canActivate(): boolean {
-    if (this.authService.isAuthenticated()) {
-      return true;
-    } else {
+  canActivateChild(route: ActivatedRouteSnapshot): boolean {
+    return this.checkAccess(route);
+  }
+
+  private checkAccess(route: ActivatedRouteSnapshot): boolean {
+    const tipoPermitido = route.data['tipoPermitido'];
+    const tipoUsuario = this.authService.getTipoUsuario();
+
+    console.log('tipoUsuario no sessionStorage:', tipoUsuario);
+    console.log('tipoPermitido pela rota:', tipoPermitido);
+
+    if (!this.authService.isAuthenticated()) {
+      this.toastr.error('Usuário não autenticado!');
       this.router.navigate(['/']);
       return false;
     }
+
+
+    //Atualizar esse metodo aqui
+    if (tipoPermitido && tipoPermitido !== tipoUsuario) {
+      this.toastr.warning('Acesso não autorizado!');
+      this.router.navigate(['/']);
+      return false;
+    }
+
+    return true;
   }
 }

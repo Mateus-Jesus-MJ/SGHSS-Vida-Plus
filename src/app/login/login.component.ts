@@ -65,7 +65,7 @@ export class LoginComponent {
         if (!user) {
           this.toastService.error("Usuário, senha ou tipo de usuário incorreto");
         } else {
-          this.authService.authenticate(user);
+          this.authService.login(user);
           switch (user.tipoUsuario) {
             case 'ps':
               this.toastService.success("Login feito com sucesso!");

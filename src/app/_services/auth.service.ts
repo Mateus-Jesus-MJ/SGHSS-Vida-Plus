@@ -6,36 +6,39 @@ import { User } from '../_models/User';
 })
 export class AuthService {
 
-  constructor() { }
+  constructor() {}
 
-  // Armazenar o usuário autenticado em sessionStorage
-  authenticate(user: User): void {
-    sessionStorage.setItem('usuario', user.usuario);
-    sessionStorage.setItem('nome', user.nome);
-    sessionStorage.setItem('tipoUsuario', user.tipoUsuario);
-  }
 
-  // Limpar os dados do usuário (logout)
-  clear(): void {
-    sessionStorage.removeItem('usuario');
-    sessionStorage.removeItem('nome');
-    sessionStorage.removeItem('tipoUsuario');
-  }
-
-  // Verificar se o usuário está autenticado
   isAuthenticated(): boolean {
-    return Boolean(sessionStorage.getItem('usuario') && sessionStorage.getItem('nome'));
+    const nome = sessionStorage.getItem('nome');
+    const usuario = sessionStorage.getItem('usuario');
+    const tipoUsuario = sessionStorage.getItem('tipoUsuario');
+    return !!nome && !!tipoUsuario && !!usuario;
   }
 
-  // Obter o usuário armazenado no sessionStorage
-  getUser(): User | null {
-    const usuario = sessionStorage.getItem('usuario');
-    const nome = sessionStorage.getItem('nome');
-    const tipoUsuario = sessionStorage.getItem('tipoUsuario');
+  // Armazena os dados no login
+  login(user: User): void {
+    sessionStorage.setItem('usuario',user.usuario);
+    sessionStorage.setItem('tipoUsuario', user.tipoUsuario);
+    sessionStorage.setItem('nome', user.nome);
+  }
 
-    if (usuario && nome && tipoUsuario) {
-      return { usuario, nome, tipoUsuario } as User;
-    }
-    return null;
+  // Faz logout
+  logout(): void {
+    sessionStorage.clear();
+  }
+
+  // Retorna o tipo do usuário
+  getTipoUsuario(): string | null {
+    return sessionStorage.getItem('tipoUsuario');
+  }
+
+  // Retorna o nome de usuário
+  getUsuario(): string | null {
+    return sessionStorage.getItem('usuario');
+  }
+
+  getNome() : string | null{
+    return sessionStorage.getItem('nome');
   }
 }
