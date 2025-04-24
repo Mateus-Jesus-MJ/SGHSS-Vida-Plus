@@ -1,33 +1,43 @@
 import { inject, Injectable } from '@angular/core';
 import { BaseService } from './base.service';
-import { environment } from '../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
 import { User } from '../_models/User';
 import { Login } from '../_models/Login';
-import { map, Observable, tap } from 'rxjs';
+import { from, map, Observable, tap } from 'rxjs';
 import { AuthService } from './auth.service';
+import { Firestore, collection, query, where, getDocs, CollectionReference } from '@angular/fire/firestore';
+import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+
+
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService extends BaseService {
-  private api = environment.apiPrincipal;
-  private httpClient = inject(HttpClient);
   private authService = inject(AuthService)
+  private firestore = inject(Firestore);
+  private auth = inject(Auth);
+
 
   login(login: Login): Observable<User | null> {
-    return this.httpClient
-      .get<User[]>(`${this.api}users?usuario=${login.usuario}&senha=${login.senha}&tipoUsuario=${login.tipoUsuario}`)
-      .pipe(
-        map((users: User[]) => users.length > 0 ? users[0] : null),
-        tap((user) => {
-          if (user) {
-            // Armazenar os dados no sessionStorage
-            sessionStorage.setItem("usuario", user.usuario);
-            sessionStorage.setItem("nome", user.nome);
-            sessionStorage.setItem("tipoUsuario", user.tipoUsuario);
-          }
-        })
-      );
+    const usersRef = collection(this.firestore, 'usuarios') as CollectionReference<User>;
+    const q = query(
+      usersRef,
+      where('usuario', '==', login.usuario.trim()),
+      where('senha', '==', String(login.senha).trim()),
+      where('tipoUsuario', '==', login.tipoUsuario.trim()),
+    );
+
+    return from(getDocs(q)).pipe(
+      map(snapshot => {
+        const users: User[] = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return data;
+        });
+        const user = users.length > 0 ? users[0] : null;
+        return user;
+      })
+    );
   }
 }

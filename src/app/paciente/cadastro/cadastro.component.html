@@ -132,7 +132,7 @@
                 </div>
                 <div class="col-lg-3">
                   <div class="form-floating mb-3">
-                    <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55" mask=" (00) 0 0000-0000"
+                    <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 " mask="(00) 0 0000-0000"
                     [class.is-invalid]="cadastroForm.get('telefone1')?.invalid && cadastroForm.get('telefone1')?.touched">
                     <label for="telefone1" class="label-required">Telefone</label>
                   </div>
@@ -155,11 +155,11 @@
                     <div *ngIf="cadastroForm.get('senha')?.errors?.['required'] && cadastroForm.get('senha')?.touched" class="invalid-feedback">
                       A senha é obrigatória.
                     </div>
-                    
+
                     <div *ngIf="cadastroForm.get('senha')?.errors?.['minlength'] && cadastroForm.get('senha')?.touched" class="invalid-feedback">
                       A senha deve ter no mínimo 8 caracteres.
                     </div>
-                    
+
                     <div *ngIf="cadastroForm.get('senha')?.errors?.['pattern'] && cadastroForm.get('senha')?.touched && !cadastroForm.get('senha')?.errors?.['minlength']" class="invalid-feedback">
                       A senha deve conter letra maiúscula, minúscula, número e símbolo.
                     </div>

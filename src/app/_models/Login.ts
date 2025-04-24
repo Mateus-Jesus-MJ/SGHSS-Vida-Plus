@@ -1,5 +1,5 @@
-export class Login {
-    public usuario: string = "";
-    public senha: string = "";
-    public tipoUsuario: string = "";
+export interface Login {
+  usuario: string;
+  senha: string;
+  tipoUsuario: string;
 }

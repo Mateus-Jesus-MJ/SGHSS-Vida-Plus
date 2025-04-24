@@ -5,15 +5,16 @@ import { Login } from '../_models/Login';
 import { User } from '../_models/User';
 import { BaseService } from './base.service';
 import { catchError, map } from 'rxjs';
+import { addDoc, collection, Firestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserServiceService extends BaseService {
-  private api = environment.apiPrincipal;
-  private http = inject(HttpClient);
+  private firestore = inject(Firestore);
 
   novouser(usuario :User){
-    return this.http.post(`${this.api}users`, usuario);
+    const userCollection = collection(this.firestore, 'usuarios');
+    return addDoc(userCollection, structuredClone(usuario));
   }
 }

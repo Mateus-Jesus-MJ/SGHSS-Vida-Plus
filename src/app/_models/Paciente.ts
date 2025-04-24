@@ -1,22 +1,20 @@
 import { User } from "./User";
 
-export class Paciente {
-  constructor(
-    public id?: number ,
-    public nome: string = "",
-    public dataNascimento: string = "",
-    public cpf: string = "",
-    public identidade: string = "",
-    public enderecoCep: string = "",
-    public enderecoLogradouro: string = "",
-    public enderecoNumero: string = "",
-    public enderecoComplemento: string = "",
-    public enderecoBairro: string = "",
-    public enderecoUF: string = "",
-    public enderecoMunicipio: string = "",
-    public email: string = "",
-    public telefone1: string = "",
-    public telefone2: string = "",
-    public usuario?: User
-  ) {}
+export interface Paciente {
+     id?: string;
+     nome: string;
+     dataNascimento: string;
+     cpf: string;
+     identidade: string;
+     enderecoCep: string;
+     enderecoLogradouro: string;
+     enderecoNumero: string;
+     enderecoComplemento: string;
+     enderecoBairro: string;
+     enderecoUF: string;
+     enderecoMunicipio: string;
+     email: string;
+     telefone1: string;
+     telefone2: string;
+     usuario?: User
 }

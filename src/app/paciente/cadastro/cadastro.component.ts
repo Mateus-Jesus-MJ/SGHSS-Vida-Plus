@@ -253,44 +253,43 @@ export class CadastroComponent implements OnInit {
     formData.enderecoMunicipio = formData.enderecoMunicipio.toUpperCase();
     formData.enderecoUF = formData.enderecoUF.toUpperCase();
 
-    const usuario = new User();
-    usuario.nome = formData.nome;
-    usuario.usuario = formData.email;
-    usuario.email = formData.email;
-    usuario.senha = formData.senha;
-    usuario.tipoUsuario = 'pc'; 
-    usuario.cargo = '';
+    const usuario: User = {
+      nome: formData.nome,
+      usuario: formData.email,
+      email: formData.email,
+      senha: formData.senha,
+      tipoUsuario: 'pc',
+    };
 
-    const paciente = new Paciente();
-    paciente.nome = formData.nome;
-    paciente.dataNascimento = formData.dataNascimento;
-    paciente.cpf = formData.cpf;
-    paciente.identidade = formData.identidade;
-    paciente.enderecoCep = formData.enderecoCep;
-    paciente.enderecoLogradouro = formData.enderecoLogradouro;
-    paciente.enderecoNumero = formData.enderecoNumero;
-    paciente.enderecoComplemento = formData.enderecoComplemento;
-    paciente.enderecoBairro = formData.enderecoBairro;
-    paciente.enderecoUF = formData.enderecoUF;
-    paciente.enderecoMunicipio = formData.enderecoMunicipio;
-    paciente.email = formData.email;
-    paciente.telefone1 = formData.telefone1;
-    paciente.telefone2 = formData.telefone2;
-    paciente.usuario = usuario;
+    const paciente: Paciente = {
+      nome: formData.nome,
+      dataNascimento: formData.dataNascimento,
+      cpf: formData.cpf,
+      identidade: formData.identidade || null,
+      enderecoCep: formData.enderecoCep,
+      enderecoLogradouro: formData.enderecoLogradouro,
+      enderecoNumero: formData.enderecoNumero,
+      enderecoComplemento: formData.enderecoComplemento,
+      enderecoBairro: formData.enderecoBairro,
+      enderecoUF: formData.enderecoUF,
+      enderecoMunicipio: formData.enderecoMunicipio,
+      email: formData.email,
+      telefone1: formData.telefone1,
+      telefone2: formData.telefone2 || null,
+      usuario: usuario
+    };
 
-
-    this.pacienteService.novoPaciente(paciente).subscribe(
-      (response) => {
-        this.userService.novouser(usuario).subscribe(
-          (response) => {
-            this.toastr.success("Cadastro criado com sucesso!")
-            this.navigate('');
-          },
-          (error) => {
+    this.pacienteService.novoPaciente(paciente)
+      .then((response) => {
+        this.userService.novouser(usuario).then((response) => {
+          this.toastr.success("Cadastro criado com sucesso!")
+          this.navigate('');
+        })
+          .catch((error) => {
             this.toastr.error("Falha ao criar cadastro!")
           });
-      },
-      (error) => {
+      })
+      .catch((error) => {
         this.toastr.error("Falha ao criar cadastro!")
       });
   }

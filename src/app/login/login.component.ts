@@ -7,6 +7,8 @@ import { LoginService } from '../_services/login.service';
 import { Login } from '../_models/Login';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../_services/auth.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 
 @Component({
@@ -16,7 +18,6 @@ import { AuthService } from '../_services/auth.service';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [LoginService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -54,9 +55,9 @@ export class LoginComponent {
 
   submit() {
     const login: Login = {
-      usuario: this.loginForm.value.usuario,
+      usuario: this.loginForm.value.usuario.trim(),
       senha: this.loginForm.value.senha,
-      tipoUsuario: this.loginForm.value.tipoUsuario
+      tipoUsuario: this.loginForm.value.tipoUsuario.trim()
     };
 
     this.loginService.login(login).subscribe({
@@ -64,10 +65,7 @@ export class LoginComponent {
         if (!user) {
           this.toastService.error("Usuário, senha ou tipo de usuário incorreto");
         } else {
-          // Armazenar o usuário autenticado
           this.authService.authenticate(user);
-
-          // Redirecionar com base no tipo de usuário
           switch (user.tipoUsuario) {
             case 'ps':
               this.toastService.success("Login feito com sucesso!");

@@ -1,8 +1,17 @@
 export const environment = {
   apiPrincipal: 'http://localhost:3000/',
   apiConsultaCEP: 'https://viacep.com.br/ws/',
-  apiConsultaEstadosMunicipios : 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/',
-  estados : [
+  apiConsultaEstadosMunicipios: 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/',
+  firebaseConfig: {
+    apiKey: "AIzaSyAyzWdAsNAD5EL7Bv0I1Ld_mhlJH0EIKT0",
+    authDomain: "sghss-vidaplus.firebaseapp.com",
+    projectId: "sghss-vidaplus",
+    storageBucket: "sghss-vidaplus.firebasestorage.app",
+    messagingSenderId: "901401357138",
+    appId: "1:901401357138:web:0c46f5072e4981c4f9688b"
+  },
+
+  estados: [
     { sigla: 'AC', nome: 'Acre' },
     { sigla: 'AL', nome: 'Alagoas' },
     { sigla: 'AP', nome: 'Amapá' },
