@@ -3,6 +3,23 @@ export const environment = {
   apiPrincipal: 'http://localhost:3000/',
   apiConsultaCEP: 'https://viacep.com.br/ws/',
   apiConsultaEstadosMunicipios: 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   estados: [
     { sigla: 'AC', nome: 'Acre' },
     { sigla: 'AL', nome: 'Alagoas' },
