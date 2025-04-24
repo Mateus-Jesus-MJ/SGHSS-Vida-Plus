@@ -1,1 +1,12 @@
 <router-outlet></router-outlet>
+<div *ngIf="!rotaFilhaAtiva" class="d-flex justify-content-between">
+    <h3>Hospitais</h3>
+    <a class="btn btn-primary btn-icon-split" routerLink="/admin/hospitais/incluir">
+        <span class="icon">
+          <i class="fa fa-plus"></i>
+        </span>
+        <span class="text px-4">
+          Incluir
+        </span>
+      </a>
+</div>

@@ -1,5 +1,37 @@
-<h3>Incluir Hospital</h3>
-<form class="px-3 text-start mt-3" [formGroup]="incluirForm">
+<div class="d-flex justify-content-between mb-3">
+  <h3>Incluir Hospital</h3>
+  <div class="d-flex justify-content-between">
+    <button class="btn btn-secondary btn-icon-split me-3">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </button>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="!isEstadoSelect && incluirForm.invalid">
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Gravar
+      </span>
+    </button>
+  </div>
+</div>
+<hr />
+<form class="text-start m-3" [formGroup]="incluirForm">
+  <div class="col-lg-4">
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="cpf" formControlName="cpf"
+        [class.is-invalid]="incluirForm.get('cnpj')?.invalid && incluirForm.get('cnpj')?.touched" mask="000.000.000/0000-00" placeholder=""
+        maxlength="19" />
+      <label for="dataNascimento" class="label-required">CNPJ</label>
+      <div *ngIf="incluirForm.get('cnpj')?.errors?.['invalidCpf']" class="invalid-feedback">
+        CNPJ inválido
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-lg-6">
       <div class="form-floating mb-3">
@@ -13,17 +45,6 @@
         <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
           [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
         <label for="nome" class="label-required">Nome Fantasia</label>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="cpf" formControlName="cpf"
-          [class.is-invalid]="incluirForm.get('cnpj')?.invalid && incluirForm.get('cnpj')?.touched" mask="000.000.000/0000-00"
-          maxlength="19" />
-        <label for="dataNascimento" class="label-required">CNPJ</label>
-        <div *ngIf="incluirForm.get('cnpj')?.errors?.['invalidCpf']" class="invalid-feedback">
-          CPF inválido
-        </div>
       </div>
     </div>
   </div>
@@ -111,11 +132,4 @@
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-center mb-3">
-    <button class="btn btn-primary px-5" (click)="submit()" [disabled]="!isEstadoSelect && incluirForm.invalid">
-      Confirmar
-    </button>
-  </div>
 </form>
-
-teste
