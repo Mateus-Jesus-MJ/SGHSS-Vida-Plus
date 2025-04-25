@@ -6,4 +6,12 @@ export interface User {
   senha: string;
   tipoUsuario: string;
   cargo?: string;
+  autorizacoes?: Autorizacao[];
+}
+
+export interface Autorizacao {
+  user?: User;
+  userId?: string;
+  funcionalidade: string;
+  acesso: string;
 }

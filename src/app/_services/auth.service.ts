@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../_models/User';
+import { Autorizacao, User } from '../_models/User';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +18,10 @@ export class AuthService {
 
   // Armazena os dados no login
   login(user: User): void {
-    sessionStorage.setItem('usuario',user.usuario);
+    sessionStorage.setItem('usuario', user.usuario);
     sessionStorage.setItem('tipoUsuario', user.tipoUsuario);
     sessionStorage.setItem('nome', user.nome);
+    sessionStorage.setItem('permissions', JSON.stringify(user.autorizacoes));
   }
 
   // Faz logout
@@ -34,11 +35,23 @@ export class AuthService {
   }
 
   // Retorna o nome de usuário
-  getUsuario(): string | null {
+  getNomeUsuario(): string | null {
     return sessionStorage.getItem('usuario');
   }
 
   getNome() : string | null{
     return sessionStorage.getItem('nome');
+  }
+
+  getUsuario(): User | null{
+    const usuario: User = {
+      nome: sessionStorage.getItem('nome')!,
+      usuario: sessionStorage.getItem('usuario')!,
+      tipoUsuario: sessionStorage.getItem('tipoUsuario')!,
+      senha: '',
+      email: ''
+    };
+
+    return usuario;
   }
 }

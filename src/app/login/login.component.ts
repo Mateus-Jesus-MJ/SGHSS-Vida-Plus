@@ -54,6 +54,7 @@ export class LoginComponent {
     }
   }
 
+
   submit() {
     const login: Login = {
       usuario: this.loginForm.value.usuario.trim(),
@@ -61,23 +62,30 @@ export class LoginComponent {
       tipoUsuario: this.loginForm.value.tipoUsuario.trim()
     };
 
-    console.log(login);
-
     this.loginService.login(login).subscribe({
-      next: (user: User | null) => {
-        if (!user) {
+      next: (isValid: boolean) => {
+        if (!isValid) {
           this.toastService.error("Usuário, senha ou tipo de usuário incorreto");
         } else {
-          this.authService.login(user);
+          const user = this.authService.getUsuario();
+          if (!user) {
+            this.toastService.error("Erro ao recuperar usuário logado");
+            return;
+          }
+
+          console.log("Usuário logado:", user);
+
           switch (user.tipoUsuario) {
             case 'ps':
               this.toastService.success("Login feito com sucesso!");
               this.navigate('atendimento');
               break;
             case 'pc':
+              this.toastService.success("Login feito com sucesso!");
               this.navigate('paciente');
               break;
             case 'pa':
+              this.toastService.success("Login feito com sucesso!");
               this.navigate('admin');
               break;
             default:

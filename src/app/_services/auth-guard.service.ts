@@ -25,9 +25,6 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
     const tipoPermitido = route.data['tipoPermitido'];
     const tipoUsuario = this.authService.getTipoUsuario();
 
-    console.log('tipoUsuario no sessionStorage:', tipoUsuario);
-    console.log('tipoPermitido pela rota:', tipoPermitido);
-
     if (!this.authService.isAuthenticated()) {
       this.toastr.error('Usuário não autenticado!');
       this.router.navigate(['/']);
@@ -41,6 +38,12 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
       this.router.navigate(['/']);
       return false;
     }
+
+
+    const funcionalidade = route.data['funcionalidade'];
+
+
+
 
     return true;
   }

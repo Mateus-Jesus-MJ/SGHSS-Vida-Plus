@@ -19,16 +19,27 @@ export const routes: Routes = [
     component: TelaAdminComponent,
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService],
-    data: { tipoPermitido: 'pa' },
+    data: {
+      tipoPermitido: 'pa'
+    },
     children: [
       {
         path: 'hospitais',
         component: HospitaisComponent,
-        data: { tipoPermitido: 'pa' },
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'hospitais',
+          acesso: 'visualizar'
+        },
         children: [
-          { path: 'incluir',
-            component: IncluirHospitalComponent ,
-            data: { tipoPermitido: 'pa' }
+          {
+            path: 'incluir',
+            component: IncluirHospitalComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'hospitais',
+              acesso: 'incluir'
+            }
           }
         ]
       }
