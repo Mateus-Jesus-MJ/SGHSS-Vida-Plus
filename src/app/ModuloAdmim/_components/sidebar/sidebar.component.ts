@@ -1,22 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../_services/auth.service';
+import { User } from '../../../_models/User';
+import { environment } from '../../../../environments/environment.development';
+import { Menu } from '../../../_models/MenuAplicacao';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent implements OnInit {
-  nomeUsuario! : string | null;
-  constructor(private authService: AuthService, private router: Router){}
+  user!: User | null;
+  nomeUsuario!: string | null;
+  MenuHospital: boolean = true;
+
+
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    this.nomeUsuario = this.authService.getNome();
+    this.verificaLogin();
+    this.verificaPermissoes();
   }
 
-  sair(){
+  verificaLogin() {
+    this.user = this.authService.getUsuario();
+
+    if (this.user == null) {
+      this.authService.logout();
+      this.router.navigateByUrl('./');
+    }
+
+    this.nomeUsuario = this.user!.nome;
+  }
+
+  verificaPermissoes() {
+    const permissoes = this.user?.autorizacoes;
+
+    const admin = this.user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === 'admin' &&
+      aut.acesso?.toLowerCase().includes('admin')
+    );
+
+
+    if (!admin) {
+      this.MenuHospital = permissoes?.some(aut => aut.funcionalidade.toLocaleLowerCase() === 'hospitais') || false;
+      console.log(permissoes);
+    }
+
+  }
+
+  sair() {
     this.authService.logout();
     this.router.navigateByUrl('./');
   }
