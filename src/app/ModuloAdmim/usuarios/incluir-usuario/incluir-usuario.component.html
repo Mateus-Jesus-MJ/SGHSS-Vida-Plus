@@ -1,1 +1,85 @@
-<p>incluir-usuario works!</p>
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/usuarios"><i class="fa fa-arrow-left"></i></a>
+    Incluir Hospital
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/usuarios ">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()"
+    aria-label="Gravar hospital">
+    <!-- [disabled]="incluirForm.invalid" -->
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Gravar
+      </span>
+    </button>
+  </div>
+</div>
+<form class="text-start m-3" [formGroup]="incluirForm">
+  <div class="row g-3">
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <select class="form-select" formControlName="tipoUsuario" id="tipoUsuario"
+          [class.is-invalid]="incluirForm.get('tipoUsuario')?.invalid && incluirForm.get('tipoUsuario')?.touched">
+          <option value="pa" selected>Profissional de Administração</option>
+          <option value="ps">Profissional de Saúde</option>
+        </select>
+        <label for="tipoUsuario" class="label-required">Tipo de Usuário</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control text-uppercase" id="usuario" formControlName="usuario" placeholder=""
+        [class.is-invalid]="incluirForm.get('usuario')?.invalid && incluirForm.get('usuario')?.touched" />
+        <label for="usuario" class="label-required">Usuário</label>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
+        [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
+        <label for="nome" class="label-required">Nome</label>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control text-uppercase" id="email" formControlName="email" placeholder=""
+        [class.is-invalid]="incluirForm.get('email')?.invalid && incluirForm.get('email')?.touched" />
+        <label for="email" class="label-required">E-mail</label>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-check form-switch">
+        <label class="form-check-label" for="mySwitch">Usuário admin</label>
+        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value='true' checked formControlName="admin">
+      </div>
+    </div>
+  </div>
+  <div formGroupName="permissoes">
+    <hr />
+    <h5>Permissões</h5>
+    <div class="d-flex justify-content-star g-3" id="permisoesadministracao">
+      <div class="d-flex flex-column m-3" *ngFor="let grupo of gruposPermissoes">
+        <label class="mb-1 text-capitalize">{{ grupo.funcionalidade }}</label>
+        <div [formGroupName]="grupo.funcionalidade">
+          <div *ngFor="let permissao of grupo.permissoes">
+            <div class="form-check form-switch">
+              <label class="form-check-label" for="{{ permissao }}" role="button">{{ permissao | titlecase }}</label>
+              <input class="form-check-input" type="checkbox" role="button"
+                     [formControlName]="permissao" [id]="permissao + grupo.funcionalidade" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
