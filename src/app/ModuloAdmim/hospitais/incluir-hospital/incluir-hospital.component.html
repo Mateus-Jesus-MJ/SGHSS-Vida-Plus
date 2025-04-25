@@ -1,15 +1,18 @@
 <div class="d-flex justify-content-between mb-3">
-  <h3>Incluir Hospital</h3>
-  <div class="d-flex justify-content-between">
-    <button class="btn btn-secondary btn-icon-split me-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/hospitais"><i class="fa fa-arrow-left"></i></a>
+    Incluir Hospital</h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/hospitais">
       <span class="icon">
         <i class="fas fa-arrow-left"></i>
       </span>
       <span class="text px-4">
         Voltar
       </span>
-    </button>
-    <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="!isEstadoSelect && incluirForm.invalid">
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()"
+      [disabled]="!isEstadoSelect && incluirForm.invalid" aria-label="Gravar hospital">
       <span class="icon">
         <i class="fa fa-check"></i>
       </span>
@@ -23,32 +26,34 @@
 <form class="text-start m-3" [formGroup]="incluirForm">
   <div class="col-lg-4">
     <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="cpf" formControlName="cpf"
-        [class.is-invalid]="incluirForm.get('cnpj')?.invalid && incluirForm.get('cnpj')?.touched" mask="000.000.000/0000-00" placeholder=""
-        maxlength="19" />
-      <label for="dataNascimento" class="label-required">CNPJ</label>
-      <div *ngIf="incluirForm.get('cnpj')?.errors?.['invalidCpf']" class="invalid-feedback">
+      <input type="text" class="form-control" id="cnpj" formControlName="cnpj"
+        [class.is-invalid]="incluirForm.get('cnpj')?.invalid && incluirForm.get('cnpj')?.touched"
+        mask="00.000.000/0000-00" placeholder="" maxlength="19" (blur)="validaCNPJ()" />
+      <label for="cnpj" class="label-required">CNPJ</label>
+      <div *ngIf="incluirForm.get('cnpj')?.errors?.['invalidCnpj']" class="invalid-feedback">
         CNPJ inválido
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row g-3">
     <div class="col-lg-6">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
-          [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
-        <label for="nome" class="label-required">Razão Social</label>
+        <input type="text" class="form-control text-uppercase" id="razaoSocial" formControlName="razaoSocial"
+          placeholder=""
+          [class.is-invalid]="incluirForm.get('razaoSocial')?.invalid && incluirForm.get('razaoSocial')?.touched" />
+        <label for="razaoSocial" class="label-required">Razão Social</label>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
-          [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
-        <label for="nome" class="label-required">Nome Fantasia</label>
+        <input type="text" class="form-control text-uppercase" id="nomeFantasia" formControlName="nomeFantasia"
+          placeholder=""
+          [class.is-invalid]="incluirForm.get('nomeFantasia')?.invalid && incluirForm.get('nomeFantasia')?.touched" />
+        <label for="nomeFantasia" class="label-required">Nome Fantasia</label>
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row g-3 mt-3">
     <div class="col-lg-4">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep"
@@ -57,7 +62,7 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row g-3">
     <div class="col-lg-6">
       <div class="form-floating mb-3">
         <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
@@ -80,6 +85,8 @@
         <label for="enderecoComplemento">Complemento</label>
       </div>
     </div>
+  </div>
+  <div class="row g-3">
     <div class="col-lg-4">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro"
@@ -109,20 +116,17 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row g-3 mt-3">
     <div class="col-lg-6">
       <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="email" placeholder="" formControlName="email"
-          [class.is-invalid]="incluirForm.get('email')?.invalid && incluirForm.get('email')?.touched">
-        <label for="email" class="label-required">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="" formControlName="email">
+        <label for="email">Email</label>
       </div>
     </div>
     <div class="col-lg-3">
       <div class="form-floating mb-3">
-        <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
-          mask="(00) 0 0000-0000"
-          [class.is-invalid]="incluirForm.get('telefone1')?.invalid && incluirForm.get('telefone1')?.touched">
-        <label for="telefone1" class="label-required">Telefone</label>
+        <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 " mask="(00) 0 0000-0000">
+        <label for="telefone1">Telefone</label>
       </div>
     </div>
     <div class="col-lg-3">
@@ -131,5 +135,16 @@
         <label for="telefone2">Telefone</label>
       </div>
     </div>
+  </div>
+  <div class="d-md-none d-flex justify-content-center">
+    <button class="btn btn-primary btn-icon-split" (click)="submit()"
+    [disabled]="!isEstadoSelect && incluirForm.invalid" aria-label="Gravar hospital">
+    <span class="icon">
+      <i class="fa fa-check"></i>
+    </span>
+    <span class="text px-4">
+      Gravar
+    </span>
+  </button>
   </div>
 </form>

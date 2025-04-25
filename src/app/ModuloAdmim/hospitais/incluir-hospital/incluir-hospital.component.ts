@@ -4,11 +4,15 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { ConsultaEstadosMunicipiosService } from '../../../_services/consulta-estados-municipios.service';
 import { Estado, Municipo } from '../../../_models/Estado';
 import { ToastrService } from 'ngx-toastr';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Hospital } from '../../../_models/Hospital';
+import { Endereco } from '../../../_models/endereco';
+import { HospitalService } from '../../../_services/hospital.service';
 
 @Component({
   selector: 'app-incluir-hospital',
-  imports: [RouterModule, FormsModule, ReactiveFormsModule, NgxMaskDirective],
+  imports: [RouterModule, FormsModule, ReactiveFormsModule, NgxMaskDirective, CommonModule],
   templateUrl: './incluir-hospital.component.html',
   styleUrl: './incluir-hospital.component.scss'
 })
@@ -20,10 +24,13 @@ export class IncluirHospitalComponent implements OnInit {
 
 
   constructor(private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private hospitalService: HospitalService,
+    private router: Router
   ) {
     this.incluirForm = new FormGroup({
-      nome: new FormControl('', Validators.required),
+      razaoSocial: new FormControl('', Validators.required),
+      nomeFantasia: new FormControl('', Validators.required),
       cnpj: new FormControl('', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]),
       enderecoCep: new FormControl('', [Validators.required]),
       enderecoLogradouro: new FormControl('', [Validators.required]),
@@ -48,6 +55,58 @@ export class IncluirHospitalComponent implements OnInit {
         this.toastr.error("Erro ao buscar Estados");
       }
     })
+  }
+
+  validaCNPJ() {
+    const control = this.incluirForm.get('cnpj');
+    if (!control) return;
+
+    let cnpj = control.value;
+
+    if (!cnpj) return;
+
+
+    const strCNPJ = cnpj.replace(/[^\d]+/g, '');
+
+    if (strCNPJ.length !== 14 || /^(\d)\1+$/.test(strCNPJ)) {
+      control.setErrors({ invalidCnpj: true });
+      return;
+    }
+
+    let tamanho = 12;
+    let numeros = strCNPJ.substring(0, tamanho);
+    let digitos = strCNPJ.substring(tamanho);
+    let soma = 0;
+    let pos = tamanho - 7;
+
+    for (let i = tamanho; i >= 1; i--) {
+      soma += Number(numeros.charAt(tamanho - i)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+    if (resultado !== Number(digitos.charAt(0))) {
+      control.setErrors({ invalidCnpj: true });
+      return;
+    };
+
+    tamanho = 13;
+    numeros = strCNPJ.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+
+    for (let k = tamanho; k >= 1; k--) {
+      soma += Number(numeros.charAt(tamanho - k)) * pos--;
+      if (pos < 2) pos = 9;
+    }
+
+    resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+
+    if (resultado === Number(digitos.charAt(1))) {
+      control.setErrors(null);
+    } else {
+      control.setErrors({ invalidCnpj: true });
+    }
   }
 
 
@@ -141,5 +200,50 @@ export class IncluirHospitalComponent implements OnInit {
     this.isEstadoSelect = true;
   }
 
-  submit(){}
+  submit() {
+    if (this.incluirForm.invalid) {
+      this.incluirForm.markAllAsTouched();
+      return;
+    }
+
+    const formData = this.incluirForm.value;
+
+    formData.nomeFantasia = formData.nomeFantasia.toUpperCase();
+    formData.razaoSocial = formData.razaoSocial.toUpperCase();
+    formData.enderecoNumero = formData.enderecoNumero.toUpperCase();
+    formData.enderecoComplemento = formData.enderecoComplemento.toUpperCase();
+    formData.enderecoBairro = formData.enderecoBairro.toUpperCase();
+    formData.enderecoMunicipio = formData.enderecoMunicipio.toUpperCase();
+    formData.enderecoUF = formData.enderecoUF.toUpperCase();
+
+
+    const endereco: Endereco = {
+      cep: formData.enderecoCep,
+      logradouro: formData.enderecoLogradouro,
+      complemento: formData.enderecoComplemento,
+      bairro: formData.enderecoBairro,
+      localidade: formData.enderecoMunicipio,
+      uf: formData.enderecoUF,
+      numero: formData.enderecoNumero
+    }
+
+    const hospital: Hospital = {
+      cnpj: formData.cnpj,
+      razaoSocial: formData.razaoSocial,
+      nomeFantasia: formData.nomeFantasia,
+      endereco: endereco,
+      email: formData.email,
+      telefone1: formData.telefone1,
+      telefone2: formData.telefone2,
+    }
+
+    console.log(hospital);
+
+    this.hospitalService.novoHospital(hospital).then((response) => {
+      this.toastr.success("Cadastro criado com sucesso!");
+      this.router.navigateByUrl('/admin/hospitais')
+    }).catch((error) => {
+      this.toastr.error("Falha ao incluir hospital!")
+    });
+  }
 }
