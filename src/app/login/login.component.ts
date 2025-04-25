@@ -22,7 +22,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  version = "v1.0";
+  version = "v1.1";
   labelUser: string = "Email";
   placeHolderUser: string = "Email";
   rotaPaciente = "paciente";
