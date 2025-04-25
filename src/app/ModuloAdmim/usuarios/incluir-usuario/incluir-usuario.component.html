@@ -38,7 +38,7 @@
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" id="usuario" formControlName="usuario" placeholder=""
+        <input type="text" class="form-control" id="usuario" formControlName="usuario" placeholder=""
         [class.is-invalid]="incluirForm.get('usuario')?.invalid && incluirForm.get('usuario')?.touched" />
         <label for="usuario" class="label-required">Usuário</label>
       </div>
@@ -52,7 +52,7 @@
     </div>
     <div class="col-lg-6">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" id="email" formControlName="email" placeholder=""
+        <input type="text" class="form-control" id="email" formControlName="email" placeholder=""
         [class.is-invalid]="incluirForm.get('email')?.invalid && incluirForm.get('email')?.touched" />
         <label for="email" class="label-required">E-mail</label>
       </div>

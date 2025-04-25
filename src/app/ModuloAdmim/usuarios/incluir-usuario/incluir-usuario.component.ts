@@ -4,7 +4,8 @@ import { UserServiceService } from '../../../_services/user-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Autorizacao } from '../../../_models/User';
+import { Autorizacao, User } from '../../../_models/User';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-incluir-usuario',
@@ -16,8 +17,6 @@ export class IncluirUsuarioComponent {
   incluirForm!: FormGroup;
   gruposPermissoes = [
     { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'alterar'] },
-    { funcionalidade: 'pacientes', permissoes: ['visualizar', 'incluir', 'alterar'] },
-    { funcionalidade: 'quartos', permissoes: ['visualizar', 'incluir', 'alterar'] }
   ];
 
   constructor() {
@@ -25,7 +24,7 @@ export class IncluirUsuarioComponent {
       nome: new FormControl('', [Validators.required]),
       usuario: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
-      senha: new FormControl('', [Validators.required]),
+      // senha: new FormControl('', [Validators.required]),
       tipoUsuario: new FormControl('', [Validators.required]),
       admin: new FormControl(false),
       permissoes: new FormGroup({})  // Inicializando o FormGroup de permissões
@@ -54,18 +53,37 @@ export class IncluirUsuarioComponent {
 
 
   submit() {
-    // if (this.incluirForm.invalid) {
-    //   this.incluirForm.markAllAsTouched();
-    //   return;
-    // }
+    if (this.incluirForm.invalid) {
+      this.incluirForm.markAllAsTouched();
+      return;
+    }
 
-    const permissoes = this.incluirForm.get('permissoes')?.value;
+    const formData = this.incluirForm.value;
 
-    // Gerar a lista automatizada de permissões
-    const permissoesInserir = this.gerarPermissoesAutomatizado(permissoes);
+    const usuario: User = {
+      nome: formData.nome.toUpperCase(),
+      usuario: formData.usuario,
+      email: formData.email,
+      senha: '#Sounovonovidaplus01',
+      tipoUsuario: formData.tipoUsuario,
+    }
+
+    let permissoesInserir: Autorizacao[] = [];
+
+    if (formData.admin) {
+      permissoesInserir.push({
+        funcionalidade: 'admin',
+        acesso: 'admin'
+      });
+    } else {
+      const permissoes = this.incluirForm.get('permissoes')?.value;
+      permissoesInserir = this.gerarPermissoesAutomatizado(permissoes);
+    }
+
+    usuario.autorizacoes = permissoesInserir;
 
     // Exemplo de log para ver o resultado
-    console.log(permissoesInserir);
+    console.log(usuario);
 
 
   }
@@ -73,31 +91,26 @@ export class IncluirUsuarioComponent {
   gerarPermissoesAutomatizado(permissoes: any): Autorizacao[] {
     let permissoesInserir: Autorizacao[] = [];
 
-    // Iterar sobre as chaves de 'permissoes' para pegar os grupos
     for (const grupo in permissoes) {
       if (permissoes.hasOwnProperty(grupo)) {
         const grupoPermissoes = permissoes[grupo];
 
-        // Verificar se o grupo é um objeto (com permissões dentro dele)
         if (typeof grupoPermissoes === 'object' && grupoPermissoes !== null) {
           const acessos: string[] = [];
 
-          // Iterar sobre as chaves de permissões dentro do grupo
           for (const permissao in grupoPermissoes) {
             if (grupoPermissoes.hasOwnProperty(permissao) && grupoPermissoes[permissao]) {
-              acessos.push(permissao); // Adiciona a permissão ao array
+              acessos.push(permissao);
             }
           }
 
-          // Se houver algum acesso, adicione ao array final
           if (acessos.length > 0) {
             permissoesInserir.push({
               funcionalidade: grupo,
-              acesso: acessos.join(',') // Junta as permissões com vírgula
+              acesso: acessos.join(',')
             });
           }
         }
-        // Se o grupo não for um objeto, apenas verifica se o valor é verdadeiro
         else if (grupoPermissoes) {
           permissoesInserir.push({ funcionalidade: grupo, acesso: 'visualizar' });
         }
