@@ -73,8 +73,6 @@ export class LoginComponent {
             return;
           }
 
-          console.log("Usuário logado:", user);
-
           switch (user.tipoUsuario) {
             case 'ps':
               this.toastService.success("Login feito com sucesso!");
