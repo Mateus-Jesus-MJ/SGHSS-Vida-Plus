@@ -6,6 +6,7 @@ import { TelaAdminComponent } from './ModuloAdmim/tela-admin/tela-admin.componen
 import { HospitaisComponent } from './ModuloAdmim/hospitais/hospitais.component';
 import { IncluirHospitalComponent } from './ModuloAdmim/hospitais/incluir-hospital/incluir-hospital.component';
 import { UsuariosComponent } from './ModuloAdmim/usuarios/usuarios.component';
+import { IncluirUsuarioComponent } from './ModuloAdmim/usuarios/incluir-usuario/incluir-usuario.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -55,7 +56,7 @@ export const routes: Routes = [
         children: [
           {
             path: 'incluir',
-            component: IncluirHospitalComponent,
+            component: IncluirUsuarioComponent,
             data: {
               tipoPermitido: 'pa',
               funcionalidade: 'admin',

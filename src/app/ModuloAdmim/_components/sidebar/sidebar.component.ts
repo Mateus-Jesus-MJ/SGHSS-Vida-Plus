@@ -16,6 +16,7 @@ export class SidebarComponent implements OnInit {
   user!: User | null;
   nomeUsuario!: string | null;
   MenuHospital: boolean = true;
+  isAdmin: boolean = false;
 
 
   constructor(private authService: AuthService, private router: Router) { }
@@ -39,13 +40,13 @@ export class SidebarComponent implements OnInit {
   verificaPermissoes() {
     const permissoes = this.user?.autorizacoes;
 
-    const admin = this.user?.autorizacoes?.some(aut =>
+    this.isAdmin = this.user?.autorizacoes?.some(aut =>
       aut.funcionalidade === 'admin' &&
       aut.acesso?.toLowerCase().includes('admin')
-    );
+    )  || false;
 
 
-    if (!admin) {
+    if (!this.isAdmin) {
       this.MenuHospital = permissoes?.some(aut => aut.funcionalidade.toLocaleLowerCase() === 'hospitais') || false;
       console.log(permissoes);
     }

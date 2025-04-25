@@ -1,3 +1,5 @@
+import { Paciente } from "./Paciente";
+
 export interface User {
   id?: string;
   nome: string;
@@ -7,6 +9,9 @@ export interface User {
   tipoUsuario: string;
   cargo?: string;
   autorizacoes?: Autorizacao[];
+  colaborador? : string;
+  paciente? : Paciente;
+
 }
 
 export interface Autorizacao {

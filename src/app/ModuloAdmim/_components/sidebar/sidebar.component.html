@@ -47,7 +47,7 @@
             </nav>
           </div>
         </div>
-        <div *ngIf="MenuHospital">
+        <div *ngIf="isAdmin">
           <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menuUsuarios"
             aria-expanded="false" aria-controls="collapseLayouts">
             <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
@@ -56,7 +56,7 @@
           </a>
           <div class="visible collapse" id="menuUsuarios" aria-labelledby="headingOne"
             data-bs-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav" *ngIf="MenuHospital">
+            <nav class="sb-sidenav-menu-nested nav" *ngIf="isAdmin">
               <a [routerLink]="'/admin/usuarios'" class="nav-link">Usuarios</a>
             </nav>
           </div>
