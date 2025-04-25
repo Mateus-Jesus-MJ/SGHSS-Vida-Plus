@@ -67,7 +67,7 @@
   <div formGroupName="permissoes">
     <hr />
     <h5>Permissões</h5>
-    <div class="d-flex justify-content-star g-3" id="permisoesadministracao">
+    <div class="d-flex justify-content-star g-3">
       <div class="d-flex flex-column m-3" *ngFor="let grupo of gruposPermissoes">
         <label class="mb-1 text-capitalize">{{ grupo.funcionalidade }}</label>
         <div [formGroupName]="grupo.funcionalidade">
