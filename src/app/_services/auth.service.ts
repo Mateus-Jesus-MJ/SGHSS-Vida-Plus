@@ -21,7 +21,7 @@ export class AuthService {
     sessionStorage.setItem('usuario', user.usuario);
     sessionStorage.setItem('tipoUsuario', user.tipoUsuario);
     sessionStorage.setItem('nome', user.nome);
-    sessionStorage.setItem('permissions', JSON.stringify(user.autorizacoes));
+    sessionStorage.setItem('autorizacoes', JSON.stringify(user.autorizacoes));
   }
 
   // Faz logout
@@ -44,12 +44,17 @@ export class AuthService {
   }
 
   getUsuario(): User | null{
+
+    const autorizacoesString = sessionStorage.getItem('autorizacoes');
+    const autorizacoes: Autorizacao[] = autorizacoesString ? JSON.parse(autorizacoesString) : [];
+
     const usuario: User = {
       nome: sessionStorage.getItem('nome')!,
       usuario: sessionStorage.getItem('usuario')!,
       tipoUsuario: sessionStorage.getItem('tipoUsuario')!,
       senha: '',
-      email: ''
+      email: '',
+      autorizacoes: autorizacoes
     };
 
     return usuario;
