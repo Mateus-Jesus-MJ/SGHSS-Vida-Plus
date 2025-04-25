@@ -34,16 +34,30 @@
           </div>
         </div> -->
         <div *ngIf="MenuHospital">
-          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#MenuClientes"
+          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menuHospitais"
             aria-expanded="false" aria-controls="collapseLayouts">
             <div class="sb-nav-link-icon"><i class="fas fa-hospital-alt"></i></div>
             Unidades
             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
           </a>
-          <div class="visible collapse" id="MenuClientes" aria-labelledby="headingOne"
+          <div class="visible collapse" id="menuHospitais" aria-labelledby="headingOne"
             data-bs-parent="#sidenavAccordion">
             <nav class="sb-sidenav-menu-nested nav" *ngIf="MenuHospital">
               <a [routerLink]="'/admin/hospitais'" class="nav-link">Hospitais</a>
+            </nav>
+          </div>
+        </div>
+        <div *ngIf="MenuHospital">
+          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menuUsuarios"
+            aria-expanded="false" aria-controls="collapseLayouts">
+            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+            Usuarios
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+          </a>
+          <div class="visible collapse" id="menuUsuarios" aria-labelledby="headingOne"
+            data-bs-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav" *ngIf="MenuHospital">
+              <a [routerLink]="'/admin/usuarios'" class="nav-link">Usuarios</a>
             </nav>
           </div>
         </div>
