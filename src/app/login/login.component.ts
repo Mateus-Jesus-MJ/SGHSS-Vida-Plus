@@ -60,6 +60,8 @@ export class LoginComponent {
       tipoUsuario: this.loginForm.value.tipoUsuario.trim()
     };
 
+    console.log(login);
+
     this.loginService.login(login).subscribe({
       next: (user: User | null) => {
         if (!user) {
