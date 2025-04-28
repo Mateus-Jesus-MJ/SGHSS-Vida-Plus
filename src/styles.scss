@@ -13358,3 +13358,25 @@ label.label-required::after {
   content: " *";
   color: red;
 }
+
+input[readonly], select[readonly] {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+
+input[readonly]:focus, select[readonly]:focus {
+  outline: none;
+}
+
+.swal2-confirm {
+  box-shadow: none !important; /* Remove sombra */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* Espaço entre o ícone e o texto */
+}
+
+.swal2-confirm::before {
+  font-size: 1.2rem; /* Ajusta o tamanho do ícone */
+}

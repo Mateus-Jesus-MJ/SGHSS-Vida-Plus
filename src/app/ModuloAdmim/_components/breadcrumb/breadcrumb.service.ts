@@ -24,19 +24,31 @@ export class BreadcrumbService {
     this.breadcrumbs = [];
     let url = '';
 
-    // Dividir a URL da rota em segmentos
     const segments = this.router.url.split('/').filter(segment => segment !== '');
 
-    segments.forEach(segment => {
+    segments.forEach((segment, index) => {
+      if (this.isDynamicParam(segment)) {
+        return;
+      }
+
       url += `/${segment}`;
 
-      // Se o segmento for uma das rotas de 'home', substituímos por 'Home'
-      const label = this.routeNames[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
+
+      const label = this.routeNames[segment] || this.formatSegment(segment);
 
       this.breadcrumbs.push({
         label,
         url
       });
     });
+  }
+
+
+  private isDynamicParam(segment: string): boolean {
+    return !!segment.match(/^[a-zA-Z0-9_-]{10,}$/);
+  }
+
+  private formatSegment(segment: string): string {
+    return segment.charAt(0).toUpperCase() + segment.slice(1);
   }
 }

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { User } from '../_models/User';
 import { BaseService } from './base.service';
-import { addDoc, collection, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, doc, Firestore, getDocs, query, where, getDoc, updateDoc } from '@angular/fire/firestore';
 import { catchError, from, map, Observable, of } from 'rxjs';
 
 @Injectable({
@@ -54,6 +54,61 @@ export class UserServiceService extends BaseService {
     });
   }
 
+  editarUser(usuario: User): Observable<any> {
+    const userCollection = collection(this.firestore, this.tabelaUsuarios);
+
+    const qUsuario = query(userCollection,
+      where('usuario', '==', usuario.usuario),
+      where('tipoUsuario', '==', usuario.tipoUsuario)
+    );
+
+    const qEmail = query(userCollection,
+      where('email', '==', usuario.email),
+      where('tipoUsuario', '==', usuario.tipoUsuario)
+    );
+
+    return new Observable(observer => {
+      Promise.all([
+        getDocs(qUsuario),
+        getDocs(qEmail)
+      ])
+      .then(([snapshotUsuario, snapshotEmail]) => {
+        // Verificar se existe outro usuário com o mesmo 'usuario'
+        const outroUsuarioMesmoNome = snapshotUsuario.docs.find(doc => doc.id !== usuario.id);
+        if (outroUsuarioMesmoNome) {
+          observer.error('Já existe outro usuário com este nome de usuário.');
+          return;
+        }
+
+        // Verificar se existe outro usuário com o mesmo 'email'
+        const outroUsuarioMesmoEmail = snapshotEmail.docs.find(doc => doc.id !== usuario.id);
+        if (outroUsuarioMesmoEmail) {
+          observer.error('Já existe outro usuário com este e-mail.');
+          return;
+        }
+
+        const userDocRef = doc(this.firestore, this.tabelaUsuarios, usuario.id!);
+
+        const { id, ...dadosParaAtualizar } = usuario;
+
+        from(updateDoc(userDocRef, structuredClone(dadosParaAtualizar)))
+          .subscribe({
+            next: () => {
+              observer.next('Usuário atualizado com sucesso.');
+              observer.complete();
+            },
+            error: (error) => {
+              observer.error('Erro ao atualizar usuário: ' + error.message);
+            }
+          });
+
+      })
+      .catch(error => {
+        observer.error('Erro ao verificar usuário ou email: ' + error.message);
+      });
+    });
+  }
+
   buscarUsuarios() {
     const usersRef = collection(this.firestore, this.tabelaUsuarios);
     const q = query(usersRef);
@@ -68,6 +123,24 @@ export class UserServiceService extends BaseService {
           };
         });
         return users;
+      })
+    );
+  }
+
+  buscarUsuarioPorId(id: string): Observable<User | null> {  // Alteração para permitir null
+    const userRef = doc(this.firestore, `${this.tabelaUsuarios}/${id}`);
+    return from(getDoc(userRef)).pipe(
+      map(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.data() as User;
+          return { id: snapshot.id, ...data };
+        } else {
+          return null;
+        }
+      }),
+      catchError(error => {
+        console.error(error);
+        return of(null);
       })
     );
   }

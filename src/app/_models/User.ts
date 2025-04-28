@@ -11,6 +11,7 @@ export interface User {
   autorizacoes?: Autorizacao[];
   colaborador? : string;
   paciente? : Paciente;
+  status: boolean;
 
 }
 

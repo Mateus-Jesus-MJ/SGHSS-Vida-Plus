@@ -12,7 +12,8 @@
         Voltar
       </span>
     </a>
-    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar usuário" [disabled]="incluirForm.invalid">
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar hospital">
+      <!-- [disabled]="editarform.invalid" -->
       <span class="icon">
         <i class="fa fa-check"></i>
       </span>
@@ -22,52 +23,50 @@
     </button>
   </div>
 </div>
-<form class="text-start m-3" [formGroup]="incluirForm">
+<form class="text-start m-3" [formGroup]="editarform">
   <div class="row g-3">
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <select class="form-select" formControlName="tipoUsuario" id="tipoUsuario" (change)="buscarGrupoPermissoes()"
-          [class.is-invalid]="incluirForm.get('tipoUsuario')?.invalid && incluirForm.get('tipoUsuario')?.touched">
-          <option value="pa" selected>Profissional de Administração</option>
-          <option value="ps">Profissional de Saúde</option>
-        </select>
-        <label for="tipoUsuario" class="label-required">Tipo de Usuário</label>
+        <input class="form-control" formControlName="tipoUsuarioLabel" id="tipoUsuarioLabel"
+          [class.is-invalid]="editarform.get('tipoUsuarioLabel')?.invalid && editarform.get('tipoUsuarioLabel')?.touched"
+          readonly />
+        <label for="tipoUsuarioLabel" class="label-required">Tipo de Usuário</label>
       </div>
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="usuario" formControlName="usuario" placeholder=""
-          [class.is-invalid]="incluirForm.get('usuario')?.invalid && incluirForm.get('usuario')?.touched" />
+          [class.is-invalid]="editarform.get('usuario')?.invalid && editarform.get('usuario')?.touched" readonly/>
         <label for="usuario" class="label-required">Usuário</label>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="form-floating mb-3">
         <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
-          [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
+          [class.is-invalid]="editarform.get('nome')?.invalid && editarform.get('nome')?.touched" />
         <label for="nome" class="label-required">Nome</label>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="email" formControlName="email" placeholder=""
-          [class.is-invalid]="incluirForm.get('email')?.invalid && incluirForm.get('email')?.touched" />
+          [class.is-invalid]="editarform.get('email')?.invalid && editarform.get('email')?.touched" />
         <label for="email" class="label-required">E-mail</label>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="form-check form-switch">
         <label class="form-check-label" for="mySwitch">Usuário admin</label>
-        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value='true' formControlName="admin" />
+        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value='true' formControlName="admin" role="button"/>
       </div>
     </div>
   </div>
-  <div formGroupName="permissoes" *ngIf="isGrupoPermissoesEmpty && !incluirForm.get('admin')?.value">
+  <div formGroupName="permissoes" *ngIf="isGrupoPermissoesEmpty && !editarform.get('admin')?.value">
     <hr />
     <h5>Permissões</h5>
     <div class="d-flex flex-wrap justify-content-start g-3">
       <div class="d-flex flex-column m-3" *ngFor="let grupo of gruposPermissoes">
-        <ng-container *ngIf="incluirForm.get('permissoes')?.get(grupo.funcionalidade)">
+        <ng-container *ngIf="editarform.get('permissoes')?.get(grupo.funcionalidade)">
           <label class="mb-1 text-capitalize">{{ grupo.funcionalidade }}</label>
           <div [formGroupName]="grupo.funcionalidade">
             <div *ngFor="let permissao of grupo.permissoes">

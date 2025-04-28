@@ -259,6 +259,7 @@ export class CadastroComponent implements OnInit {
       email: formData.email,
       senha: formData.senha,
       tipoUsuario: 'pc',
+      status: true
     };
 
     const paciente: Paciente = {

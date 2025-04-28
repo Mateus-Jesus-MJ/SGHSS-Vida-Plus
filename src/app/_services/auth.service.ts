@@ -54,7 +54,8 @@ export class AuthService {
       tipoUsuario: sessionStorage.getItem('tipoUsuario')!,
       senha: '',
       email: '',
-      autorizacoes: autorizacoes
+      autorizacoes: autorizacoes,
+      status: true
     };
 
     return usuario;

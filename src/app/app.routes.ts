@@ -7,6 +7,7 @@ import { HospitaisComponent } from './ModuloAdmim/hospitais/hospitais.component'
 import { IncluirHospitalComponent } from './ModuloAdmim/hospitais/incluir-hospital/incluir-hospital.component';
 import { UsuariosComponent } from './ModuloAdmim/usuarios/usuarios.component';
 import { IncluirUsuarioComponent } from './ModuloAdmim/usuarios/incluir-usuario/incluir-usuario.component';
+import { EditarUsuarioComponent } from './ModuloAdmim/usuarios/editar-usuario/editar-usuario.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -62,10 +63,25 @@ export const routes: Routes = [
               funcionalidade: 'admin',
               acesso: 'admin'
             }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarUsuarioComponent,
+            data:{
+              tipoPermitido: 'pa',
+              funcionalidade: 'admin',
+              acesso: 'admin'
+            }
+          },
+          {
+             path: '**', redirectTo: ''
           }
         ]
+      },
+      {
+        path: '**', redirectTo: ''
       }
-    ]
+    ],
   },
   { path: '**', redirectTo: '' }
 ];

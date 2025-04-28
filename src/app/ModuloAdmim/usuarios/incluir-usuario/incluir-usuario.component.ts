@@ -83,6 +83,7 @@ export class IncluirUsuarioComponent {
       email: formData.email,
       senha: '#Sounovonovidaplus01',
       tipoUsuario: formData.tipoUsuario,
+      status: true,
     }
 
     let permissoesInserir: Autorizacao[] = [];
