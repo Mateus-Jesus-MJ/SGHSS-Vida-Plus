@@ -76,15 +76,15 @@ export class LoginComponent {
 
           switch (user.tipoUsuario) {
             case 'ps':
-              this.toastService.success("Login feito com sucesso!");
+              this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!","",{"progressBar": true,});
               this.navigate('atendimento');
               break;
             case 'pc':
-              this.toastService.success("Login feito com sucesso!");
+              this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!","",{"progressBar": true,});
               this.navigate('paciente');
               break;
             case 'pa':
-              this.toastService.success("Login feito com sucesso!");
+              this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!","",{"progressBar": true,});
               this.navigate('admin');
               break;
             default:

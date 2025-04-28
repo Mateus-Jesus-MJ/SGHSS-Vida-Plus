@@ -73,6 +73,23 @@ export class UsuariosComponent implements OnInit {
         }
       });
   }
+  desbloquearUsuario(usuario: User) {
+    showAlert('Tem certeza?', `Deseja bloquear o usuário ${usuario.nome}?`, 'question','danger')
+      .then((result) => {
+        if (result.isConfirmed) {
+          usuario.status = true;
+          this.userService.editarUser(usuario).subscribe({
+            next: (res: any) => {
+              this.toastr.success(res);
+              this.buscarUsuarios();
+            },
+            error: (err: any) => {
+              this.toastr.error(err);
+            }
+          });
+        }
+      });
+  }
 }
 
 
