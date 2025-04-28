@@ -4,7 +4,7 @@ export const environment = {
   apiConsultaCEP: 'https://viacep.com.br/ws/',
   apiConsultaEstadosMunicipios: 'https://servicodados.ibge.gov.br/api/v1/localidades/estados/',
 
-  firebaseConfig : {
+  firebaseConfig: {
     apiKey: "AIzaSyAyzWdAsNAD5EL7Bv0I1Ld_mhlJH0EIKT0",
     authDomain: "sghss-vidaplus.firebaseapp.com",
     projectId: "sghss-vidaplus",
@@ -12,6 +12,14 @@ export const environment = {
     messagingSenderId: "901401357138",
     appId: "1:901401357138:web:0c46f5072e4981c4f9688b"
   },
+
+  gruposPermissoesAdmin: [
+    { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'alterar'] },
+    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','alterar','remover']},
+  ],
+  grupoPermissoesAtendimento: [
+    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','alterar','remover']}
+  ],
 
   estados: [
     { sigla: 'AC', nome: 'Acre' },

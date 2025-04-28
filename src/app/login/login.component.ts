@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../_services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
 
 
 @Component({
@@ -16,8 +17,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
   standalone: true,
   imports: [CommonModule,
     FormsModule,
-    ReactiveFormsModule
-  ],
+    ReactiveFormsModule,NgxUiLoaderModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -33,7 +33,7 @@ export class LoginComponent {
   loginForm!: FormGroup;
 
 
-  constructor(private loginService: LoginService, private router: Router, private toastService: ToastrService, private authService: AuthService) {
+  constructor(private loginService: LoginService, private router: Router, private toastService: ToastrService, private authService: AuthService, private ngxUiLoaderService: NgxUiLoaderService) {
     this.loginForm = new FormGroup({
       tipoUsuario: new FormControl('', [Validators.required]),
       usuario: new FormControl('', [Validators.required]),
@@ -56,6 +56,7 @@ export class LoginComponent {
 
 
   submit() {
+    this.ngxUiLoaderService.start();
     const login: Login = {
       usuario: this.loginForm.value.usuario.trim(),
       senha: this.loginForm.value.senha,
@@ -94,6 +95,7 @@ export class LoginComponent {
       },
       error: () => this.toastService.error("Erro inesperado! Tente novamente mais tarde")
     });
+    this.ngxUiLoaderService.stop();
   }
 
 

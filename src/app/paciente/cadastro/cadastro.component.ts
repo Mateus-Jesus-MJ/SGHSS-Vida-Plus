@@ -281,13 +281,14 @@ export class CadastroComponent implements OnInit {
 
     this.pacienteService.novoPaciente(paciente)
       .then((response) => {
-        this.userService.novouser(usuario).then((response) => {
-          this.toastr.success("Cadastro criado com sucesso!")
-          this.navigate('');
+        this.userService.novouser(usuario).subscribe({
+          next : (res : any) => {
+            this.toastr.success(res);
+          },
+          error: (err: any) => {
+            this.toastr.error(err);
+          }
         })
-          .catch((error) => {
-            this.toastr.error("Falha ao criar cadastro!")
-          });
       })
       .catch((error) => {
         this.toastr.error("Falha ao criar cadastro!")
