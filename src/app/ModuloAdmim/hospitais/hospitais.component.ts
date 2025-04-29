@@ -68,8 +68,9 @@ export class HospitaisComponent implements OnInit {
     this.router.navigate(['/admin/hospitais/visualizar', id])
   }
   editar(id: string) {
-    this.router.navigate(['/admin/hospitais/visualizar', id])
+    this.router.navigate(['/admin/hospitais/editar', id])
   }
+  
   excluir(hospital: Hospital) {
     showAlert('Tem certeza?', `Deseja excluir o hspital:<br />
       <b>Razão Social: </b>${hospital.razaoSocial} <br />

@@ -1,0 +1,124 @@
+<div class="d-flex justify-content-between mb-3">
+    <h3>
+      <a class="d-md-none btn btn-secondary" routerLink="/admin/hospitais"><i class="fa fa-arrow-left"></i></a>
+      Hospital {{form.get("razaoSocial")?.value}}
+    </h3>
+    <div class="d-flex justify-content-between d-none d-none d-md-flex">
+      <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/hospitais">
+        <span class="icon">
+          <i class="fas fa-arrow-left"></i>
+        </span>
+        <span class="text px-4">
+          Voltar
+        </span>
+      </a>
+    </div>
+  </div>
+  <hr />
+  <form class="text-start m-3" [formGroup]="form">
+    <div class="row">
+      <div class="col-12 col-md-10 order-2 order-md-1 mt-4">
+        <div class="col-lg-4">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="cnpj" formControlName="cnpj"
+              mask="00.000.000/0000-00" placeholder="" maxlength="19" readonly/>
+            <label for="cnpj" class="label-required">CNPJ</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control text-uppercase" id="razaoSocial" formControlName="razaoSocial" placeholder="" readonly/>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control text-uppercase" id="nomeFantasia" formControlName="nomeFantasia"
+                placeholder="" readonly/>
+              <label for="nomeFantasia" class="label-required">Nome Fantasia</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Imagem do perfil do hospital -->
+      <div class="col-12 col-md-2 order-1 order-md-2 text-center">
+        <div class="card bg-secondary position-relative mx-auto"
+          style="width: 200px; aspect-ratio: 1/1; overflow: hidden;">
+          <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
+            <img *ngIf="imagemHospital" [src]="imagemHospital" alt="Imagem do hospital" class="img-fluid w-100 h-100" style="object-fit: cover;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep" readonly>
+          <label for="enderecoCep">CEP</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
+            formControlName="enderecoLogradouro" readonly/>
+          <label for="enderecoLogradouro" class="label-required">Logradouro</label>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoNumero" placeholder="" formControlName="enderecoNumero" readonly/>
+          <label for="enderecoNumero" class="label-required">Número</label>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoComplemento" placeholder=""
+            formControlName="enderecoComplemento" readonly />
+          <label for="enderecoComplemento">Complemento</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro" readonly/>
+          <label for="enderecoBairro" class="label-required">Bairro</label>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input class="form-select" formControlName="enderecoUF" readonly />
+          <label for="enderecoBairro" class="label-required">Estado</label>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" formControlName="enderecoMunicipio" placeholder="" list="listMunicipios" readonly/>
+          <label for="enderecoMunicipio" class="label-required">Municipio</label>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-6">
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="email" placeholder="" formControlName="email" readonly/>
+          <label for="email">Email</label>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="form-floating mb-3">
+          <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
+            mask="(00) 0000-0000||(00) 0 0000-0000" readonly/> 
+          <label for="telefone1">Telefone</label>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="form-floating mb-5">
+          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2" readonly/>
+          <label for="telefone2">Telefone</label>
+        </div>
+      </div>
+    </div>
+  </form>

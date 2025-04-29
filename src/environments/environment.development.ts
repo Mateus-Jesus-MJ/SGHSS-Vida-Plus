@@ -14,11 +14,11 @@ export const environment = {
   },
 
   gruposPermissoesAdmin: [
-    { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'alterar'] },
-    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','alterar','remover']},
+    { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'editar'] },
+    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']},
   ],
   grupoPermissoesAtendimento: [
-    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','alterar','remover']}
+    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']}
   ],
 
   estados: [

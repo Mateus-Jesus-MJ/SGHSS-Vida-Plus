@@ -9,6 +9,8 @@ import { UsuariosComponent } from './ModuloAdmim/usuarios/usuarios.component';
 import { IncluirUsuarioComponent } from './ModuloAdmim/usuarios/incluir-usuario/incluir-usuario.component';
 import { EditarUsuarioComponent } from './ModuloAdmim/usuarios/editar-usuario/editar-usuario.component';
 import { MeuperfilComponent } from './ModuloAdmim/meuperfil/meuperfil.component';
+import { EditarHospitalComponent } from './ModuloAdmim/hospitais/editar-hospital/editar-hospital.component';
+import { VisualizarHospitalComponent } from './ModuloAdmim/hospitais/visualizar-hospital/visualizar-hospital.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -37,12 +39,30 @@ export const routes: Routes = [
         },
         children: [
           {
+            path: 'visualizar/:id',
+            component: VisualizarHospitalComponent,
+            data:{
+              tipoPermitido: 'pa',
+              funcionalidade: 'hospitais',
+              acesso: 'editar'
+            }
+          },
+          {
             path: 'incluir',
             component: IncluirHospitalComponent,
             data: {
               tipoPermitido: 'pa',
               funcionalidade: 'hospitais',
               acesso: 'incluir'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarHospitalComponent,
+            data:{
+              tipoPermitido: 'pa',
+              funcionalidade: 'hospitais',
+              acesso: 'editar'
             }
           }
         ]
