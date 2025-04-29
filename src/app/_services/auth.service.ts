@@ -50,6 +50,7 @@ export class AuthService {
     const autorizacoes: Autorizacao[] = autorizacoesString ? JSON.parse(autorizacoesString) : [];
 
     const usuario: User = {
+      id: sessionStorage.getItem('id')!,
       nome: sessionStorage.getItem('nome')!,
       usuario: sessionStorage.getItem('usuario')!,
       tipoUsuario: sessionStorage.getItem('tipoUsuario')!,

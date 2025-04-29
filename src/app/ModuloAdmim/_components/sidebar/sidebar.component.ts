@@ -57,4 +57,8 @@ export class SidebarComponent implements OnInit {
     this.authService.logout();
     this.router.navigateByUrl('./');
   }
+
+  meuPerfil(id: string) {
+    this.router.navigate(['/admin/meuperfil', id]);
+  }
 }
