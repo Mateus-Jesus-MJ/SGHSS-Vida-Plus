@@ -13,7 +13,7 @@ export function showAlert(title: string, text: string, icon: SweetAlertIcon = 'i
 
   return Swal.fire({
     title,
-    text,
+    html: text,
     icon,
     iconColor: iconColor,
     showCancelButton: true,
