@@ -44,12 +44,12 @@ export class UserServiceService extends BaseService {
             observer.complete();
           })
           .catch(error => {
-            observer.error('Erro ao criar usuário: ' + error.message);
+            observer.error(`Erro ao criar usuário. motivo: ${error.message}`);
           });
 
       })
       .catch(error => {
-        observer.error('Erro ao verificar usuário ou email: ' + error.message);
+        observer.error(`Erro ao verificar usuário ou email. motivo: ${error.message}`);
       });
     });
   }
@@ -98,13 +98,13 @@ export class UserServiceService extends BaseService {
               observer.complete();
             },
             error: (error) => {
-              observer.error('Erro ao atualizar usuário: ' + error.message);
+              observer.error(`Erro ao atualizar usuário. motivo: ${error.message}`);
             }
           });
 
       })
       .catch(error => {
-        observer.error('Erro ao verificar usuário ou email: ' + error.message);
+        observer.error(`Erro ao verificar usuário ou email. motivo: ${error.message}`);
       });
     });
   }
@@ -127,7 +127,7 @@ export class UserServiceService extends BaseService {
     );
   }
 
-  buscarUsuarioPorId(id: string): Observable<User | null> {  // Alteração para permitir null
+  buscarUsuarioPorId(id: string): Observable<User | null> {
     const userRef = doc(this.firestore, `${this.tabelaUsuarios}/${id}`);
     return from(getDoc(userRef)).pipe(
       map(snapshot => {

@@ -258,15 +258,16 @@ export class IncluirHospitalComponent implements OnInit {
       telefone2: formData.telefone2,
     }
 
-    console.log(hospital);
-
-    this.hospitalService.novoHospital(hospital).then((response) => {
-      this.toastr.success("Cadastro criado com sucesso!");
-      this.router.navigateByUrl('/admin/hospitais')
-    }).catch((error) => {
-      this.toastr.error("Falha ao incluir hospital!")
+    this.hospitalService.novoHospital(hospital).subscribe({
+      next: (res: any) => {
+        this.incluirForm.reset();
+        this.toastr.success(res);
+        this.ngxUiLoaderService.stop();
+      },
+      error: (err: any) => {
+        this.toastr.error(err);
+        this.ngxUiLoaderService.stop();
+      }
     });
-
-    this.ngxUiLoaderService.stop();
   }
 }
