@@ -58,19 +58,19 @@ export class HospitaisComponent implements OnInit {
         this.ngxUiLoaderService.stop();
       },
       error: () => {
-        this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde");
+        this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde","",{"progressBar": true})
         this.ngxUiLoaderService.stop();
       }
     });
   }
 
-  visualisar(id: string) {
+  visualizar(id: string) {
     this.router.navigate(['/admin/hospitais/visualizar', id])
   }
   editar(id: string) {
     this.router.navigate(['/admin/hospitais/editar', id])
   }
-  
+
   excluir(hospital: Hospital) {
     showAlert('Tem certeza?', `Deseja excluir o hspital:<br />
       <b>Razão Social: </b>${hospital.razaoSocial} <br />
@@ -90,6 +90,8 @@ export class HospitaisComponent implements OnInit {
           //     this.ngxUiLoaderService.stop();
           //   }
           // });
+          this.toastr.warning("Ainda não é possível exluir um hospital, a funcionalidade estará disponível em breve!","",{"progressBar": true})
+          this.ngxUiLoaderService.stop();
         }
       });
   }
