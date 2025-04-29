@@ -13380,3 +13380,7 @@ input[readonly]:focus, select[readonly]:focus {
 .swal2-confirm::before {
   font-size: 1.2rem; /* Ajusta o tamanho do ícone */
 }
+
+input[list] {
+  cursor: pointer;
+}

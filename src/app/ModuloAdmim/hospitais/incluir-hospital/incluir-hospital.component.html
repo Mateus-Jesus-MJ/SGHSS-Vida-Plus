@@ -107,15 +107,19 @@
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <select *ngIf="isEstadoSelect" class="form-select" formControlName="enderecoMunicipio"
+        <!-- <select *ngIf="isEstadoSelect" class="form-select" formControlName="enderecoMunicipio"
           [disabled]="!isEstadoSelect"
           [class.is-invalid]="incluirForm.get('enderecoMunicipio')?.invalid && incluirForm.get('enderecoMunicipio')?.touched">
           <option value="" disabled selected></option>
           <option *ngFor="let municipio of municipios" [value]="municipio.nome">{{ municipio.nome }}</option>
-        </select>
-        <input *ngIf="!isEstadoSelect" type="text" class="form-control" formControlName="enderecoMunicipio"
-          placeholder="Digite o município"
-          [class.is-invalid]="incluirForm.get('enderecoMunicipio')?.invalid && incluirForm.get('enderecoMunicipio')?.touched" />
+        </select> -->
+        <input
+        type="text" class="form-control" formControlName="enderecoMunicipio"
+        placeholder="" list="listMunicipios"
+        [class.is-invalid]="incluirForm.get('enderecoMunicipio')?.invalid && incluirForm.get('enderecoMunicipio')?.touched" />
+          <datalist id="listMunicipios">
+            <option *ngFor="let municipio of municipios" [value]="municipio.nome">
+          </datalist>
         <label for="enderecoMunicipio" class="label-required">Municipio</label>
       </div>
     </div>
