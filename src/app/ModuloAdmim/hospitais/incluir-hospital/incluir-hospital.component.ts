@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
 import { ConsultaEstadosMunicipiosService } from '../../../_services/consulta-estados-municipios.service';
@@ -10,10 +10,12 @@ import { Hospital } from '../../../_models/Hospital';
 import { Endereco } from '../../../_models/endereco';
 import { HospitalService } from '../../../_services/hospital.service';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+
 
 @Component({
   selector: 'app-incluir-hospital',
-  imports: [RouterModule, FormsModule, ReactiveFormsModule, NgxMaskDirective, CommonModule],
+  imports: [RouterModule, FormsModule, ReactiveFormsModule, NgxMaskDirective, CommonModule, ImageCropperComponent],
   templateUrl: './incluir-hospital.component.html',
   styleUrl: './incluir-hospital.component.scss'
 })
@@ -22,6 +24,10 @@ export class IncluirHospitalComponent implements OnInit {
   estados!: Estado[];
   municipios!: Municipo[];
   isEstadoSelect: boolean = false;
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  originalImage: any = '';
+  imagemCortada: any = '';
 
 
   constructor(private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
@@ -60,6 +66,42 @@ export class IncluirHospitalComponent implements OnInit {
     })
     this.ngxUiLoaderService.stop();
   }
+
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+    const reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (e: any) => {
+      this.originalImage = e.target.result;
+      this.croppedImage = '';
+    };
+  }
+
+  onImageCropped(event: ImageCroppedEvent): void {
+    console.log("Evento de corte:", event);
+    if (event.blob) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.croppedImage = reader.result as string;
+        console.log("Imagem cortada em base64:", this.croppedImage);
+      };
+      reader.readAsDataURL(event.blob);
+    }
+  }
+
+  applyCrop(): void {
+    this.ngxUiLoaderService.start();
+    if (this.croppedImage) {
+      this.imagemCortada = this.croppedImage
+    }
+    this.ngxUiLoaderService.stop();
+  }
+
+  resetImage(): void {
+    this.croppedImage = '';  // Limpa a imagem cortada
+    this.imageChangedEvent = '';  // Limpa o evento de imagem
+  }
+
 
   validaCNPJ() {
     const control = this.incluirForm.get('cnpj');
@@ -237,7 +279,6 @@ export class IncluirHospitalComponent implements OnInit {
     formData.enderecoMunicipio = formData.enderecoMunicipio.toUpperCase();
     formData.enderecoUF = formData.enderecoUF.toUpperCase();
 
-
     const endereco: Endereco = {
       cep: formData.enderecoCep,
       logradouro: formData.enderecoLogradouro,
@@ -256,6 +297,7 @@ export class IncluirHospitalComponent implements OnInit {
       email: formData.email,
       telefone1: formData.telefone1,
       telefone2: formData.telefone2,
+      imagem: this.imagemCortada
     }
 
     this.hospitalService.novoHospital(hospital).subscribe({

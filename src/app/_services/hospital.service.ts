@@ -22,6 +22,7 @@ export class HospitalService {
           const data = doc.data();
           return data;
         });
+        console.log(hospitais);
         return hospitais;
       })
     );

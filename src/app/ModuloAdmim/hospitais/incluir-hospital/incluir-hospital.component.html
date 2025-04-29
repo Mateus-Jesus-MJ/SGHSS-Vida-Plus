@@ -57,13 +57,29 @@
         </div>
       </div>
     </div>
+    <!--Imagem do perfil do hospital -->
     <div class="col-12 col-md-2 order-1 order-md-2 text-center">
-      <div class="card bg-secondary position-relative mx-auto" style="width: 200px; aspect-ratio: 4/4;">
-        <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
-          <i class="fa fa-user fa-2x text-light"></i>
-          <button class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm">
-            Adicionar
+      <div class="card bg-secondary position-relative mx-auto"
+        style="width: 200px; aspect-ratio: 1/1; overflow: hidden;">
+        <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
+
+          <!-- Imagem já cortada -->
+          <img *ngIf="imagemCortada" [src]="croppedImage" alt="Imagem do hospital" class="img-fluid w-100 h-100"
+            style="object-fit: cover;">
+          <button *ngIf="imagemCortada" class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm position-absolute"
+            style="bottom: 10px; left: 50%; transform: translateX(-50%);" data-bs-toggle="modal"
+            data-bs-target="#modalCrop">
+            Alterar
           </button>
+
+          <!-- Ícone e botão (se não tiver imagem) -->
+          <ng-container *ngIf="!imagemCortada">
+            <i class="fa fa-user fa-2x text-light"></i>
+            <button class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm" data-bs-toggle="modal"
+              data-bs-target="#modalCrop">
+              Adicionar
+            </button>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -163,3 +179,27 @@
     </button>
   </div>
 </form>
+<div class="modal fade" id="modalCrop" tabindex="-1" aria-labelledby="modalCropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCropLabel">Selecionar Foto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Input de imagem -->
+        <input type="file" accept="image/*" (change)="fileChangeEvent($event)" class="form-control mb-3" />
+
+        <!-- Cropper -->
+        <image-cropper [imageChangedEvent]="imageChangedEvent" [resizeToWidth]="256" [cropperMinWidth]="100"
+          [cropperMinHeight]="100" (imageCropped)="onImageCropped($event)" [style.height]="'60vh'">
+        </image-cropper>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" data-bs-dismiss="modal" (click)="applyCrop()">Aplicar</button>
+      </div>
+    </div>
+  </div>
+</div>
