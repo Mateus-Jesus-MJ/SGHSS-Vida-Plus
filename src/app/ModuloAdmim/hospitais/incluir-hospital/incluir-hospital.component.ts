@@ -47,8 +47,8 @@ export class IncluirHospitalComponent implements OnInit {
       enderecoBairro: new FormControl('', [Validators.required]),
       enderecoUF: new FormControl('', [Validators.required]),
       enderecoMunicipio: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      telefone1: new FormControl('', [Validators.required]),
+      email: new FormControl(''),
+      telefone1: new FormControl(''),
       telefone2: new FormControl(''),
     });
   }
@@ -78,12 +78,10 @@ export class IncluirHospitalComponent implements OnInit {
   }
 
   onImageCropped(event: ImageCroppedEvent): void {
-    console.log("Evento de corte:", event);
     if (event.blob) {
       const reader = new FileReader();
       reader.onloadend = () => {
         this.croppedImage = reader.result as string;
-        console.log("Imagem cortada em base64:", this.croppedImage);
       };
       reader.readAsDataURL(event.blob);
     }
@@ -304,6 +302,7 @@ export class IncluirHospitalComponent implements OnInit {
       next: (res: any) => {
         this.incluirForm.reset();
         this.toastr.success(res);
+        this.imagemCortada = "";
         this.ngxUiLoaderService.stop();
       },
       error: (err: any) => {

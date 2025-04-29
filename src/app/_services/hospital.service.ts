@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, CollectionReference, doc, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
+import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { Hospital } from '../_models/Hospital';
 import { catchError, from, map, Observable, of } from 'rxjs';
 
@@ -108,5 +108,17 @@ export class HospitalService {
         observer.error(`Erro ao editar hospital. Motivo: ${error}`);
       });
     });
+  }
+  
+  excluirHospital(id: string): Observable<any> {
+    const hospitalDocRef = doc(this.firestore, `${this.tabelaHospitais}/${id}`);
+    
+    return from(deleteDoc(hospitalDocRef)).pipe(
+      map(() => 'Hospital excluído com sucesso!'),
+      catchError(error => {
+        console.error(error);
+        return of(`Erro ao excluir hospital. Motivo: ${error.message}`);
+      })
+    );
   }
 }

@@ -48,8 +48,8 @@ export class EditarHospitalComponent {
       enderecoBairro: new FormControl('', [Validators.required]),
       enderecoUF: new FormControl('', [Validators.required]),
       enderecoMunicipio: new FormControl('', [Validators.required]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      telefone1: new FormControl('', [Validators.required]),
+      email: new FormControl(''),
+      telefone1: new FormControl(''),
       telefone2: new FormControl(''),
       imagem: new FormControl('')
     });

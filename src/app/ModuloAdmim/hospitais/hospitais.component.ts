@@ -83,20 +83,16 @@ export class HospitaisComponent implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.ngxUiLoaderService.start();
-          // usuario.status = false;
-          // this.userService.editarUser(usuario).subscribe({
-          //   next: (res: any) => {
-          //     this.toastr.success(res);
-          //     this.buscarUsuarios();
-          //     this.ngxUiLoaderService.stop();
-          //   },
-          //   error: (err: any) => {
-          //     this.toastr.error(err);
-          //     this.ngxUiLoaderService.stop();
-          //   }
-          // });
-          this.toastr.warning("Ainda não é possível exluir um hospital, a funcionalidade estará disponível em breve!","",{"progressBar": true})
-          this.ngxUiLoaderService.stop();
+          this.hospitalService.excluirHospital(hospital.id!).subscribe({
+            next: (res: any) => {
+              this.listaHospitais();
+              this.toastr.success(res);
+            },
+            error: (err: any) => {
+              this.toastr.error(err);
+              this.ngxUiLoaderService.stop();
+            }
+          });
         }
       });
   }
