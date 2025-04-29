@@ -1,1 +1,206 @@
-<p>editar-hospital works!</p>
+<div class="d-flex justify-content-between mb-3">
+    <h3>
+      <a class="d-md-none btn btn-secondary" (click)="navigate('admin/hospitais')"><i class="fa fa-arrow-left"></i></a>
+      Incluir Hospital
+    </h3>
+    <div class="d-flex justify-content-between d-none d-none d-md-flex">
+      <a class="btn btn-secondary btn-icon-split me-3" (click)="navigate('admin/hospitais')">
+        <span class="icon">
+          <i class="fas fa-arrow-left"></i>
+        </span>
+        <span class="text px-4">
+          Voltar
+        </span>
+      </a>
+      <button class="btn btn-primary btn-icon-split" (click)="submit()"
+        [disabled]="!isEstadoSelect && form.invalid" aria-label="Gravar hospital">
+        <span class="icon">
+          <i class="fa fa-check"></i>
+        </span>
+        <span class="text px-4">
+          Gravar
+        </span>
+      </button>
+    </div>
+  </div>
+  <hr />
+  <form class="text-start m-3" [formGroup]="form">
+    <div class="row">
+      <div class="col-12 col-md-10 order-2 order-md-1 mt-4">
+        <div class="col-lg-4">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="cnpj" formControlName="cnpj"
+              [class.is-invalid]="form.get('cnpj')?.invalid && form.get('cnpj')?.touched"
+              mask="00.000.000/0000-00" placeholder="" maxlength="19" (blur)="validaCNPJ()" />
+            <label for="cnpj" class="label-required">CNPJ</label>
+            <div *ngIf="form.get('cnpj')?.errors?.['invalidCnpj']" class="invalid-feedback">
+              CNPJ inválido
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control text-uppercase" id="razaoSocial" formControlName="razaoSocial"
+                placeholder=""
+                [class.is-invalid]="form.get('razaoSocial')?.invalid && form.get('razaoSocial')?.touched" />
+              <label for="razaoSocial" class="label-required">Razão Social</label>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control text-uppercase" id="nomeFantasia" formControlName="nomeFantasia"
+                placeholder=""
+                [class.is-invalid]="form.get('nomeFantasia')?.invalid && form.get('nomeFantasia')?.touched" />
+              <label for="nomeFantasia" class="label-required">Nome Fantasia</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Imagem do perfil do hospital -->
+      <div class="col-12 col-md-2 order-1 order-md-2 text-center">
+        <div class="card bg-secondary position-relative mx-auto"
+          style="width: 200px; aspect-ratio: 1/1; overflow: hidden;">
+          <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
+  
+            <!-- Imagem já cortada -->
+            <img *ngIf="imagemCortada" [src]="croppedImage" alt="Imagem do hospital" class="img-fluid w-100 h-100"
+              style="object-fit: cover;">
+            <button *ngIf="imagemCortada" class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm position-absolute"
+              style="bottom: 10px; left: 50%; transform: translateX(-50%);" data-bs-toggle="modal"
+              data-bs-target="#modalCrop">
+              Alterar
+            </button>
+  
+            <!-- Ícone e botão (se não tiver imagem) -->
+            <ng-container *ngIf="!imagemCortada">
+              <i class="fa fa-user fa-2x text-light"></i>
+              <button class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm" data-bs-toggle="modal"
+                data-bs-target="#modalCrop">
+                Adicionar
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep"
+            (blur)="buscarCEP()">
+          <label for="enderecoCep">CEP</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
+            formControlName="enderecoLogradouro"
+            [class.is-invalid]="form.get('enderecoLogradouro')?.invalid && form.get('enderecoLogradouro')?.touched">
+          <label for="enderecoLogradouro" class="label-required">Logradouro</label>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoNumero" placeholder="" formControlName="enderecoNumero"
+            [class.is-invalid]="form.get('enderecoNumero')?.invalid && form.get('enderecoNumero')?.touched">
+          <label for="enderecoNumero" class="label-required">Número</label>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoComplemento" placeholder=""
+            formControlName="enderecoComplemento">
+          <label for="enderecoComplemento">Complemento</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro"
+            [class.is-invalid]="form.get('enderecoBairro')?.invalid && form.get('enderecoBairro')?.touched">
+          <label for="enderecoBairro" class="label-required">Bairro</label>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <select class="form-select" formControlName="enderecoUF" (input)="buscarMunicipios($event)"
+            [class.is-invalid]="form.get('enderecoUF')?.invalid && form.get('enderecoUF')?.touched">
+            <option value="" disabled selected></option>
+            <option *ngFor="let estado of estados" [value]="estado.sigla">{{estado.nome}}</option>
+          </select>
+          <label for="enderecoBairro" class="label-required">Estado</label>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" formControlName="enderecoMunicipio" placeholder="" list="listMunicipios"
+            [class.is-invalid]="form.get('enderecoMunicipio')?.invalid && form.get('enderecoMunicipio')?.touched" />
+          <datalist id="listMunicipios">
+            <option *ngFor="let municipio of municipios" [value]="municipio.nome">
+          </datalist>
+          <label for="enderecoMunicipio" class="label-required">Municipio</label>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-lg-6">
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control" id="email" placeholder="" formControlName="email">
+          <label for="email">Email</label>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="form-floating mb-3">
+          <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
+            mask="(00) 0000-0000||(00) 0 0000-0000" />
+          <label for="telefone1">Telefone</label>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="form-floating mb-5">
+          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2">
+          <label for="telefone2">Telefone</label>
+        </div>
+      </div>
+    </div>
+    <div class="d-md-none d-flex justify-content-center">
+      <button class="btn btn-primary btn-icon-split" (click)="submit()"
+        [disabled]="!isEstadoSelect && form.invalid" aria-label="Gravar hospital">
+        <span class="icon">
+          <i class="fa fa-check"></i>
+        </span>
+        <span class="text px-4">
+          Gravar
+        </span>
+      </button>
+    </div>
+  </form>
+  <div class="modal fade" id="modalCrop" tabindex="-1" aria-labelledby="modalCropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalCropLabel">Selecionar Foto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+  
+          <!-- Input de imagem -->
+          <input type="file" accept="image/*" (change)="fileChangeEvent($event)" class="form-control mb-3" />
+  
+          <!-- Cropper -->
+          <image-cropper [imageChangedEvent]="imageChangedEvent" [resizeToWidth]="256" [cropperMinWidth]="100"
+            [cropperMinHeight]="100" (imageCropped)="onImageCropped($event)"   [style.max-height]="'60vh'">
+          </image-cropper>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary" data-bs-dismiss="modal" (click)="applyCrop()">Aplicar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
