@@ -5,6 +5,7 @@ import { filter } from 'rxjs';
 import { HospitalService } from '../../_services/hospital.service';
 import { Hospital } from '../../_models/Hospital';
 import { ToastrService } from 'ngx-toastr';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-hospitais',
@@ -12,22 +13,27 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './hospitais.component.html',
   styleUrl: './hospitais.component.scss'
 })
-export class HospitaisComponent implements OnInit { // Implemente OnInit
+export class HospitaisComponent implements OnInit {
   rotaFilhaAtiva = false;
   hospitais!: Hospital[] | null;
 
-  constructor(private router: Router, private route: ActivatedRoute, private hospitalService: HospitalService, private toastr: ToastrService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private hospitalService: HospitalService, private toastr: ToastrService, private ngxUiLoaderService: NgxUiLoaderService) { }
 
-  ngOnInit(): void { // Use o ngOnInit para a lógica inicial
+  ngOnInit(): void {
+    this.ngxUiLoaderService.start();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
-        this.verificarRotaFilhaAtiva(); // Chame a função de verificação
+        this.verificarRotaFilhaAtiva();
       });
+    this.verificarRotaFilhaAtiva();
 
-    this.verificarRotaFilhaAtiva(); // Verifique na inicialização também
+    if(!this.rotaFilhaAtiva){
+      this.listaHospitais();
+    }
 
-    this.listaHospitais()
+    this.ngxUiLoaderService.stop();
+
   }
 
   private verificarRotaFilhaAtiva(): void {

@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { Hospital } from '../../../_models/Hospital';
 import { Endereco } from '../../../_models/endereco';
 import { HospitalService } from '../../../_services/hospital.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-incluir-hospital',
@@ -26,7 +27,8 @@ export class IncluirHospitalComponent implements OnInit {
   constructor(private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
     private toastr: ToastrService,
     private hospitalService: HospitalService,
-    private router: Router
+    private router: Router,
+    private ngxUiLoaderService: NgxUiLoaderService
   ) {
     this.incluirForm = new FormGroup({
       razaoSocial: new FormControl('', Validators.required),
@@ -46,6 +48,7 @@ export class IncluirHospitalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.ngxUiLoaderService.start();
     this.consultaEstadoMunicipios.buscaEstados().subscribe({
       next: (estados: Estado[] | null) => {
         if (estados != null)
@@ -55,6 +58,7 @@ export class IncluirHospitalComponent implements OnInit {
         this.toastr.error("Erro ao buscar Estados");
       }
     })
+    this.ngxUiLoaderService.stop();
   }
 
   validaCNPJ() {
@@ -111,6 +115,9 @@ export class IncluirHospitalComponent implements OnInit {
 
 
   buscarMunicipios(event: Event): void {
+
+    this.ngxUiLoaderService.startBackground("canto");
+
     const select = event.target as HTMLInputElement;
     const value = select.value;
 
@@ -124,12 +131,17 @@ export class IncluirHospitalComponent implements OnInit {
         },
         error: () => {
           this.isEstadoSelect = false;
+          this.incluirForm.get('enderecoMunicipio')?.setValue('');
         }
       })
       this.isEstadoSelect = true;
+      this.incluirForm.get('enderecoMunicipio')?.setValue('');
     } else {
       this.isEstadoSelect = false;
+      this.incluirForm.get('enderecoMunicipio')?.setValue('');
     }
+
+    this.ngxUiLoaderService.stopBackground("canto");
   }
 
   buscarCEP(): void {
