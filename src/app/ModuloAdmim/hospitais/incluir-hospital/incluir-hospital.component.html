@@ -25,36 +25,50 @@
 </div>
 <hr />
 <form class="text-start m-3" [formGroup]="incluirForm">
-  <div class="col-lg-4">
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="cnpj" formControlName="cnpj"
-        [class.is-invalid]="incluirForm.get('cnpj')?.invalid && incluirForm.get('cnpj')?.touched"
-        mask="00.000.000/0000-00" placeholder="" maxlength="19" (blur)="validaCNPJ()" />
-      <label for="cnpj" class="label-required">CNPJ</label>
-      <div *ngIf="incluirForm.get('cnpj')?.errors?.['invalidCnpj']" class="invalid-feedback">
-        CNPJ inválido
+  <div class="row">
+    <div class="col-12 col-md-10 order-2 order-md-1 mt-4">
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" id="cnpj" formControlName="cnpj"
+            [class.is-invalid]="incluirForm.get('cnpj')?.invalid && incluirForm.get('cnpj')?.touched"
+            mask="00.000.000/0000-00" placeholder="" maxlength="19" (blur)="validaCNPJ()" />
+          <label for="cnpj" class="label-required">CNPJ</label>
+          <div *ngIf="incluirForm.get('cnpj')?.errors?.['invalidCnpj']" class="invalid-feedback">
+            CNPJ inválido
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control text-uppercase" id="razaoSocial" formControlName="razaoSocial"
+              placeholder=""
+              [class.is-invalid]="incluirForm.get('razaoSocial')?.invalid && incluirForm.get('razaoSocial')?.touched" />
+            <label for="razaoSocial" class="label-required">Razão Social</label>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control text-uppercase" id="nomeFantasia" formControlName="nomeFantasia"
+              placeholder=""
+              [class.is-invalid]="incluirForm.get('nomeFantasia')?.invalid && incluirForm.get('nomeFantasia')?.touched" />
+            <label for="nomeFantasia" class="label-required">Nome Fantasia</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-2 order-1 order-md-2 text-center">
+      <div class="card bg-secondary position-relative mx-auto" style="width: 200px; aspect-ratio: 4/4;">
+        <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
+          <i class="fa fa-user fa-2x text-light"></i>
+          <button class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm">
+            Adicionar
+          </button>
+        </div>
       </div>
     </div>
   </div>
-  <div class="row g-3">
-    <div class="col-lg-6">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" id="razaoSocial" formControlName="razaoSocial"
-          placeholder=""
-          [class.is-invalid]="incluirForm.get('razaoSocial')?.invalid && incluirForm.get('razaoSocial')?.touched" />
-        <label for="razaoSocial" class="label-required">Razão Social</label>
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" id="nomeFantasia" formControlName="nomeFantasia"
-          placeholder=""
-          [class.is-invalid]="incluirForm.get('nomeFantasia')?.invalid && incluirForm.get('nomeFantasia')?.touched" />
-        <label for="nomeFantasia" class="label-required">Nome Fantasia</label>
-      </div>
-    </div>
-  </div>
-  <div class="row g-3 mt-3">
+  <div class="row mt-3">
     <div class="col-lg-4">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep"
@@ -63,7 +77,7 @@
       </div>
     </div>
   </div>
-  <div class="row g-3">
+  <div class="row">
     <div class="col-lg-6">
       <div class="form-floating mb-3">
         <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
@@ -87,7 +101,7 @@
       </div>
     </div>
   </div>
-  <div class="row g-3">
+  <div class="row">
     <div class="col-lg-4">
       <div class="form-floating mb-3">
         <input type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro"
@@ -107,24 +121,16 @@
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <!-- <select *ngIf="isEstadoSelect" class="form-select" formControlName="enderecoMunicipio"
-          [disabled]="!isEstadoSelect"
-          [class.is-invalid]="incluirForm.get('enderecoMunicipio')?.invalid && incluirForm.get('enderecoMunicipio')?.touched">
-          <option value="" disabled selected></option>
-          <option *ngFor="let municipio of municipios" [value]="municipio.nome">{{ municipio.nome }}</option>
-        </select> -->
-        <input
-        type="text" class="form-control" formControlName="enderecoMunicipio"
-        placeholder="" list="listMunicipios"
-        [class.is-invalid]="incluirForm.get('enderecoMunicipio')?.invalid && incluirForm.get('enderecoMunicipio')?.touched" />
-          <datalist id="listMunicipios">
-            <option *ngFor="let municipio of municipios" [value]="municipio.nome">
-          </datalist>
+        <input type="text" class="form-control" formControlName="enderecoMunicipio" placeholder="" list="listMunicipios"
+          [class.is-invalid]="incluirForm.get('enderecoMunicipio')?.invalid && incluirForm.get('enderecoMunicipio')?.touched" />
+        <datalist id="listMunicipios">
+          <option *ngFor="let municipio of municipios" [value]="municipio.nome">
+        </datalist>
         <label for="enderecoMunicipio" class="label-required">Municipio</label>
       </div>
     </div>
   </div>
-  <div class="row g-3 mt-3">
+  <div class="row mt-3">
     <div class="col-lg-6">
       <div class="form-floating mb-3">
         <input type="email" class="form-control" id="email" placeholder="" formControlName="email">
@@ -134,7 +140,7 @@
     <div class="col-lg-3">
       <div class="form-floating mb-3">
         <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
-        mask="(00) 0000-0000||(00) 0 0000-0000" />
+          mask="(00) 0000-0000||(00) 0 0000-0000" />
         <label for="telefone1">Telefone</label>
       </div>
     </div>
