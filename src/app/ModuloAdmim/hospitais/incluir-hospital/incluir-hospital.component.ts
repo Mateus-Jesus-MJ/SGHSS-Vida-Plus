@@ -69,11 +69,13 @@ export class IncluirHospitalComponent implements OnInit {
 
     if (!cnpj) return;
 
+    this.ngxUiLoaderService.startBackground();
 
     const strCNPJ = cnpj.replace(/[^\d]+/g, '');
 
     if (strCNPJ.length !== 14 || /^(\d)\1+$/.test(strCNPJ)) {
       control.setErrors({ invalidCnpj: true });
+      this.ngxUiLoaderService.stopBackground();
       return;
     }
 
@@ -91,6 +93,7 @@ export class IncluirHospitalComponent implements OnInit {
     let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
     if (resultado !== Number(digitos.charAt(0))) {
       control.setErrors({ invalidCnpj: true });
+      this.ngxUiLoaderService.stopBackground();
       return;
     };
 
@@ -111,12 +114,14 @@ export class IncluirHospitalComponent implements OnInit {
     } else {
       control.setErrors({ invalidCnpj: true });
     }
+
+    this.ngxUiLoaderService.stopBackground();
   }
 
 
   buscarMunicipios(event: Event): void {
 
-    this.ngxUiLoaderService.startBackground("canto");
+    this.ngxUiLoaderService.startBackground();
 
     const select = event.target as HTMLInputElement;
     const value = select.value;
@@ -141,10 +146,11 @@ export class IncluirHospitalComponent implements OnInit {
       this.incluirForm.get('enderecoMunicipio')?.setValue('');
     }
 
-    this.ngxUiLoaderService.stopBackground("canto");
+    this.ngxUiLoaderService.stopBackground();
   }
 
   buscarCEP(): void {
+    this.ngxUiLoaderService.startBackground();
     const cepControl = this.incluirForm.get('enderecoCep');
     const cep = cepControl?.value;
 
@@ -154,6 +160,7 @@ export class IncluirHospitalComponent implements OnInit {
 
     if (cepNumerico.length !== 8) {
       this.toastr.warning('CEP deve conter 8 dígitos');
+      this.ngxUiLoaderService.stopBackground();
       return;
     }
 
@@ -162,6 +169,7 @@ export class IncluirHospitalComponent implements OnInit {
         if (endereco.erro) {
           this.toastr.warning('CEP não encontrado');
           this.incluirForm.get('enderecoCep')?.setValue('');
+          this.ngxUiLoaderService.stopBackground();
           return;
         }
 
@@ -175,13 +183,12 @@ export class IncluirHospitalComponent implements OnInit {
         });
 
         this.buscarMunicipiosPorSigla(estadoSigla, endereco.localidade);
-
-        this.toastr.success('Endereço preenchido automaticamente');
       },
       error: (err) => {
         this.toastr.error('Erro ao consultar CEP. Tente novamente.');
       }
     });
+    this.ngxUiLoaderService.stopBackground();
   }
 
   buscarMunicipiosPorSigla(sigla: string, cidade?: string): void {
@@ -217,6 +224,8 @@ export class IncluirHospitalComponent implements OnInit {
       this.incluirForm.markAllAsTouched();
       return;
     }
+
+    this.ngxUiLoaderService.start();
 
     const formData = this.incluirForm.value;
 
@@ -257,5 +266,7 @@ export class IncluirHospitalComponent implements OnInit {
     }).catch((error) => {
       this.toastr.error("Falha ao incluir hospital!")
     });
+
+    this.ngxUiLoaderService.stop();
   }
 }
