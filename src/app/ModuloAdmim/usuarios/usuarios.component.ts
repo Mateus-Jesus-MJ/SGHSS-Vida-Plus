@@ -36,7 +36,6 @@ export class UsuariosComponent implements OnInit {
     this.verificarRotaFilhaAtiva();
 
     this.buscarUsuarios();
-    this.ngxUiLoaderService.stop();
   }
 
   private verificarRotaFilhaAtiva(): void {
@@ -47,8 +46,11 @@ export class UsuariosComponent implements OnInit {
     this.userService.buscarUsuarios().subscribe({
       next: (users: User[] | null) => {
         this.usuarios = users;
+        this.ngxUiLoaderService.stop();
       },
-      error: () => this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde")
+      error: () => {this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde");
+        this.ngxUiLoaderService.stop();
+    }
     });
     this.ngxUiLoaderService.stop();
   }
@@ -61,14 +63,17 @@ export class UsuariosComponent implements OnInit {
     showAlert('Tem certeza?', `Deseja bloquear o usuário ${usuario.nome}?`, 'question','danger')
       .then((result) => {
         if (result.isConfirmed) {
+          this.ngxUiLoaderService.start();
           usuario.status = false;
           this.userService.editarUser(usuario).subscribe({
             next: (res: any) => {
               this.toastr.success(res);
               this.buscarUsuarios();
+              this.ngxUiLoaderService.stop();
             },
             error: (err: any) => {
               this.toastr.error(err);
+              this.ngxUiLoaderService.stop();
             }
           });
         }
@@ -78,14 +83,17 @@ export class UsuariosComponent implements OnInit {
     showAlert('Tem certeza?', `Deseja bloquear o usuário ${usuario.nome}?`, 'question','danger')
       .then((result) => {
         if (result.isConfirmed) {
+          this.ngxUiLoaderService.start();
           usuario.status = true;
           this.userService.editarUser(usuario).subscribe({
             next: (res: any) => {
               this.toastr.success(res);
               this.buscarUsuarios();
+              this.ngxUiLoaderService.stop();
             },
             error: (err: any) => {
               this.toastr.error(err);
+              this.ngxUiLoaderService.stop();
             }
           });
         }

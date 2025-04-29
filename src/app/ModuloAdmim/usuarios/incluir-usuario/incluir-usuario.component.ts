@@ -33,6 +33,7 @@ export class IncluirUsuarioComponent {
 
 
   buscarGrupoPermissoes() {
+    this.ngxUiLoaderService.startBackground();
     let tipoUsuario = this.incluirForm.get('tipoUsuario')?.value;
 
     if (tipoUsuario == "pa") {
@@ -43,6 +44,7 @@ export class IncluirUsuarioComponent {
       this.isGrupoPermissoesEmpty = true;
     }else{
       this.isGrupoPermissoesEmpty = false;
+      this.ngxUiLoaderService.stopBackground();
     }
 
     this.adicionarPermissoes();
@@ -63,6 +65,8 @@ export class IncluirUsuarioComponent {
       });
 
       permissoesControl.addControl(grupo.funcionalidade, permissoesGrupo);
+
+      this.ngxUiLoaderService.stopBackground();
     });
   }
 
@@ -70,8 +74,10 @@ export class IncluirUsuarioComponent {
 
   submit() {
     this.ngxUiLoaderService.start();
+
     if (this.incluirForm.invalid) {
       this.incluirForm.markAllAsTouched();
+      this.ngxUiLoaderService.stop();
       return;
     }
 
@@ -104,12 +110,13 @@ export class IncluirUsuarioComponent {
       next: (res: any) => {
         this.incluirForm.reset();
         this.toastr.success(res);
+        this.ngxUiLoaderService.stop();
       },
       error: (err: any) => {
         this.toastr.error(err);
+        this.ngxUiLoaderService.stop();
       }
     });
-    this.ngxUiLoaderService.stop();
   }
 
   gerarPermissoesAutomatizado(permissoes: any): Autorizacao[] {

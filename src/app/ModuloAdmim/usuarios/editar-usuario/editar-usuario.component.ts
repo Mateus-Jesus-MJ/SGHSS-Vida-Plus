@@ -50,7 +50,6 @@ export class EditarUsuarioComponent implements OnInit {
         return
       }
       this.buscarDadosUsuario(id);
-      this.ngxUiLoaderService.stop();
     });
   }
 
@@ -63,6 +62,7 @@ export class EditarUsuarioComponent implements OnInit {
         }else{
           this.toastr.error("Usuário inválido ou não encontrado");
           this.router.navigateByUrl('/admin/usuarios');
+          this.ngxUiLoaderService.stop();
         }
       }
     )
@@ -124,9 +124,9 @@ export class EditarUsuarioComponent implements OnInit {
 
         permissoesGrupo.addControl(permissao, new FormControl(temPermissao));
       });
-
       permissoesControl.addControl(grupo.funcionalidade, permissoesGrupo);
     });
+    this.ngxUiLoaderService.stop();
   }
 
 
@@ -167,12 +167,13 @@ export class EditarUsuarioComponent implements OnInit {
       next: (res: any) => {
         this.toastr.success(res);
         this.buscarDadosUsuario(this.usuario!.id!);
+        this.ngxUiLoaderService.stop();
       },
       error: (err: any) => {
         this.toastr.error(err);
+        this.ngxUiLoaderService.stop();
       }
     });
-    this.ngxUiLoaderService.stop();
 
   }
 

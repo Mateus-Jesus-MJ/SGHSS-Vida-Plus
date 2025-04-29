@@ -31,9 +31,6 @@ export class HospitaisComponent implements OnInit {
     if(!this.rotaFilhaAtiva){
       this.listaHospitais();
     }
-
-    this.ngxUiLoaderService.stop();
-
   }
 
   private verificarRotaFilhaAtiva(): void {
@@ -46,8 +43,11 @@ export class HospitaisComponent implements OnInit {
     this.hospitalService.buscarHospitais().subscribe({
       next: (hospitais: Hospital[] | null) => {
         this.hospitais = hospitais;
+        this.ngxUiLoaderService.stop();
       },
-      error: () => this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde")
+      error: () => {this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde");
+        this.ngxUiLoaderService.stop();
+      }
     });
   }
 }
