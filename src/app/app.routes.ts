@@ -8,6 +8,7 @@ import { IncluirHospitalComponent } from './ModuloAdmim/hospitais/incluir-hospit
 import { UsuariosComponent } from './ModuloAdmim/usuarios/usuarios.component';
 import { IncluirUsuarioComponent } from './ModuloAdmim/usuarios/incluir-usuario/incluir-usuario.component';
 import { EditarUsuarioComponent } from './ModuloAdmim/usuarios/editar-usuario/editar-usuario.component';
+import { MeuperfilComponent } from './ModuloAdmim/meuperfil/meuperfil.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -77,6 +78,10 @@ export const routes: Routes = [
              path: '**', redirectTo: ''
           }
         ]
+      },
+      {
+        path:'meuperfil/:id',
+        component: MeuperfilComponent
       },
       {
         path: '**', redirectTo: ''

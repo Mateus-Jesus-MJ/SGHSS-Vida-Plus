@@ -9,16 +9,18 @@ import { AuthService } from '../../../_services/auth.service';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent implements OnInit {
-  nomeUsuario! : string | null;
+  nomeUsuario!: string | null;
+  idUsuario!: string | null;
 
-  constructor(private authService: AuthService, private router: Router){}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.nomeUsuario = sessionStorage.getItem("nome");
+    this.idUsuario = sessionStorage.getItem("id");
   }
 
 
-  sair(){
+  sair() {
     this.authService.logout();
     this.router.navigateByUrl('./');
   }
@@ -26,5 +28,9 @@ export class NavbarComponent implements OnInit {
   toggleSidebar() {
     document.body.classList.toggle('sb-sidenav-toggled');
     localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled').toString());
+  }
+
+  meuPerfil(id: string) {
+    this.router.navigate(['/admin/meuperfil', id]);
   }
 }

@@ -1,0 +1,111 @@
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/usuarios"><i class="fa fa-arrow-left"></i></a>
+    Meu perfil
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/usuarios">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar hospital">
+      <!-- [disabled]="editarform.invalid" -->
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Gravar
+      </span>
+    </button>
+  </div>
+</div>
+
+
+<div class="d-flex align-items-start">
+  <div class="nav flex-column nav-pills me-3 w-25" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <button class="nav-link active" id="v-pills-email-tab" data-bs-toggle="pill" data-bs-target="#v-pills-email"
+      type="button" role="tab" aria-controls="v-pills-email" aria-selected="true"
+      (click)="mudaForm('email')">Email</button>
+    <button class="nav-link" id="v-pills-senha-tab" data-bs-toggle="pill" data-bs-target="#v-pills-senha" type="button"
+      role="tab" aria-controls="v-pills-senha" aria-selected="false" (click)="mudaForm('senha')">Senha</button>
+  </div>
+  <div class="tab-content flex-grow-1" id="v-pills-tabContent">
+    <div class="tab-pane fade show active" id="v-pills-email" role="tabpanel" aria-labelledby="v-pills-email-tab"
+      tabindex="0" style="min-width: 100%;">
+      <form class="text-start ms-5" [formGroup]="emailForm">
+        <div class="col-xl-6">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="email" formControlName="email" placeholder=""
+              [class.is-invalid]="emailForm.get('email')?.invalid && emailForm.get('email')?.touched" />
+            <label for="email" class="label-required">E-mail</label>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="tab-pane fade" id="v-pills-senha" role="tabpanel" aria-labelledby="v-pills-senha-tab" tabindex="0">
+      <form class="text-start ms-5" [formGroup]="senhaForm">
+        <div class="col-xl-4">
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="senhaAtual" placeholder="" formControlName="senhaAtual"
+              [class.is-invalid]="senhaForm.get('senhaAtual')?.invalid && senhaForm.get('senhaAtual')?.touched">
+            <label for="senhaAtual" class="label-required">Senha Atual</label>
+            <div *ngIf="senhaForm.get('senhaAtual')?.errors?.['required'] && senhaForm.get('senhaAtual')?.touched"
+              class="invalid-feedback">
+              A senha Atual é obrigatória.
+            </div>
+            <div *ngIf="senhaForm.get('senhaAtual')?.errors?.['minlength'] && senhaForm.get('senhaAtual')?.touched"
+              class="invalid-feedback">
+              A senha Atual deve ter no mínimo 8 caracteres.
+            </div>
+            <div
+              *ngIf="senhaForm.get('senhaAtual')?.errors?.['pattern'] && senhaForm.get('senhaAtual')?.touched && !senhaForm.get('senhaAtual')?.errors?.['minlength']"
+              class="invalid-feedback">
+              A senha Atual deve conter letra maiúscula, minúscula, número e símbolo.
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="novaSenha" placeholder="" formControlName="novaSenha" (change)="senhasIguais()"
+              [class.is-invalid]="senhaForm.get('novaSenha')?.invalid && senhaForm.get('novaSenha')?.touched">
+            <label for="novaSenha" class="label-required">Nova Senha</label>
+            <div *ngIf="senhaForm.get('novaSenha')?.errors?.['required'] && senhaForm.get('novaSenha')?.touched"
+              class="invalid-feedback">
+              A Nova senha é obrigatória.
+            </div>
+            <div *ngIf="senhaForm.get('novaSenha')?.errors?.['minlength'] && senhaForm.get('novaSenha')?.touched"
+              class="invalid-feedback">
+              A Nova senha deve ter no mínimo 8 caracteres.
+            </div>
+            <div
+              *ngIf="senhaForm.get('novaSenha')?.errors?.['pattern'] && senhaForm.get('novaSenha')?.touched && !senhaForm.get('novaSenha')?.errors?.['minlength']"
+              class="invalid-feedback">
+              A Nova senha deve conter letra maiúscula, minúscula, número e símbolo.
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4">
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="confirmarSenha" placeholder=""
+              formControlName="confirmarSenha" (change)="senhasIguais()"
+              [class.is-invalid]="senhaForm.get('confirmarSenha')?.invalid && senhaForm.get('confirmarSenha')?.touched">
+            <label for="confirmarSenha" class="label-required">Confirmar Senha Senha</label>
+            <div
+              *ngIf="senhaForm.get('confirmarSenha')?.errors?.['required'] && senhaForm.get('confirmarSenha')?.touched"
+              class="invalid-feedback">
+              A Confirmação senha é obrigatória.
+            </div>
+            <div
+              *ngIf="senhaForm.get('confirmarSenha')?.errors?.['divergente'] && senhaForm.get('confirmarSenha')?.touched"
+              class="invalid-feedback">
+              As senha não são iguais
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>

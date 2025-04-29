@@ -18,8 +18,7 @@
           {{nomeUsuario}}
         </button>
         <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">Action</a></li>
-          <li><a class="dropdown-item" href="#">Another action</a></li>
+          <li><a class="dropdown-item" (click)="meuPerfil(idUsuario!)"><i class="fa fa-user-edit"></i>&nbsp;Meu perfil</a></li>
           <li><button class="dropdown-item"  (click)="sair()"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair </button></li>
         </ul>
       </div>
