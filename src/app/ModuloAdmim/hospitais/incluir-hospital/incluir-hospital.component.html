@@ -193,7 +193,7 @@
 
         <!-- Cropper -->
         <image-cropper [imageChangedEvent]="imageChangedEvent" [resizeToWidth]="256" [cropperMinWidth]="100"
-          [cropperMinHeight]="100" (imageCropped)="onImageCropped($event)" [style.height]="'60vh'">
+          [cropperMinHeight]="100" (imageCropped)="onImageCropped($event)"   [style.max-height]="'60vh'">
         </image-cropper>
       </div>
       <div class="modal-footer">
