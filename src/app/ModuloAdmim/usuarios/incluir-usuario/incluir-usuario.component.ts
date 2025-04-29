@@ -11,7 +11,7 @@ import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-incluir-usuario',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterModule, NgxUiLoaderModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './incluir-usuario.component.html',
   styleUrl: './incluir-usuario.component.scss'
 })
