@@ -1,4 +1,3 @@
-<ngx-ui-loader text="Carregando ..." bgsColor="#000dff" fgsColor="#000dff" textColor="000dff" pbColor="#000dff"></ngx-ui-loader>
 <div class="tela-toda">
   <div id="layoutAuthentication">
     <div id="layoutAuthentication_content">
@@ -23,10 +22,8 @@
                   <!-- Lado do formulário -->
                   <div class="col d-flex align-items-center justify-content-center h-100">
                     <div class="w-100 px-4" style="max-width: 400px;">
+                      <h3 class="my-3 text-center">Seja bem vindo ao SGHSS Vida&nbsp;Plus</h3>
                       <form [formGroup]="loginForm">
-                        
-                        <h5 class="mb-3 text-title text-center" >Seja bem vindo ao SGHSS Vida&nbsp;Plus{{version}}</h5>
-
                         <div class="form-floating mb-3">
                           <select class="form-select" (input)="tipoUsuarioLabel($event)" formControlName="tipoUsuario">
                             <option value="pc">Paciente</option>

@@ -24,6 +24,6 @@ export const appConfig: ApplicationConfig = {
     provideEnvironmentNgxMask(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
   ]
 };

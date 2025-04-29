@@ -26,6 +26,7 @@ export class UsuariosComponent implements OnInit {
 
   constructor(private router: Router, private route: ActivatedRoute, private userService: UserServiceService, private toastr: ToastrService, private ngxUiLoaderService : NgxUiLoaderService) { }
   ngOnInit(): void {
+    this.ngxUiLoaderService.start();
     this.router.events
     .pipe(filter(event => event instanceof NavigationEnd))
     .subscribe(() => {
@@ -35,6 +36,7 @@ export class UsuariosComponent implements OnInit {
     this.verificarRotaFilhaAtiva();
 
     this.buscarUsuarios();
+    this.ngxUiLoaderService.stop();
   }
 
   private verificarRotaFilhaAtiva(): void {
@@ -42,7 +44,6 @@ export class UsuariosComponent implements OnInit {
   }
 
   buscarUsuarios() {
-    this.ngxUiLoaderService.start();
     this.userService.buscarUsuarios().subscribe({
       next: (users: User[] | null) => {
         this.usuarios = users;
