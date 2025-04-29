@@ -64,7 +64,7 @@
           <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
   
             <!-- Imagem já cortada -->
-            <img *ngIf="imagemCortada" [src]="croppedImage" alt="Imagem do hospital" class="img-fluid w-100 h-100"
+            <img *ngIf="imagemCortada" [src]="imagemCortada" alt="Imagem do hospital" class="img-fluid w-100 h-100"
               style="object-fit: cover;">
             <button *ngIf="imagemCortada" class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm position-absolute"
               style="bottom: 10px; left: 50%; transform: translateX(-50%);" data-bs-toggle="modal"
@@ -162,7 +162,7 @@
       </div>
       <div class="col-lg-3">
         <div class="form-floating mb-5">
-          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2">
+          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2"  mask="(00) 0000-0000||(00) 0 0000-0000" />
           <label for="telefone2">Telefone</label>
         </div>
       </div>

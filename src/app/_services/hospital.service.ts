@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, CollectionReference, doc, Firestore, getDoc, getDocs, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, CollectionReference, doc, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { Hospital } from '../_models/Hospital';
 import { catchError, from, map, Observable, of } from 'rxjs';
 
@@ -70,6 +70,42 @@ export class HospitalService {
         });
       }).catch(error => {
         observer.error(`Erro ao verificar disponibilidade do cnpj. motivo: ${error.message}`);
+      });
+    });
+  }
+
+  editarHospital(hospital: Hospital): Observable<any>{
+    const hospitalCollection = collection(this.firestore, this.tabelaHospitais);
+
+    const qHospital = query(hospitalCollection, where('cnpj','==', hospital.cnpj));
+    return new Observable(observer =>{
+      Promise.all([
+        getDocs(qHospital)
+      ])
+      .then(([snapshot]) =>{
+        const outroHospitalMesmoCnpj = snapshot.docs.find(doc => doc.id !== hospital.id);
+        console.log(snapshot)
+        console.log(hospital.id)
+        if(outroHospitalMesmoCnpj){
+          observer.error('Já existe um hospital com o CNPJ informado');
+          return;
+        }
+
+        const hospitalDocRef = doc(this.firestore, this.tabelaHospitais, hospital.id!);
+        const{id, ...dadosParaAtualizar} = hospital;
+
+        from(updateDoc(hospitalDocRef, structuredClone(dadosParaAtualizar)))
+        .subscribe({
+          next:() => {
+            observer.next('Hospital editado com sucesso!');
+            observer.complete();
+          },
+          error:(error) =>{
+            observer.error(`Erro ao editar hospital. Motivo: ${error}`);
+          }
+        });
+      }).catch(error =>{
+        observer.error(`Erro ao editar hospital. Motivo: ${error}`);
       });
     });
   }

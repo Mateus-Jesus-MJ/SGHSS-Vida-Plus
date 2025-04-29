@@ -32,17 +32,21 @@ export class HospitaisComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.ngxUiLoaderService.start();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.verificarRotaFilhaAtiva();
+        if (!this.rotaFilhaAtiva) {
+          this.listaHospitais();
+        }
       });
-    this.verificarRotaFilhaAtiva();
+      this.verificarRotaFilhaAtiva();
 
-    if (!this.rotaFilhaAtiva) {
-      this.listaHospitais();
-    }
+      if (!this.rotaFilhaAtiva) {
+        this.listaHospitais();
+      }
+    
+
   }
 
   private verificarRotaFilhaAtiva(): void {
@@ -50,6 +54,7 @@ export class HospitaisComponent implements OnInit {
   }
 
   listaHospitais() {
+    this.ngxUiLoaderService.start();
     if (this.rotaFilhaAtiva) return
 
     this.hospitalService.buscarHospitais().subscribe({
