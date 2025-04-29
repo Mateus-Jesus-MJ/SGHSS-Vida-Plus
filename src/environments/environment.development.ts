@@ -14,8 +14,8 @@ export const environment = {
   },
 
   gruposPermissoesAdmin: [
-    { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'editar'] },
-    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']},
+    { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'editar','excluir'] },
+    { funcionalidade: 'Colaboradores', permissoes: ['visualizar', 'incluir', 'editar','excluir'] },
   ],
   grupoPermissoesAtendimento: [
     {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']}
