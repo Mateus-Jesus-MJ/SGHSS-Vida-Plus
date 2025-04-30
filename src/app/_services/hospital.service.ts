@@ -42,7 +42,6 @@ export class HospitalService {
         }
       }),
       catchError(error => {
-        console.error(error);
         return of(null);
       })
     );
@@ -109,10 +108,10 @@ export class HospitalService {
       });
     });
   }
-  
+
   excluirHospital(id: string): Observable<any> {
     const hospitalDocRef = doc(this.firestore, `${this.tabelaHospitais}/${id}`);
-    
+
     return from(deleteDoc(hospitalDocRef)).pipe(
       map(() => 'Hospital excluído com sucesso!'),
       catchError(error => {
