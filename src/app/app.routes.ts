@@ -11,6 +11,9 @@ import { EditarUsuarioComponent } from './ModuloAdmim/usuarios/editar-usuario/ed
 import { MeuperfilComponent } from './ModuloAdmim/meuperfil/meuperfil.component';
 import { EditarHospitalComponent } from './ModuloAdmim/hospitais/editar-hospital/editar-hospital.component';
 import { VisualizarHospitalComponent } from './ModuloAdmim/hospitais/visualizar-hospital/visualizar-hospital.component';
+import { ColaboradoresComponent } from './ModuloAdmim/colaboradores/colaboradores.component';
+import { CargosComponent } from './ModuloAdmim/cargos/cargos.component';
+import { CargosIncluirComponent } from './ModuloAdmim/cargos/cargos-incluir/cargos-incluir.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -41,7 +44,7 @@ export const routes: Routes = [
           {
             path: 'visualizar/:id',
             component: VisualizarHospitalComponent,
-            data:{
+            data: {
               tipoPermitido: 'pa',
               funcionalidade: 'hospitais',
               acesso: 'editar'
@@ -59,11 +62,44 @@ export const routes: Routes = [
           {
             path: 'editar/:id',
             component: EditarHospitalComponent,
-            data:{
+            data: {
               tipoPermitido: 'pa',
               funcionalidade: 'hospitais',
               acesso: 'editar'
             }
+          }
+        ]
+      },
+      {
+        path: 'colaboradores',
+        component: ColaboradoresComponent,
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'colaboradores',
+          acesso: 'visualizar'
+        },
+        children: []
+      },
+      {
+        path: 'cargos',
+        component: CargosComponent,
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'cargos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: CargosIncluirComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'cargos',
+              acesso: 'incluir'
+            },
+          },
+          {
+            path: '**', redirectTo: ''
           }
         ]
       },
@@ -88,19 +124,19 @@ export const routes: Routes = [
           {
             path: 'editar/:id',
             component: EditarUsuarioComponent,
-            data:{
+            data: {
               tipoPermitido: 'pa',
               funcionalidade: 'admin',
               acesso: 'admin'
             }
           },
           {
-             path: '**', redirectTo: ''
+            path: '**', redirectTo: ''
           }
         ]
       },
       {
-        path:'meuperfil/:id',
+        path: 'meuperfil/:id',
         component: MeuperfilComponent
       },
       {

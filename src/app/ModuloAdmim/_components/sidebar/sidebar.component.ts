@@ -15,7 +15,11 @@ import { CommonModule } from '@angular/common';
 export class SidebarComponent implements OnInit {
   user!: User | null;
   nomeUsuario!: string | null;
-  MenuHospital: boolean = true;
+  permissoes = {
+    Hospital: true,
+    Cargos: true,
+  };
+
   isAdmin: boolean = false;
 
 
@@ -47,9 +51,11 @@ export class SidebarComponent implements OnInit {
 
 
     if (!this.isAdmin) {
-      this.MenuHospital = permissoes?.some(aut => aut.funcionalidade.toLocaleLowerCase() === 'hospitais') || false;
-      console.log(permissoes);
+      this.permissoes.Hospital = permissoes?.some(aut => aut.funcionalidade.toLocaleLowerCase() === 'hospitais') || false;
+      this.permissoes.Cargos = permissoes?.some(aut => aut.funcionalidade.toLocaleLowerCase() === 'cargos') || false;
     }
+
+
 
   }
 

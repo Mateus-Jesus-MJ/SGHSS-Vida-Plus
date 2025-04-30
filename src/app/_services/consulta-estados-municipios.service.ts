@@ -19,8 +19,8 @@ export class ConsultaEstadosMunicipiosService extends BaseService{
     return this.http.get<Estado[]>(`${this.baseUrl}`).pipe(
       catchError((error) => {
         const estadosComId = environment.estados.map((estado, index) => {
-          return { 
-            ...estado, 
+          return {
+            ...estado,
             id: index + 1
           };
         });
@@ -34,7 +34,7 @@ export class ConsultaEstadosMunicipiosService extends BaseService{
 
   buscaMunicipios(estado: Estado){
     return this.http.get<Municipo[]>(`${this.baseUrl}/${estado.sigla}/municipios`).pipe(
-      catchError(this.ServiceError),
+      catchError(this.serviceError),
       map((response: Municipo[]) => {
         return response.sort((a, b) => a.nome.localeCompare(b.nome));;
       })
@@ -45,7 +45,7 @@ export class ConsultaEstadosMunicipiosService extends BaseService{
     const cepNumeric = cep.replace(/\D/g, '');
 
     return this.http.get<Endereco>(`${this.baseUrlCEP}${cep}/json/`).pipe(
-      catchError(this.ServiceError),
+      catchError(this.serviceError),
       map((response) => {
         return response
       })
