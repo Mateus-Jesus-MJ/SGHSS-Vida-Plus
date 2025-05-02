@@ -80,7 +80,17 @@ export const routes: Routes = [
           funcionalidade: 'colaboradores',
           acesso: 'visualizar'
         },
-        children: []
+        children: [
+          // {
+          //   path: 'incluir',
+          //   // component
+          //   data: {
+          //     tipoPermitido: 'pa',
+          //     funcionalidade: 'colaboradores',
+          //     acesso: 'incluir'
+          //   }
+          // }
+        ]
       },
       {
         path: 'cargos',

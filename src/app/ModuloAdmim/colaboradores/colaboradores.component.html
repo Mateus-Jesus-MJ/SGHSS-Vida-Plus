@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-between">
     <h3>Colaboradores</h3>
     <div class="d-flex justify-content-between">
-      <a class="btn btn-primary btn-icon-split" routerLink="/admin/hospitais/incluir">
+      <a class="btn btn-primary btn-icon-split" routerLink="/admin/colaboradoresincluir">
         <span class="icon">
           <i class="fa fa-plus"></i>
         </span>
@@ -19,15 +19,15 @@
         <tr>
           <th></th>
           <th>Imagem</th>
-          <th>Razão Social</th>
-          <th>Nome Fantasia</th>
-          <th>CNPJ</th>
+          <th>Nome</th>
+          <th>Cargo</th>
+          <th>Data de Nascimento</th>
+          <th>Contato</th>
           <th>Cidade</th>
-          <th>Endereço</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
-        <!-- <tr *ngFor="let hospital of hospitais" class="align-items-center">
+        <tr *ngFor="let colaborador of colaboradores" class="align-items-center">
           <td>
             <div class="dropdown">
               <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
@@ -37,18 +37,18 @@
               <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
                 <li>
                   <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="visualizar(hospital.id!)">
+                    (click)="visualizar(colaborador.id!)">
                     <i class="fas fa-eye"></i>&nbsp;Visualizar
                   </a>
                 </li>
                 <li>
                   <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="editar(hospital.id!)">
+                    (click)="editar(colaborador.id!)">
                     <i class="fas fa-pen"></i>&nbsp;Editar
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(hospital)">
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(colaborador)">
                     <i class="fas fa-trash"></i>&nbsp;Excluir
                   </a>
                 </li>
@@ -56,15 +56,22 @@
             </div>
           </td>
           <td>
-            <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+            <img *ngIf="colaborador.imagem" [src]="colaborador.imagem" alt="Imagem do Hospital"
               style="height: 100px; aspect-ratio: 1/1;" />
           </td>
-          <td>{{hospital.razaoSocial}}</td>
-          <td>{{hospital.nomeFantasia}}</td>
-          <td>{{ hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
-          <td>{{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</td>
-          <td>{{hospital.endereco.logradouro}}, {{hospital.endereco.numero}}, {{hospital.endereco.bairro}}</td>
-        </tr> -->
+          <td>{{colaborador.nome}}</td>
+          <td>{{ colaborador.cpf | mask: "000.000.000-00" }}</td>
+          <td>{{colaborador.cargo.cargo}}</td>
+          <td>{{colaborador.dataNascimento}}</td>
+          <td>
+            {{colaborador.contato.telefone1}}
+            <span *ngIf="colaborador.contato.telefone2 && colaborador.contato.email"> | </span>
+            {{colaborador.contato.telefone2}}
+            <span *ngIf="colaborador.contato.email"> | </span>
+            {{colaborador.contato.email}}
+          </td>
+          <td>{{colaborador.endereco.localidade}} - {{colaborador.endereco.uf}}</td>
+        </tr>
       </tbody>
     </table>
   </div>
