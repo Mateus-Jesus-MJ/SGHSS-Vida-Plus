@@ -33,7 +33,7 @@
             </nav>
           </div>
         </div> -->
-        <div *ngIf="permissoes.Hospital">
+        <!-- <div *ngIf="permissoes.Hospital">
           <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menuHospitais"
             aria-expanded="false" aria-controls="collapseLayouts">
             <div class="sb-nav-link-icon"><i class="fas fa-hospital-alt"></i></div>
@@ -73,7 +73,26 @@
               <a [routerLink]="'/admin/usuarios'" class="nav-link">Usuarios</a>
             </nav>
           </div>
+        </div> -->
+
+        <div *ngFor="let menu of menus">
+          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" [attr.data-bs-target]="'#' + menu.grupo.label.replace(' ','')"
+            aria-expanded="false" aria-controls="collapseLayouts">
+            <div class="sb-nav-link-icon"><i [attr.class]="menu.grupo.icon"></i></div>
+            {{menu.grupo.label}}
+            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+          </a>
+          <div class="visible collapse" [attr.id]="menu.grupo.label.replace(' ','')" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+            <nav class="sb-sidenav-menu-nested nav">
+              <!-- <a class="nav-link" [routerLink]="'/admin/cargos'" >Cargos</a> -->
+               <div *ngFor="let filho of menu.grupo.filhos">
+                <a class="nav-link" [routerLink]="'/admin/' + filho.rota">{{filho.label}}</a>
+               </div>
+            </nav>
+          </div>
         </div>
+
+
         <div class="d-md-none">
           <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#meuUsuario"
             aria-expanded="false" aria-controls="collapseLayouts">
@@ -88,6 +107,7 @@
             </nav>
           </div>
         </div>
+
       </div>
     </div>
 

@@ -13,6 +13,53 @@ export const environment = {
     appId: "1:901401357138:web:0c46f5072e4981c4f9688b"
   },
 
+  MenuAdmin: [
+    {
+      grupo: {
+        label: 'Unidades',
+        icon: 'fas fa-hospital-alt',
+        filhos: [
+          {
+            label: 'Hospitais',
+            rota: 'hospitais',
+            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+          },
+        ]
+      }
+    },
+    {
+      grupo: {
+        label: 'Gestão Pessoal',
+        icon: 'far fa-address-card',
+        filhos: [
+          {
+            label: 'Colaboradores',
+            rota: 'colaboradores',
+            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+          },
+          {
+            label: 'Cargos',
+            rota: 'cargos',
+            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+          },
+        ]
+      }
+    },
+    {
+      grupo: {
+        label: 'Admin Sistema',
+        icon: 'fas fa-user-cog',
+        filhos: [
+          {
+            label: 'Usuário',
+            rota: 'usuarios',
+            permissoes:['incluir', 'editar','excluir']
+          }
+        ]
+      }
+    }
+  ],
+
   gruposPermissoesAdmin: [
     { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'editar','excluir'] },
     { funcionalidade: 'Colaboradores', permissoes: ['visualizar', 'incluir', 'editar','excluir'] },

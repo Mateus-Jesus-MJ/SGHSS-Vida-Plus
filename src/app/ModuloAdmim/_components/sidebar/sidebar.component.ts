@@ -19,6 +19,7 @@ export class SidebarComponent implements OnInit {
     Hospital: true,
     Cargos: true,
   };
+  menus = environment.MenuAdmin;
 
   isAdmin: boolean = false;
 
