@@ -85,7 +85,7 @@ export class CargosService {
         const outroCargoMesmoNome = snapshot.docs.find(doc => doc.id !== cargo.id)
 
         if (outroCargoMesmoNome) {
-          observer.error("Erro ao cadastrar cargo. Motivo: Esse cargo já foi cadastrado!");
+          observer.error("Erro ao editar cargo. Motivo: Esse cargo já foi cadastrado!");
           return;
         }
 

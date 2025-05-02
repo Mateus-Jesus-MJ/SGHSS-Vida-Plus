@@ -1,25 +1,26 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Cargo, Especialidade, RequisitosDoCargo } from '../../../_models/cargo';
+import { showAlert } from '../../../_util.ts/sweetalert-util';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { NgxMaskDirective } from 'ngx-mask';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { showAlert } from '../../../_util.ts/sweetalert-util';
-import { Cargo, Especialidade, RequisitosDoCargo } from '../../../_models/cargo';
 import { CargosService } from '../../../_services/cargos.service';
+import { CommonModule } from '@angular/common';
+import { NgxMaskDirective } from 'ngx-mask';
 import { environment } from '../../../../environments/environment.development';
 
 @Component({
-  selector: 'app-cargos-incluir',
+  selector: 'app-cargos-editar',
   imports: [CommonModule, ReactiveFormsModule, FormsModule, NgxMaskDirective, RouterModule],
-  templateUrl: './cargos-incluir.component.html',
-  styleUrl: './cargos-incluir.component.scss'
+  templateUrl: './cargos-editar.component.html',
+  styleUrl: './cargos-editar.component.scss'
 })
-export class CargosIncluirComponent {
+export class CargosEditarComponent implements OnInit {
   form!: FormGroup;
-  especialidadesIncluir: Especialidade[] = [];
-  requisitosIncluir: RequisitosDoCargo[] = [];
+  cargo!: Cargo;
+  especialidade: Especialidade[] = [];
+  requisitos: RequisitosDoCargo[] = [];
   opcoesEscolaridade = environment.niveisDeEscolaridade;
   textHtmlIncluirEspecialidade = `<div class="form-floating mb-3">
                                     <input type="text" class="form-control text-uppercase" id="especialidade" placeholder="">
@@ -44,6 +45,48 @@ export class CargosIncluirComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.ngxUiLoaderService.start();
+    this.routeAcitive.paramMap.subscribe(params => {
+      const id = params.get('id')!;
+
+      if (id == null || id == "") {
+        this.toastr.error("Cargo não encontrado!");
+        this.router.navigateByUrl("admin/cargos");
+        this.ngxUiLoaderService.stop();
+        return
+      }
+      this.buscarDadosDoCargo(id);
+    });
+  }
+
+  buscarDadosDoCargo(id: string) {
+    this.cargosService.buscarCargoPorId(id).subscribe(
+      (cargo) => {
+        if (cargo) {
+          this.cargo = cargo;
+          this.populateForm(cargo);
+        } else {
+          this.toastr.error("Cargo não encontrado. Verifique o id informado e tente novamente\n se o problema persistir procure o administrador do sistema", "", { "progressBar": true });
+          this.ngxUiLoaderService.stop();
+        }
+      }
+    )
+  }
+
+  private populateForm(cargo: Cargo): void {
+    this.form.patchValue({
+      cargo: cargo.cargo,
+      salarioBase: cargo.salarioBase,
+      descricaoDeFuncao: cargo.descricaoDeFuncao,
+      escolaridade: cargo.escolaridade
+    });
+    this.especialidade = cargo.especialidade || [];
+    this.requisitos = cargo.requisitosDoCargo || [];
+    this.ngxUiLoaderService.stop();
+  }
+
+
   incluirEspecialidade() {
     showAlert('Especialidades do cargo', this.textHtmlIncluirEspecialidade, 'info')
       .then((result) => {
@@ -51,10 +94,10 @@ export class CargosIncluirComponent {
           this.ngxUiLoaderService.startBackground();
 
           const inputEl = document.getElementById('especialidade') as HTMLInputElement;
-          if (inputEl.value != "" && !this.especialidadesIncluir.some(e => e.especialidade === inputEl.value.toUpperCase())) {
+          if (inputEl.value != "" && !this.especialidade.some(e => e.especialidade === inputEl.value.toUpperCase())) {
 
             const nova: Especialidade = { especialidade: inputEl.value.toUpperCase() };
-            this.especialidadesIncluir.push(nova);
+            this.especialidade.push(nova);
           }
 
           this.ngxUiLoaderService.stopBackground();
@@ -63,8 +106,8 @@ export class CargosIncluirComponent {
   }
 
   removerEspecialidade(especialidade: string) {
-    this.especialidadesIncluir =
-      this.especialidadesIncluir.filter(e => e.especialidade !== especialidade);
+    this.especialidade =
+      this.especialidade.filter(e => e.especialidade !== especialidade);
   }
 
   incluirRequisitos() {
@@ -75,9 +118,9 @@ export class CargosIncluirComponent {
           this.ngxUiLoaderService.startBackground();
 
           const inputEl = document.getElementById('requisito') as HTMLInputElement;
-          if (inputEl.value.toUpperCase() != "" && !this.requisitosIncluir.some(e => e.requisito === inputEl.value.toUpperCase())) {
+          if (inputEl.value.toUpperCase() != "" && !this.requisitos.some(e => e.requisito === inputEl.value.toUpperCase())) {
             const nova: RequisitosDoCargo = { requisito: inputEl.value.toUpperCase() };
-            this.requisitosIncluir.push(nova);
+            this.requisitos.push(nova);
           }
 
           this.ngxUiLoaderService.stopBackground();
@@ -86,8 +129,8 @@ export class CargosIncluirComponent {
   }
 
   removerRequisito(requisito: string) {
-    this.requisitosIncluir =
-      this.requisitosIncluir.filter(e => e.requisito !== requisito);
+    this.requisitos =
+      this.requisitos.filter(e => e.requisito !== requisito);
   }
 
 
@@ -105,21 +148,20 @@ export class CargosIncluirComponent {
     formData.descricaoDeFuncao = formData.descricaoDeFuncao.toUpperCase();
     formData.escolaridade = formData.escolaridade.toUpperCase();
 
-    const cargoIncluir: Cargo = {
+    const cargoEditar: Cargo = {
+      id: this.cargo.id!,
       cargo: formData.cargo,
       escolaridade: formData.escolaridade,
       descricaoDeFuncao: formData.descricaoDeFuncao,
       salarioBase: formData.salarioBase,
-      requisitosDoCargo: this.requisitosIncluir,
-      especialidade: this.especialidadesIncluir
+      requisitosDoCargo: this.requisitos,
+      especialidade: this.especialidade
     }
 
-    this.cargosService.novoCargo(cargoIncluir).subscribe({
+    this.cargosService.editarCargo(cargoEditar).subscribe({
       next: (res) => {
         this.toastr.success(res);
-        this.form.reset();
-        this.especialidadesIncluir = [];
-        this.requisitosIncluir = [];
+        this.buscarDadosDoCargo(this.cargo.id!);
         this.ngxUiLoaderService.stop();
       },
       error: (error) => {
@@ -128,5 +170,4 @@ export class CargosIncluirComponent {
       }
     });
   }
-
 }

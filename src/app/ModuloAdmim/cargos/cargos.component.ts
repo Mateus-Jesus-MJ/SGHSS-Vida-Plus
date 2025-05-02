@@ -31,7 +31,7 @@ export class CargosComponent implements OnInit {
       .subscribe(() => {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
-          // this.listaHospitais();
+          this.buscarCargos();
         }
       });
     this.verificarRotaFilhaAtiva();
@@ -60,4 +60,17 @@ export class CargosComponent implements OnInit {
       }
     });
   }
+
+  visualizar(id:string){
+
+  }
+
+  editar(id: string){
+    this.router.navigate(['admin/cargos/editar',id]);
+  }
+
+  excluir(cargo: Cargo){
+
+  }
+
 }

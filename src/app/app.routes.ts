@@ -14,6 +14,7 @@ import { VisualizarHospitalComponent } from './ModuloAdmim/hospitais/visualizar-
 import { ColaboradoresComponent } from './ModuloAdmim/colaboradores/colaboradores.component';
 import { CargosComponent } from './ModuloAdmim/cargos/cargos.component';
 import { CargosIncluirComponent } from './ModuloAdmim/cargos/cargos-incluir/cargos-incluir.component';
+import { CargosEditarComponent } from './ModuloAdmim/cargos/cargos-editar/cargos-editar.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -96,6 +97,15 @@ export const routes: Routes = [
               tipoPermitido: 'pa',
               funcionalidade: 'cargos',
               acesso: 'incluir'
+            },
+          },
+          {
+            path: 'editar/:id',
+            component: CargosEditarComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'cargos',
+              acesso: 'editar'
             },
           },
           {

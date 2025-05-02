@@ -21,6 +21,16 @@ export const environment = {
     {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']}
   ],
 
+  niveisDeEscolaridade:[
+    {value: 'NENHUMA',label: 'Nenhuma'},
+    {value: 'ENSINO FUNDAMENTAL',label: 'Ensino Fundamental'},
+    {value: 'ENSINO MÉDIO', label: 'Ensino Médio'},
+    {value: 'GRADUAÇÃO', label: 'Graduação'},
+    {value: 'PÓS GRADUAÇÃO', label: 'Pós Graduação'},
+    {value: 'MESTRADO', label: 'Mestrado'},
+    {value: 'DOUTORADO', label: 'Doutorado'}
+  ],
+
   estados: [
     { sigla: 'AC', nome: 'Acre' },
     { sigla: 'AL', nome: 'Alagoas' },
