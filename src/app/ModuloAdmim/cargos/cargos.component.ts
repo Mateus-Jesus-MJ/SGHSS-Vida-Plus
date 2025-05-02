@@ -7,6 +7,7 @@ import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CargosService } from '../../_services/cargos.service';
 import { NgxMaskPipe } from 'ngx-mask';
+import { showAlert } from '../../_util.ts/sweetalert-util';
 
 @Component({
   selector: 'app-cargos',
@@ -61,16 +62,30 @@ export class CargosComponent implements OnInit {
     });
   }
 
-  visualizar(id:string){
-
+  visualizar(id: string) {
+    this.router.navigate(['admin/cargos/visualizar', id]);
   }
 
-  editar(id: string){
-    this.router.navigate(['admin/cargos/editar',id]);
+  editar(id: string) {
+    this.router.navigate(['admin/cargos/editar', id]);
   }
 
-  excluir(cargo: Cargo){
-
+  excluir(cargo: Cargo) {
+    showAlert('Tem certeza?', `Deseja excluir o cargo de ${cargo.cargo}?`, 'question', 'danger')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.ngxUiLoaderService.start();
+          this.cargoService.excluirCargo(cargo.id!).subscribe({
+            next: (res: any) => {
+              this.buscarCargos();
+              this.toastr.success(res);
+            },
+            error: (err: any) => {
+              this.toastr.error(err);
+              this.ngxUiLoaderService.stop();
+            }
+          });
+        }
+      });
   }
-
 }
