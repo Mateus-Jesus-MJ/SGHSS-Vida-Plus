@@ -42,51 +42,8 @@ export class SidebarComponent implements OnInit {
     this.nomeUsuario = this.user!.nome;
   }
 
-  // verificaPermissoes() {
-
-  //   console.log(this.user?.autorizacoes);
-
-
-  //   this.menus.forEach(grupo => {
-  //     // grupo.grupo.filhos = grupo.grupo.filhos.filter(filho => {
-  //     //   const existe = this.user!.autorizacoes!.some(autorizacao =>
-  //     //     autorizacao.funcionalidade.toLocaleLowerCase().replace(' ', '') === filho.label.toLocaleLowerCase().replace(' ', '')
-  //     //   );
-  //     //   return existe;
-
-
-  //     grupo.grupo.filhos.forEach(filho => {
-  //       console.log(`${filho.label}: verificando`)
-
-  //       const existe = this.user!.autorizacoes!.some(autorizacao =>
-  //         autorizacao.funcionalidade.toLocaleLowerCase().replace(' ', '') === filho.label.toLocaleLowerCase().replace(' ', ''));
-
-  //       console.log(`${filho.label}: ${existe}`)
-
-  //       const index = grupo.grupo.filhos.indexOf(filho);
-  //       if (index > -1) {
-  //         grupo.grupo.filhos.splice(index, 1);
-  //       }
-  //     });
-
-  //     console.log('novo Menu:')
-  //     console.log('')
-  //     console.log(this.menus);
-
-  //     if (grupo.grupo.filhos.length === 0) {
-  //       const index = this.menus.indexOf(grupo);
-  //       if (index > -1) {
-  //         this.menus.splice(index, 1);
-  //       }
-  //     }
-  //   });
-  // }
-
   verificaPermissoes() {
-
     if (!this.user?.autorizacoes?.some(autorizacao => autorizacao.funcionalidade == "admin")) {
-
-      // Primeiro, filtra os filhos com base nas autorizações
       this.menus.forEach(grupo => {
         grupo.grupo.filhos = grupo.grupo.filhos.filter(filho => {
           const existe = this.user!.autorizacoes!.some(autorizacao =>
@@ -94,15 +51,13 @@ export class SidebarComponent implements OnInit {
             filho.label.toLowerCase().replace(/\s/g, '')
           );
 
-          console.log(`${filho.label}: ${existe}`);
+          // console.log(`${filho.label}: ${existe}`);
           return existe;
         });
       });
-
-      // Depois, remove os grupos que ficaram sem filhos
+      
       this.menus = this.menus.filter(grupo => grupo.grupo.filhos.length > 0);
-
-      console.log('Novo Menu:', this.menus);
+      // console.log('Novo Menu:', this.menus);
     }
   }
 
