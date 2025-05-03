@@ -12,7 +12,8 @@
         Voltar
       </span>
     </a>
-    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar usuário" [disabled]="incluirForm.invalid">
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar usuário"
+      [disabled]="incluirForm.invalid">
       <span class="icon">
         <i class="fa fa-check"></i>
       </span>
@@ -22,7 +23,7 @@
     </button>
   </div>
 </div>
-<hr/>
+<hr />
 <form class="text-start m-3" [formGroup]="incluirForm">
   <div class="row g-3">
     <div class="col-lg-4">
@@ -59,60 +60,38 @@
     <div class="col-lg-6">
       <div class="form-check form-switch">
         <label class="form-check-label" for="mySwitch">Usuário admin</label>
-        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value='true' formControlName="admin" />
+        <input class="form-check-input" type="checkbox" id="mySwitch" name="darkmode" value='true'
+          formControlName="admin" />
       </div>
     </div>
   </div>
-  <div formGroupName="permissoes" *ngIf="isGrupoPermissoesEmpty && !incluirForm.get('admin')?.value">
-    <hr />
+  <div formGroupName="permissoes" *ngIf="isGrupoPermissoesEmpty && !incluirForm.get('admin')?.value"
+    class="card p-3 mt-3">
     <h4>Permissões</h4>
-    <!-- <div class="d-flex flex-wrap justify-content-start g-3">
-      <div class="d-flex flex-column m-3" *ngFor="let grupo of gruposPermissoes">
-        <ng-container *ngIf="incluirForm.get('permissoes')?.get(grupo.funcionalidade)">
-          <label class="mb-1 text-capitalize">{{ grupo.funcionalidade }}</label>
-          <div [formGroupName]="grupo.funcionalidade">
-            <div *ngFor="let permissao of grupo.permissoes">
+    <div *ngFor="let grupo of gruposPermissoes; let last = last">
+      <b>{{grupo.grupo.label}}</b>
+      <div class="d-flex flex-wrap justify-content-start g-3" [ngClass]="{ 'border-bottom': !last }">
+        <div class="d-flex flex-column m-3" *ngFor="let filho of grupo.grupo.filhos">
+          <label class="mb-1 text-capitalize">{{ filho.label }}</label>
+          <!-- <p>{{ filho.permissoes.join(', ') }}</p> -->
+          <div [formGroupName]="filho.label.replace(' ','').toLocaleLowerCase()">
+            <div *ngFor="let permissao of filho.permissoes">
               <div class="form-check form-switch">
-                <label class="form-check-label" [for]="permissao + grupo.funcionalidade" role="button">
+                <label class="form-check-label" [for]="permissao + filho.label" role="button">
                   {{ permissao | titlecase }}
                 </label>
                 <input class="form-check-input" type="checkbox" role="button" [formControlName]="permissao"
-                  [id]="permissao + grupo.funcionalidade" />
+                  [id]="permissao + filho.label" />
               </div>
             </div>
           </div>
-        </ng-container>
-      </div>
-    </div> -->
-    <div *ngFor="let grupo of gruposPermissoes">
-      <b>{{grupo.grupo.label}}</b>
-      <div class="d-flex flex-wrap justify-content-start g-3">
-        <div class="d-flex flex-column m-3" *ngFor="let filho of grupo.grupo.filhos">
-          <!-- <ng-container *ngIf="incluirForm.get('permissoes')?.get(filho.label)"> -->
-            <label class="mb-1 text-capitalize">{{ filho.label }}</label>
-            <div *ngFor="let permissao of filho.permissoes">
-              <div class="form-check form-switch">
-              <label class="form-check-label" [for]="permissao + filho.label" role="button">
-                {{ permissao | titlecase }}
-              </label>
-              <input class="form-check-input" type="checkbox" role="button" [formControlName]="permissao"
-                  [id]="permissao + filho.label" />
-            </div>
-            </div>
-
-
-
-
-          <!-- </ng-container> -->
         </div>
-
-
-        <!-- class="d-flex flex-column m-3" -->
       </div>
     </div>
   </div>
   <div class="d-md-none d-flex justify-content-center mt-5">
-    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar usuário" [disabled]="incluirForm.invalid">
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar usuário"
+      [disabled]="incluirForm.invalid">
       <span class="icon">
         <i class="fa fa-check"></i>
       </span>

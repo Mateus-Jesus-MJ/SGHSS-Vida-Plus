@@ -32,52 +32,39 @@ export class IncluirUsuarioComponent {
     });
   }
 
-
-  // buscarGrupoPermissoes() {
-  //   this.ngxUiLoaderService.startBackground();
-  //   let tipoUsuario = this.incluirForm.get('tipoUsuario')?.value;
-
-  //   if (tipoUsuario == "pa") {
-  //     this.gruposPermissoes = environment.gruposPermissoesAdmin;
-  //     this.isGrupoPermissoesEmpty = true;
-  //   } else if (tipoUsuario == "ps") {
-  //     this.gruposPermissoes = environment.grupoPermissoesAtendimento;
-  //     this.isGrupoPermissoesEmpty = true;
-  //   }else{
-  //     this.isGrupoPermissoesEmpty = false;
-  //     this.ngxUiLoaderService.stopBackground();
-  //   }
-
-  //   this.adicionarPermissoes();
-  // }
   buscarGrupoPermissoes() {
     this.ngxUiLoaderService.startBackground();
     let tipoUsuario = this.incluirForm.get('tipoUsuario')?.value;
 
     if (tipoUsuario == "pa") {
       this.gruposPermissoes = environment.MenuAdmin;
-      this.isGrupoPermissoesEmpty = true;
+
+
+
+      this.adicionarPermissoes();
     } else if (tipoUsuario == "ps") {
       this.gruposPermissoes = environment.grupoPermissoesAtendimento;
-      this.isGrupoPermissoesEmpty = true;
+      this.adicionarPermissoes();
     } else {
       this.isGrupoPermissoesEmpty = false;
       this.ngxUiLoaderService.stopBackground();
     }
-
-    this.adicionarPermissoes();
   }
 
   adicionarPermissoes() {
     const permissoesControl = this.incluirForm.get('permissoes') as FormGroup;
-    console.log(this.gruposPermissoes);
 
     Object.keys(permissoesControl.controls).forEach(key => {
       permissoesControl.removeControl(key);
     });
 
+    this.gruposPermissoes = this.gruposPermissoes.filter(
+      grupo => grupo.grupo.label.toLowerCase() !== 'admin sistema'
+    );
+
     this.gruposPermissoes.forEach(grupo => {
       const permissoesGrupo = new FormGroup({});
+
 
       if (grupo?.grupo?.filhos?.length) {
         grupo.grupo.filhos.forEach((filho: { label: string; rota: string; permissoes: string[] }) => {
@@ -86,23 +73,11 @@ export class IncluirUsuarioComponent {
               permissoesGrupo.addControl(permissao, new FormControl(false));
             });
           }
+          permissoesControl.addControl(filho.label.replace(' ', '').toLocaleLowerCase(), permissoesGrupo);
         });
-
-        permissoesControl.addControl(grupo.grupo.label, permissoesGrupo);
       }
 
-
-
-
-      // grupo.filhos.forEach(menu =>{
-      //   permissoesGrupo.addControl(menu.label, new FormControl(false));
-      // });
-
-      //   grupo.permissoes.forEach(permissao => {
-      //     permissoesGrupo.addControl(permissao, new FormControl(false));
-      //   });
-
-      //   permissoesControl.addControl(grupo.funcionalidade, permissoesGrupo);
+      this.isGrupoPermissoesEmpty = true;
       this.ngxUiLoaderService.stopBackground();
     });
   }

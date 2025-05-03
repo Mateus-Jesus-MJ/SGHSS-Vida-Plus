@@ -53,7 +53,6 @@ export const environment = {
           {
             label: 'Usuário',
             rota: 'usuarios',
-            permissoes:['incluir', 'editar','excluir']
           }
         ]
       }

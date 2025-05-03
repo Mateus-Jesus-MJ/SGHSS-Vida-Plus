@@ -17,7 +17,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 export class EditarUsuarioComponent implements OnInit {
   editarform!: FormGroup;
   usuario: User | null = null;
-  gruposPermissoes: { funcionalidade: string; permissoes: string[] }[] = [];
+  gruposPermissoes: any[] = [];
   isGrupoPermissoesEmpty = false;
 
   constructor(private routeAcitive: ActivatedRoute,
@@ -53,13 +53,13 @@ export class EditarUsuarioComponent implements OnInit {
     });
   }
 
-  buscarDadosUsuario(id: string){
+  buscarDadosUsuario(id: string) {
     this.usuarioService.buscarUsuarioPorId(id).subscribe(
       (user) => {
         if (user) {
           this.usuario = user;
           this.populateForm(user);
-        }else{
+        } else {
           this.toastr.error("Usuário inválido ou não encontrado");
           this.router.navigateByUrl('/admin/usuarios');
           this.ngxUiLoaderService.stop();
@@ -73,7 +73,7 @@ export class EditarUsuarioComponent implements OnInit {
     switch (user.tipoUsuario) {
       case 'pa':
         this.editarform.get('tipoUsuarioLabel')?.setValue('Profissional de Administração');
-        this.gruposPermissoes = environment.gruposPermissoesAdmin;
+        this.gruposPermissoes = environment.MenuAdmin;
         this.isGrupoPermissoesEmpty = true;
         break;
       case 'ps':
@@ -105,28 +105,34 @@ export class EditarUsuarioComponent implements OnInit {
   }
 
   adicionarPermissoes(user: User) {
-
     const permissoesControl = this.editarform.get('permissoes') as FormGroup;
 
     Object.keys(permissoesControl.controls).forEach(key => {
       permissoesControl.removeControl(key);
     });
 
+    this.gruposPermissoes = this.gruposPermissoes.filter(
+      grupo => grupo.grupo.label.toLowerCase() !== 'admin sistema'
+    );
+
     this.gruposPermissoes.forEach(grupo => {
       const permissoesGrupo = new FormGroup({});
+      if (grupo?.grupo?.filhos?.length) {
+        grupo.grupo.filhos.forEach((filho: { label: string; rota: string; permissoes: string[] }) => {
+          if (filho.permissoes && filho.permissoes.length) {
+            filho.permissoes.forEach(permissao => {
+              const temPermissao = user.autorizacoes?.some(autorizacao =>
+                autorizacao.funcionalidade == filho.label.toLocaleLowerCase().replace(' ', '') && autorizacao.acesso.split(',').includes(permissao));
+              permissoesGrupo.addControl(permissao, new FormControl(temPermissao));
+            });
+          }
+          permissoesControl.addControl(filho.label.replace(' ', '').toLocaleLowerCase(), permissoesGrupo);
+        });
+      }
 
-      grupo.permissoes.forEach(permissao => {
-
-
-
-        const temPermissao = user.autorizacoes?.some(autorizacao =>
-          autorizacao.funcionalidade == grupo.funcionalidade && autorizacao.acesso.split(',').includes(permissao));
-
-        permissoesGrupo.addControl(permissao, new FormControl(temPermissao));
-      });
-      permissoesControl.addControl(grupo.funcionalidade, permissoesGrupo);
+      this.isGrupoPermissoesEmpty = true;
+      this.ngxUiLoaderService.stop();
     });
-    this.ngxUiLoaderService.stop();
   }
 
 
