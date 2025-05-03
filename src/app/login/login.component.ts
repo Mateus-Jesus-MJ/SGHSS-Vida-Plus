@@ -64,36 +64,38 @@ export class LoginComponent {
     };
 
     this.loginService.login(login).subscribe({
-      next: (isValid: boolean) => {
-        if (!isValid) {
-          this.toastService.error("Usuário, senha ou tipo de usuário incorreto");
-        } else {
-          const user = this.authService.getUsuario();
-          if (!user) {
-            this.toastService.error("Erro ao recuperar usuário logado");
-            return;
-          }
-
-          switch (user.tipoUsuario) {
-            case 'ps':
-              this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!","",{"progressBar": true,});
-              this.navigate('atendimento');
-              break;
-            case 'pc':
-              this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!","",{"progressBar": true,});
-              this.navigate('paciente');
-              break;
-            case 'pa':
-              this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!","",{"progressBar": true,});
-              this.navigate('admin');
-              break;
-            default:
-              this.toastService.error("Tipo de usuário desconhecido, tente novamente mais tarde!");
-              break;
-          }
+      next: (response: { canLogin: boolean, tipoUsuario?: string, message?: string }) => {
+        if (!response.canLogin) {
+          this.toastService.error(response.message || "Usuário, senha ou tipo de usuário incorreto", "", { progressBar: true });
+          return;
+        }
+    
+        const user = this.authService.getUsuario();
+        if (!user) {
+          this.toastService.error("Erro ao recuperar usuário logado", "", { progressBar: true });
+    
+          return;
+        }
+    
+        this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!", "", { progressBar: true });
+    
+        switch (response.tipoUsuario) {
+          case 'ps':
+            this.navigate('atendimento');
+            break;
+          case 'pc':
+            this.navigate('paciente');
+            break;
+          case 'pa':
+            this.navigate('admin');
+            break;
+          default:
+            this.toastService.error("Tipo de usuário desconhecido, tente novamente mais tarde!", "", { progressBar: true });
+    
+            break;
         }
       },
-      error: () => this.toastService.error("Erro inesperado! Tente novamente mais tarde")
+      error: () => this.toastService.error("Erro inesperado! Tente novamente mais tarde", "", { progressBar: true })
     });
     this.ngxUiLoaderService.stop();
   }

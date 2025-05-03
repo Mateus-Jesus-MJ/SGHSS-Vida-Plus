@@ -39,7 +39,8 @@ export class LoginService extends BaseService {
       })
     );
   }
-  login(login: Login): Observable<boolean> {
+
+  login(login: Login): Observable<{ canLogin: boolean, tipoUsuario?: string, message?: string }> {
     const usersRef = collection(this.firestore, 'usuarios') as CollectionReference<User>;
     const q = query(
       usersRef,
@@ -62,11 +63,16 @@ export class LoginService extends BaseService {
         const user = users.length > 0 ? users[0] : null;
 
         if (user) {
-          this.authService.login(user);
-          return true;
+          // Verifica o status booleano do usuário
+          if (user.status) {  // Se o status for verdadeiro (ativo)
+            this.authService.login(user);
+            return { canLogin: true, tipoUsuario: user.tipoUsuario }; // Login permitido
+          } else {
+            // Retorna uma mensagem indicando que o usuário está inativo
+            return { canLogin: false, message: 'Seu acesso foi desativado. Entre em contato com o administrador.' };
+          }
         }
-
-        return false;
+        return { canLogin: false, message: 'Usuário ou senha inválidos.' };
       })
     );
   }
