@@ -53,16 +53,13 @@ export const environment = {
           {
             label: 'Usuário',
             rota: 'usuarios',
+            permissoes: []
           }
         ]
       }
     }
   ],
-
-  gruposPermissoesAdmin: [
-    { funcionalidade: 'hospitais', permissoes: ['visualizar', 'incluir', 'editar','excluir'] },
-    { funcionalidade: 'Colaboradores', permissoes: ['visualizar', 'incluir', 'editar','excluir'] },
-  ],
+  
   grupoPermissoesAtendimento: [
     {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']}
   ],
