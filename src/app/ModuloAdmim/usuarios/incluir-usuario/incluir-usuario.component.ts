@@ -63,10 +63,9 @@ export class IncluirUsuarioComponent {
     );
 
     this.gruposPermissoes.forEach(grupo => {
-      const permissoesGrupo = new FormGroup({});
-
-
+      let permissoesGrupo = new FormGroup({});
       if (grupo?.grupo?.filhos?.length) {
+        permissoesGrupo = new FormGroup({});
         grupo.grupo.filhos.forEach((filho: { label: string; rota: string; permissoes: string[] }) => {
           if (filho.permissoes && filho.permissoes.length) {
             filho.permissoes.forEach(permissao => {

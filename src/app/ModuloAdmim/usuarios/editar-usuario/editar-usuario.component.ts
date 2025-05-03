@@ -116,30 +116,25 @@ export class EditarUsuarioComponent implements OnInit {
     );
 
     this.gruposPermissoes.forEach(grupo => {
-      const permissoesGrupo = new FormGroup({});
+      let permissoesGrupo = new FormGroup({});
       if (grupo?.grupo?.filhos?.length) {
         grupo.grupo.filhos.forEach((filho: { label: string; rota: string; permissoes: string[] }) => {
           if (filho.permissoes && filho.permissoes.length) {
+            permissoesGrupo = new FormGroup({});
             filho.permissoes.forEach(permissao => {
               const temPermissao = user.autorizacoes?.some(autorizacao =>
                 autorizacao.funcionalidade == filho.label.toLocaleLowerCase().replace(' ', '') && autorizacao.acesso.split(',').includes(permissao));
               permissoesGrupo.addControl(permissao, new FormControl(temPermissao));
             });
+            permissoesControl.addControl(filho.label.replace(' ', '').toLocaleLowerCase(), permissoesGrupo);
           }
-          permissoesControl.addControl(filho.label.replace(' ', '').toLocaleLowerCase(), permissoesGrupo);
         });
       }
 
       this.isGrupoPermissoesEmpty = true;
       this.ngxUiLoaderService.stop();
     });
-  }
-
-
-
-
-
-
+  } 
 
   submit() {
     this.ngxUiLoaderService.start();
@@ -169,6 +164,8 @@ export class EditarUsuarioComponent implements OnInit {
 
     usuario.autorizacoes = permissoesInserir;
 
+    console.log(permissoesInserir);
+
     this.userService.editarUser(usuario).subscribe({
       next: (res: any) => {
         this.toastr.success(res);
@@ -185,6 +182,9 @@ export class EditarUsuarioComponent implements OnInit {
 
   gerarPermissoesAutomatizado(permissoes: any): Autorizacao[] {
     let permissoesInserir: Autorizacao[] = [];
+
+
+    console.log(permissoes);
 
     for (const grupo in permissoes) {
       if (permissoes.hasOwnProperty(grupo)) {
