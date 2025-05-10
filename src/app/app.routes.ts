@@ -16,6 +16,7 @@ import { CargosComponent } from './ModuloAdmim/cargos/cargos.component';
 import { CargosIncluirComponent } from './ModuloAdmim/cargos/cargos-incluir/cargos-incluir.component';
 import { CargosEditarComponent } from './ModuloAdmim/cargos/cargos-editar/cargos-editar.component';
 import { CargosVisualizarComponent } from './ModuloAdmim/cargos/cargos-visualizar/cargos-visualizar.component';
+import { ColaboradoresIncluirComponent } from './ModuloAdmim/colaboradores/colaboradores-incluir/colaboradores-incluir.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -81,15 +82,15 @@ export const routes: Routes = [
           acesso: 'visualizar'
         },
         children: [
-          // {
-          //   path: 'incluir',
-          //   // component
-          //   data: {
-          //     tipoPermitido: 'pa',
-          //     funcionalidade: 'colaboradores',
-          //     acesso: 'incluir'
-          //   }
-          // }
+          {
+            path: 'incluir',
+            component: ColaboradoresIncluirComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'colaboradores',
+              acesso: 'incluir'
+            }
+          }
         ]
       },
       {
