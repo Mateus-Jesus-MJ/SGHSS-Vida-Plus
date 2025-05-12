@@ -60,8 +60,7 @@
               style="height: 100px; aspect-ratio: 1/1;" />
           </td>
           <td>{{colaborador.nome}}</td>
-          <td>{{ colaborador.cpf | mask: "000.000.000-00" }}</td>
-          <td>{{colaborador.cargo.cargo}}</td>
+          <td>{{colaborador.cargo?.cargo}}</td>
           <td>{{colaborador.dataNascimento}}</td>
           <td>
             {{colaborador.contato.telefone1}}

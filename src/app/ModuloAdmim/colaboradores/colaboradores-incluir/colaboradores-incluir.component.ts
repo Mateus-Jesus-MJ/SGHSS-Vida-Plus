@@ -10,6 +10,10 @@ import { Estado, Municipo } from '../../../_models/Estado';
 import { ToastrService } from 'ngx-toastr';
 import { CargosService } from '../../../_services/cargos.service';
 import { Cargo } from '../../../_models/cargo';
+import { Endereco } from '../../../_models/endereco';
+import { Colaborador } from '../../../_models/colaborador';
+import { Contato } from '../../../_models/contato';
+import { ColaboradorService } from '../../../_services/colaborador.service';
 
 @Component({
   selector: 'app-colaboradores-incluir',
@@ -29,19 +33,18 @@ export class ColaboradoresIncluirComponent {
   cargos!: Cargo[];
   isCargoSelect: boolean = false;
   cargoSelecionado?: Cargo | null;
-  modalAberto: boolean = false;
 
   constructor(
     private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
     private loader: NgxUiLoaderService,
     private toastr: ToastrService,
-    private cargoService: CargosService
+    private cargoService: CargosService,
+    private colaboradorService: ColaboradorService
   ) {
     this.form = new FormGroup({
-      razaoSocial: new FormControl('', Validators.required),
       nome: new FormControl('', Validators.required),
       cpf: new FormControl('', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]),
-      identidade: new FormControl('', [Validators.required]),
+      identidade: new FormControl(''),
       dataNascimento: new FormControl('', [Validators.required]),
       enderecoCep: new FormControl('', [Validators.required]),
       enderecoLogradouro: new FormControl('', [Validators.required]),
@@ -284,22 +287,20 @@ export class ColaboradoresIncluirComponent {
     this.isEstadoSelect = true;
   }
 
-  abrirModal(){
-    this.modalAberto = true;
-  }
 
-  selecionarCargo(cargo: string){
+  selecionarCargo(cargo: string) {
     this.form.get('cargo')?.setValue(cargo);
     const cargoSelect = this.form.get('cargo')?.value?.toLowerCase();
     this.cargoSelecionado = this.cargos.find(c => c.cargo.toLocaleLowerCase() === cargoSelect);
 
-    this.modalAberto = false;
   }
 
   validaCargo() {
     const cargoSelect = this.form.get('cargo')?.value?.toLowerCase(); // normaliza para minúsculo
 
     const cargo = this.cargos.find(c => c.cargo.toLocaleLowerCase() === cargoSelect);
+
+    console.log(cargoSelect);
 
     if (cargo) {
       this.isCargoSelect = true;
@@ -318,6 +319,58 @@ export class ColaboradoresIncluirComponent {
       this.loader.stop();
       return;
     }
+
+    const formData = this.form.value
+
+    formData.nome = formData.nome.toUpperCase();
+    formData.enderecoLogradouro = formData.enderecoLogradouro.toUpperCase();
+    formData.enderecoNumero = formData.enderecoNumero.toUpperCase();
+    formData.enderecoComplemento = formData.enderecoComplemento.toUpperCase();
+    formData.enderecoBairro = formData.enderecoBairro.toUpperCase();
+    formData.enderecoUF = formData.enderecoUF.toUpperCase();
+    formData.enderecoMunicipio = formData.enderecoMunicipio.toUpperCase();
+
+    const endereco: Endereco = {
+      cep: formData.enderecoCep,
+      logradouro: formData.enderecoLogradouro,
+      complemento: formData.enderecoComplemento,
+      bairro: formData.enderecoBairro,
+      localidade: formData.enderecoMunicipio,
+      uf: formData.enderecoUF,
+      numero: formData.enderecoNumero
+    }
+
+    const contato: Contato ={
+      email: formData.email,
+      telefone1: formData.telefone1,
+      telefone2: formData.telefone2
+    }
+
+    const colaborador : Colaborador = {
+      imagem: this.imagemCortada,
+      nome: formData.nome,
+      dataNascimento : formData.dataNascimento,
+      cpf: formData.cpf,
+      identidade: formData.identidade,
+      endereco: endereco,
+      contato: contato,
+      cargoId: this.cargoSelecionado!.id!,
+      salario: formData.salario,
+    }
+
+
+    this.colaboradorService.incluir(colaborador).subscribe({
+    next: (res: any) => {
+        this.form.reset();
+        this.toastr.success(res);
+        this.imagemCortada = "";
+        this.loader.stop();
+      },
+      error: (err: any) => {
+        this.toastr.error(err.message);
+        this.loader.stop();
+      }
+    });
   }
 }
 

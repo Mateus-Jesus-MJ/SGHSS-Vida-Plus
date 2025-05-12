@@ -50,7 +50,7 @@ export class ColaboradoresComponent implements OnInit {
   buscarColaboradores() {
     if (this.rotaFilhaAtiva) return
 
-    this.colaboradorService.buscarTodos().subscribe({
+    this.colaboradorService.buscarColaboradoresComCargo().subscribe({
       next: (colaboradores: Colaborador[] | null) => {
         this.colaboradores = colaboradores;
         this.loaderSercice.stop();

@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, deleteDoc, doc, Firestore, getDoc, getDocs, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, deleteDoc, doc, Firestore, getDoc, getDocs, query, QueryConstraint, updateDoc, where } from '@angular/fire/firestore';
 import { catchError, from, map, Observable, of } from 'rxjs';
+import { WhereFilterOp } from 'firebase/firestore';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +21,15 @@ export abstract class GenericBaseService<T extends { id?: string }> {
       map(snapshot => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as T)))
     );
   }
+
+  buscarComFiltros<T>(filtros: [string, WhereFilterOp, any][]): Observable<T[]> {
+  const constraints = filtros.map(([campo, operador, valor]) =>
+    where(campo, operador, valor)
+  );
+
+  const q = query(this.collectionRef, ...constraints);
+  return collectionData(q, { idField: 'id' }) as Observable<T[]>;
+}
 
   buscarPorId(id: string): Observable<T | null> {
     const docRef = doc(this.firestore, `${this.collectionName}/${id}`);

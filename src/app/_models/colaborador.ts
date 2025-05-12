@@ -1,5 +1,5 @@
 import { Cargo} from "./cargo";
-import { contato } from "./contato";
+import { Contato } from "./contato";
 import { Endereco } from "./endereco";
 import { User } from "./User";
 
@@ -9,11 +9,12 @@ export interface Colaborador {
   nome: string;
   dataNascimento: string;
   cpf: string;
-  identidade: string;
+  identidade?: string;
   endereco: Endereco;
-  contato: contato;
+  contato: Contato;
   cargoId: string;
-  cargo: Cargo;
+  cargo?: Cargo;
+  salario: string;
   usuarioId?: string;
   usuario?: User,
 }
