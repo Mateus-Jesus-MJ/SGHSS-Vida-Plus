@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
-import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { showAlert } from '../../../_util.ts/sweetalert-util';
 import { Cargo, Especialidade, RequisitosDoCargo } from '../../../_models/cargo';
 import { CargosService } from '../../../_services/cargos.service';
 import { environment } from '../../../../environments/environment.development';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cargos-incluir',
