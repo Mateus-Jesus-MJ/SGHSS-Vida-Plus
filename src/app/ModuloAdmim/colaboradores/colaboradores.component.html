@@ -64,9 +64,9 @@
           <td>{{colaborador.dataNascimento}}</td>
           <td>
             {{colaborador.contato.telefone1}}
-            <span *ngIf="colaborador.contato.telefone2 && colaborador.contato.email"> | </span>
+            <br *ngIf="colaborador.contato.telefone2 && colaborador.contato.email" />
             {{colaborador.contato.telefone2}}
-            <span *ngIf="colaborador.contato.email"> | </span>
+            <br *ngIf="colaborador.contato.email" />
             {{colaborador.contato.email}}
           </td>
           <td>{{colaborador.endereco.localidade}} - {{colaborador.endereco.uf}}</td>
