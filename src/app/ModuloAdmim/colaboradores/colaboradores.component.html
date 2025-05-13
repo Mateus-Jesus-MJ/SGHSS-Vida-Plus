@@ -75,10 +75,10 @@
     </table>
   </div>
   <div class="mt-3 d-md-none">
-    <!-- <div class="card p-3 mb-3" *ngFor="let hospital of hospitais">
+    <div class="card p-3 mb-3" *ngFor="let colaborador of colaboradores">
       <div class="d-flex justify-content-between mb-1">
         <div>
-          <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+          <img *ngIf="colaborador.imagem" [src]="colaborador.imagem" alt="Imagem do Hospital"
             style="height: 100px; aspect-ratio: 1/1;" />
         </div>
         <div class="dropdown">
@@ -89,31 +89,32 @@
           <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
             <li>
               <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                (click)="visualizar(hospital.id!)">
+                (click)="visualizar(colaborador.id!)">
                 <i class="fas fa-eye"></i>&nbsp;Visualizar
               </a>
             </li>
             <li>
               <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                (click)="editar(hospital.id!)">
+                (click)="editar(colaborador.id!)">
                 <i class="fas fa-pen"></i>&nbsp;Editar
               </a>
             </li>
             <li>
-              <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(hospital)">
+              <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(colaborador)">
                 <i class="fas fa-trash"></i>&nbsp;Excluir
               </a>
             </li>
           </ul>
         </div>
       </div>
-      <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
-      <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
-      <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}
+      <label><b>Nome:</b> {{colaborador.nome}}</label>
+      <label><b>Cargo:</b> {{colaborador.cargo?.cargo}}</label>
+      <label><b>Data de nascimento:</b> {{colaborador.dataNascimento}}</label>
+      <label><b>Contato: </b>
+          {{colaborador.contato.telefone1}}
+          {{colaborador.contato.telefone2}}
+          {{colaborador.contato.email}}
       </label>
-      <label><b>Cidade:</b> {{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</label>
-      <label><b>Endereço:</b> {{hospital.endereco.logradouro}}, {{hospital.endereco.numero}},
-        {{hospital.endereco.bairro}}</label>
-    </div> -->
+    </div>
   </div>
 </div>
