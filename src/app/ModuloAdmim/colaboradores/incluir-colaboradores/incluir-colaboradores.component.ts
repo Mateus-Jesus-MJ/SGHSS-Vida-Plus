@@ -1,28 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { ConsultaEstadosMunicipiosService } from '../../../_services/consulta-estados-municipios.service';
 import { Estado, Municipo } from '../../../_models/Estado';
+import { ConsultaEstadosMunicipiosService } from '../../../_services/consulta-estados-municipios.service';
+import { Cargo } from '../../../_models/cargo';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToastrService } from 'ngx-toastr';
 import { CargosService } from '../../../_services/cargos.service';
-import { Cargo } from '../../../_models/cargo';
-import { Endereco } from '../../../_models/endereco';
-import { Colaborador } from '../../../_models/colaborador';
-import { Contato } from '../../../_models/contato';
 import { ColaboradorService } from '../../../_services/colaborador.service';
+import { Endereco } from '../../../_models/endereco';
+import { Contato } from '../../../_models/contato';
+import { Colaborador } from '../../../_models/colaborador';
 
 @Component({
-  selector: 'app-colaboradores-incluir',
+  selector: 'app-incluir-colaboradores',
   imports: [CommonModule, ReactiveFormsModule, FormsModule, NgxMaskDirective, RouterModule, ImageCropperComponent, NgxMaskPipe],
-  templateUrl: './colaboradores-incluir.component.html',
-  styleUrl: './colaboradores-incluir.component.scss'
+  templateUrl: './incluir-colaboradores.component.html',
+  styleUrl: './incluir-colaboradores.component.scss'
 })
-export class ColaboradoresIncluirComponent {
-  form!: FormGroup;
+export class IncluirColaboradoresComponent {
+form!: FormGroup;
   estados!: Estado[];
   municipios!: Municipo[];
   imageChangedEvent: any = '';
@@ -373,4 +373,3 @@ export class ColaboradoresIncluirComponent {
     });
   }
 }
-

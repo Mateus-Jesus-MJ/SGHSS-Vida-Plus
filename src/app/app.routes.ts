@@ -16,7 +16,9 @@ import { CargosComponent } from './ModuloAdmim/cargos/cargos.component';
 import { CargosIncluirComponent } from './ModuloAdmim/cargos/cargos-incluir/cargos-incluir.component';
 import { CargosEditarComponent } from './ModuloAdmim/cargos/cargos-editar/cargos-editar.component';
 import { CargosVisualizarComponent } from './ModuloAdmim/cargos/cargos-visualizar/cargos-visualizar.component';
-import { ColaboradoresIncluirComponent } from './ModuloAdmim/colaboradores/colaboradores-incluir/colaboradores-incluir.component';
+import { IncluirColaboradoresComponent } from './ModuloAdmim/colaboradores/incluir-colaboradores/incluir-colaboradores.component';
+import { EditarColaboradoresComponent } from './ModuloAdmim/colaboradores/editar-colaboradores/editar-colaboradores.component';
+
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -84,11 +86,20 @@ export const routes: Routes = [
         children: [
           {
             path: 'incluir',
-            component: ColaboradoresIncluirComponent,
+            component: IncluirColaboradoresComponent,
             data: {
               tipoPermitido: 'pa',
               funcionalidade: 'colaboradores',
               acesso: 'incluir'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarColaboradoresComponent,
+            data:{
+                tipoPermitido: 'pa',
+              funcionalidade: 'colaboradores',
+              acesso: 'editar'
             }
           }
         ]
