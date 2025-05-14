@@ -19,7 +19,6 @@ export interface Colaborador {
   usuarioId?: string;
   usuario?: User,
   dataInicio: string;
-<<<<<<< HEAD
   dataDemissao: string;
   historicoCargos?: Cargo[];
   historicoAvaliacao?: AvaliacaoColaborador[];
@@ -62,7 +61,5 @@ export interface CursosColaborador {
   cargaHoraria?: string;
   certificado?: string;
   instituicaoEnsino?: string;
-=======
   historicoDeCargos?: Cargo[];
->>>>>>> 47ce3eb1fa4bb4a42130f54056f5a0783cf78eaf
 }
