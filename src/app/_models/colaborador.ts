@@ -17,4 +17,6 @@ export interface Colaborador {
   salario: string;
   usuarioId?: string;
   usuario?: User,
+  dataInicio: string;
+  historicoDeCargos?: Cargo[];
 }

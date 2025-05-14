@@ -56,7 +56,7 @@ export class CargosComponent implements OnInit {
         this.ngxUiLoaderService.stop();
       },
       error: () => {
-        this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde", "", { "progressBar": true })
+        this.toastr.error("Erro inesperado ao buscar cargos! Tente novamente mais tarde", "", { "progressBar": true })
         this.ngxUiLoaderService.stop();
       }
     });

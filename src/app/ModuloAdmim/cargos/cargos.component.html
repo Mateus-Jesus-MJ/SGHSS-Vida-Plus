@@ -55,7 +55,7 @@
           <td>{{cargo.cargo}}</td>
           <td>{{ cargo.descricaoDeFuncao }}</td>
           <td>{{cargo.escolaridade}}</td>
-          <td style="min-width: 150px;">R$ {{cargo.salarioBase | mask:"separator.2"}}</td>
+          <td style="min-width: 150px;">R$ {{ cargo.salarioBase | mask: 'separator.2': { thousandSeparator: '.', decimalMarker: ',', leadZero: true } }}</td>
         </tr>
       </tbody>
     </table>
@@ -64,7 +64,7 @@
     <div class="card p-3 mb-3" *ngFor="let cargo of cargos">
       <div class="d-flex justify-content-between mb-1">
         <div>
-          <label><b>Cargo:</b> {{cargo.cargo}}</label><br/>
+          <label><b>Cargo:</b> {{cargo.cargo}}</label><br />
           <label><b>Salário Base:</b> {{cargo.salarioBase}}</label>
           <label><b>Escolaridade:</b> {{cargo.escolaridade}}</label>
         </div>
@@ -75,8 +75,7 @@
           </button>
           <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
             <li>
-              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                (click)="visualizar(cargo.id!)">
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="visualizar(cargo.id!)">
                 <i class="fas fa-eye"></i>&nbsp;Visualizar
               </a>
             </li>

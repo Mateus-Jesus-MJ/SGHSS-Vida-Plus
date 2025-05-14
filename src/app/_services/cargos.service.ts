@@ -48,8 +48,6 @@ export class CargosService {
   }
 
   novoCargo(cargo: Cargo): Observable<any> {
-    console.log('Firestore instance:', this.firestore);
-
     const cargoCollection = collection(this.firestore, this.tabelaCargos);
     const qcargo = query(cargoCollection, where('cargo', '==', cargo.cargo));
 
