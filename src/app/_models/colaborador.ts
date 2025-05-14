@@ -19,7 +19,7 @@ export interface Colaborador {
   usuarioId?: string;
   usuario?: User,
   dataInicio: string;
-  dataDemissao: string;
+  dataDemissao?: string;
   historicoCargos?: Cargo[];
   historicoAvaliacao?: AvaliacaoColaborador[];
   treinamentos?: TreinamentoColaborador[];

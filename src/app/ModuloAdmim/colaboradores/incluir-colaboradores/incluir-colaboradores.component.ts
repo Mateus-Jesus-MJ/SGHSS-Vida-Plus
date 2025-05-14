@@ -358,7 +358,9 @@ form!: FormGroup;
       contato: contato,
       cargoId: this.cargoSelecionado!.id!,
       salario: formData.salario,
-      dataInicio : formData.dataInicio
+      dataInicio : formData.dataInicio,
+      dataDemissao :'',
+      escolaridade : 'Ensino Superior Incompleto'
     }
 
 

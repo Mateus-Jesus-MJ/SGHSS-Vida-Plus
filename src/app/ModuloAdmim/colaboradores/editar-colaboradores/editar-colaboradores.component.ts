@@ -410,7 +410,9 @@ export class EditarColaboradoresComponent implements OnInit {
       contato: contato,
       cargoId: this.cargoSelecionado!.id!,
       salario: formData.salario,
-      dataInicio: formData.dataInicio
+      dataInicio: formData.dataInicio,
+      dataDemissao :'',
+      escolaridade : 'Ensino Superior Incompleto'
     }
     this.colaboradorService.editar(colaborador).subscribe({
       next: (res: any) => {
