@@ -166,14 +166,15 @@
       </div>
       <div class="col-lg-3">
         <div class="form-floating mb-3">
-          <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
+          <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 " [instantPrefix]="true"
             mask="(00) 0000-0000||(00) 0 0000-0000" />
           <label for="telefone1">Telefone</label>
         </div>
       </div>
       <div class="col-lg-3">
         <div class="form-floating mb-5">
-          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2">
+          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2"prefix="+55 " [instantPrefix]="true"
+          mask="(00) 0000-0000||(00) 0 0000-0000" />
           <label for="telefone2">Telefone</label>
         </div>
       </div>
@@ -193,8 +194,8 @@
       </div>
       <div class="col-lg-4">
         <div class="form-floating mb-5">
-          <input type="text" class="form-control" placeholder="" mask="separator.2" thousandSeparator="." prefix="R$ "
-            [allowNegativeNumbers]="false" formControlName="salario"
+          <input type="text" class="form-control" placeholder="" mask="separator.2" thousandSeparator="." prefix="R$ " formGroupName="salario"
+            mask="separator.2" thousandSeparator="." prefix="R$ " [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true"
             [class.is-invalid]="form.get('salario')?.invalid && form.get('salario')?.touched">
           <label>Salario</label>
         </div>
@@ -277,7 +278,7 @@
                 <td>{{cargo.cargo}}</td>
                 <td>{{ cargo.descricaoDeFuncao }}</td>
                 <td>{{cargo.escolaridade}}</td>
-                <td style="min-width: 150px;">R$ {{cargo.salarioBase | mask:"separator.2"}}</td>
+                <td style="min-width: 150px;">R$ {{ cargo.salarioBase | mask: 'separator.2': { thousandSeparator: '.', decimalMarker: ',', leadZero: true } }}</td>
               </tr>
             </tbody>
           </table>

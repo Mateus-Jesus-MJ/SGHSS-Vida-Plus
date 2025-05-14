@@ -62,7 +62,7 @@
         <div class="card bg-secondary position-relative mx-auto"
           style="width: 200px; aspect-ratio: 1/1; overflow: hidden;">
           <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
-  
+
             <!-- Imagem já cortada -->
             <img *ngIf="imagemCortada" [src]="imagemCortada" alt="Imagem do hospital" class="img-fluid w-100 h-100"
               style="object-fit: cover;">
@@ -71,7 +71,7 @@
               data-bs-target="#modalCrop">
               Alterar
             </button>
-  
+
             <!-- Ícone e botão (se não tiver imagem) -->
             <ng-container *ngIf="!imagemCortada">
               <i class="fa fa-user fa-2x text-light"></i>
@@ -155,14 +155,15 @@
       </div>
       <div class="col-lg-3">
         <div class="form-floating mb-3">
-          <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
+          <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 " [instantPrefix]="true"
             mask="(00) 0000-0000||(00) 0 0000-0000" />
           <label for="telefone1">Telefone</label>
         </div>
       </div>
       <div class="col-lg-3">
         <div class="form-floating mb-5">
-          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2"  mask="(00) 0000-0000||(00) 0 0000-0000" />
+          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2" prefix="+55 " [instantPrefix]="true"
+            mask="(00) 0000-0000||(00) 0 0000-0000" />
           <label for="telefone2">Telefone</label>
         </div>
       </div>
@@ -187,10 +188,10 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
         <div class="modal-body">
-  
+
           <!-- Input de imagem -->
           <input type="file" accept="image/*" (change)="fileChangeEvent($event)" class="form-control mb-3" />
-  
+
           <!-- Cropper -->
           <image-cropper [imageChangedEvent]="imageChangedEvent" [resizeToWidth]="256" [cropperMinWidth]="100"
             [cropperMinHeight]="100" (imageCropped)="onImageCropped($event)"   [style.max-height]="'60vh'">
@@ -203,4 +204,3 @@
       </div>
     </div>
   </div>
-  

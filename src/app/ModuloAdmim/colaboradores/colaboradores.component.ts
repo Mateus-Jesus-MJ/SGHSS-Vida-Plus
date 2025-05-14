@@ -4,14 +4,13 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ColaboradorService } from '../../_services/colaborador.service';
 import { filter } from 'rxjs';
-import { NgxMaskPipe } from 'ngx-mask';
 import { CommonModule } from '@angular/common';
 import { showAlert } from '../../_util.ts/sweetalert-util';
 import { Colaborador } from '../../_models/colaborador';
 
 @Component({
   selector: 'app-colaboradores',
-  imports: [RouterModule, CommonModule, NgxMaskPipe],
+  imports: [RouterModule, CommonModule],
   templateUrl: './colaboradores.component.html',
   styleUrl: './colaboradores.component.scss'
 })
@@ -62,11 +61,11 @@ export class ColaboradoresComponent implements OnInit {
     })
   }
   visualizar(id: string) {
-    this.router.navigate(['admin/cargos/visualizar', id]);
+    this.router.navigate(['admin/colaboradores/visualizar', id]);
   }
 
   editar(id: string) {
-    this.router.navigate(['admin/cargos/editar', id]);
+    this.router.navigate(['admin/colaboradores/editar', id]);
   }
 
   excluir(colaborador: Colaborador) {

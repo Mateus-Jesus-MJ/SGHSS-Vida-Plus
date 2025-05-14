@@ -9,7 +9,7 @@ import { WhereFilterOp } from 'firebase/firestore';
   providedIn: 'root'
 })
 export abstract class GenericBaseService<T extends { id?: string }> {
-  private firestore = inject(Firestore);
+  protected firestore = inject(Firestore);
   protected abstract collectionName: string;
 
   protected get collectionRef() {

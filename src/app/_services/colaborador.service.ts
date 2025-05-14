@@ -1,57 +1,144 @@
 import { inject, Injectable } from '@angular/core';
-import { GenericBaseService } from './generic.base.service';
-import { forkJoin, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, forkJoin, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { Colaborador } from '../_models/colaborador';
 import { CargosService } from './cargos.service';
+import { addDoc, collection, CollectionReference, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { Cargo } from '../_models/cargo';
+import { Firestore } from '@angular/fire/firestore';
+import { snapshotEqual } from 'firebase/firestore/lite';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ColaboradorService extends GenericBaseService<Colaborador> {
-  protected override collectionName = 'colaboradores';
+export class ColaboradorService {
+  private firestore = inject(Firestore);
+  private colaboradoresCollection = collection(this.firestore, 'colaboradores');
+
   private cargoService = inject(CargosService);
 
-  incluir(colaborador: Colaborador): Observable<any> {
-    return super.buscarComFiltros([['cpf', '==', colaborador.cpf]]).pipe(
-      map(resultados => resultados.length > 0),
-      switchMap((existe) => {
-        if (existe) {
-          return throwError(() => new Error('Já existe um colaborador com esse CPF.'));
-        }
-        return super.adicionar(colaborador).pipe(
-          map(() => 'Colaborador incluído com sucesso.')
+  buscarColaboradoresComCargo(): Observable<Colaborador[]> {
+    const q = query(
+      this.colaboradoresCollection
+    ) as CollectionReference<Colaborador>;
+
+    return from(getDocs(q)).pipe(
+      map(snapshot =>
+        snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      ),
+      switchMap((colaboradores: Colaborador[]) => {
+        if (colaboradores.length === 0) return of([]);
+
+        const colaboradoresComCargo$ = colaboradores.map(colaborador =>
+          this.cargoService.buscarCargoPorId(colaborador.cargoId).pipe(
+            map(cargo => ({
+              ...colaborador,
+              cargo: cargo ?? undefined
+            }))
+          )
+        );
+
+        return forkJoin(colaboradoresComCargo$);
+      })
+    );
+  }
+
+
+
+
+  buscarPorId(id: string): Observable<Colaborador | null> {
+    const colaboradorRef = doc(this.firestore, `colaboradores/${id}`);
+
+    return from(getDoc(colaboradorRef)).pipe(
+      switchMap(snapshot => {
+        if (!snapshot.exists()) return of(null);
+
+        const data = snapshot.data() as Colaborador;
+        const colaboradorComId: Colaborador = { id: snapshot.id, ...data };
+
+        const cargoRef = doc(this.firestore, `cargos/${data.cargoId}`);
+
+        return from(getDoc(cargoRef)).pipe(
+          map(cargoSnap => {
+            const cargoData = cargoSnap.exists() ? cargoSnap.data() as Cargo : undefined;
+            const cargoCompleto = cargoData ? { id: cargoSnap.id, ...cargoData } : undefined;
+            return { ...colaboradorComId, cargo: cargoCompleto } as Colaborador;
+          })
         );
       })
     );
   }
 
-  buscarColaboradoresComCargo(): Observable<Colaborador[]> {
-  return this.buscarTodos().pipe(
-    switchMap((colaboradores) => {
-      if (colaboradores.length === 0) return of([]);
+  incluir(colaborador: Colaborador): Observable<any> {
+    const qcolaboradorComMesmoCPF = query(this.colaboradoresCollection, where('cpf', '==', colaborador.cpf));
 
-      const colaboradoresComCargo$ = colaboradores.map(colaborador =>
-        this.cargoService.buscarCargoPorId(colaborador.cargoId).pipe(
-          map(cargo => ({
-            ...colaborador,
-            cargo: cargo!
-          }))
-        )
-      );
+    return new Observable(observer => {
+      Promise.all([
+        getDocs(qcolaboradorComMesmoCPF)
+      ]).then(([snapshot]) => {
+        if (!snapshot.empty) {
+          observer.error("Erro ao cadastrar colaborador. Motivo: Já existe um colaborador com esse CPF");
+          observer.complete();
+        }
 
-      return forkJoin(colaboradoresComCargo$);
+        addDoc(this.colaboradoresCollection, structuredClone(colaborador)).then(() => {
+          observer.next("Colaborador cadastrado com sucesso!");
+          observer.complete();
+        }).catch(error => {
+          observer.error(`Erro ao cadastrar cargo. Motivo: ${error}`);
+        });
+      }).catch(error => {
+        observer.error(`Erro ao cadastrar cargo. Motivo: ${error}`);
+      });
     })
-  );
-}
+  }
 
 
-  // override editar(colaborador: Colaboradores): Observable<any> {
-  //   // 🔍 Validação personalizada
-  //   if (!colaborador.nome || colaborador.nome.trim().length < 3) {
-  //     return throwError(() => new Error('Nome do colaborador é obrigatório e deve ter pelo menos 3 caracteres.'));
-  //   }
 
-  //   // ✅ Chamada do método genérico
-  //   return super.editar(colaborador);
-  // }
+  editar(colaborador: Colaborador): Observable<any> {
+    const qcolaboradorComMesmoCPF = query(this.colaboradoresCollection, where('cpf', '==', colaborador.cpf));
+
+    return new Observable(observer => {
+      Promise.all([
+        getDocs(qcolaboradorComMesmoCPF)
+      ]).then(([snapshot]) => {
+        const outroColaboradorMesmoCpf = snapshot.docs.find(doc => doc.id !== colaborador.id)
+
+        if (outroColaboradorMesmoCpf) {
+          observer.error("Erro ao editar colaborador. Motivo: Já existe um colaborador com  esse CPF");
+          return;
+        }
+
+        const colaboradorDocRef = doc(this.firestore, "colaboradores", colaborador.id!);
+        const { id, ...dadosParaAtualizar } = colaborador;
+
+        from(updateDoc(colaboradorDocRef, structuredClone(dadosParaAtualizar)))
+          .subscribe({
+            next: () => {
+              observer.next("Colaborador editado com sucesso!");
+              observer.complete();
+            },
+            error: (error) => {
+              observer.error(`Erro ao editar colaborador. Motivo: ${error}`);
+              observer.complete();
+            }
+          })
+      }).catch(error => {
+        observer.error(`Erro ao editar colaborador. Motivo: ${error}`);
+      });
+    });
+  }
+
+  excluir(id: string): Observable<any>{
+    const colaboradorRef = doc(this.firestore, `colaboradores/${id}`);
+
+    return from(deleteDoc(colaboradorRef)).pipe(
+      map(() => 'Colaborador Excluido com Sucesso!'),
+      catchError(error => {
+        return of(`Erro ao excluir o colaborador. Motivo: ${error}`);
+      })
+    );
+  }
 }

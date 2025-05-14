@@ -292,7 +292,9 @@ form!: FormGroup;
     this.form.get('cargo')?.setValue(cargo);
     const cargoSelect = this.form.get('cargo')?.value?.toLowerCase();
     this.cargoSelecionado = this.cargos.find(c => c.cargo.toLocaleLowerCase() === cargoSelect);
+    this.form.get('salario')?.setValue(this.cargoSelecionado!.salarioBase);
 
+    console.log(this.cargoSelecionado!.salarioBase);
   }
 
   validaCargo() {
@@ -313,12 +315,12 @@ form!: FormGroup;
 
 
   submit() {
-    this.loader.start();
     if (this.form.invalid) {
+      console.log("enviando");
       this.form.markAllAsTouched();
-      this.loader.stop();
       return;
     }
+    this.loader.start();
 
     const formData = this.form.value
 
@@ -356,6 +358,7 @@ form!: FormGroup;
       contato: contato,
       cargoId: this.cargoSelecionado!.id!,
       salario: formData.salario,
+      dataInicio : formData.dataInicio
     }
 
 

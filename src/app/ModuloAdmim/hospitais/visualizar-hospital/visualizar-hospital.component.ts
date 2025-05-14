@@ -62,7 +62,7 @@ constructor(private routeAcitive: ActivatedRoute,
       (hospital) =>{
         if(hospital){
           this.hospital = hospital;
-          this.populateForm(hospital);        
+          this.populateForm(hospital);
         }else{
           this.toastr.error("Hospital não encontrado. Verifique o id informado e tente novamente\n se o problema persistir procure o administrador do sistema","",{"progressBar": true})
         }
@@ -83,8 +83,8 @@ constructor(private routeAcitive: ActivatedRoute,
       enderecoUF: hospital.endereco.uf,
       enderecoMunicipio: hospital.endereco.localidade,
       email: hospital.email,
-      telefone1: hospital.telefone1,
-      telefone2: hospital.telefone2,
+      telefone1: hospital.telefone1 == ''? '' : '+55 ' + hospital.telefone1,
+      telefone2: hospital.telefone2 == ''? '' : '+55 ' + hospital.telefone2,
       imagem: hospital.imagem
     });
 
