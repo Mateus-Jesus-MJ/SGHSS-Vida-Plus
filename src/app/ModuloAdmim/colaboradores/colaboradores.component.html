@@ -61,7 +61,7 @@
           </td>
           <td>{{colaborador.nome}}</td>
           <td>{{colaborador.cargo?.cargo}}</td>
-          <td>{{colaborador.dataNascimento | mask: "00.000.000/0000-00"}}</td>
+          <td>{{ colaborador.dataNascimento | date:'dd/MM/yyyy' }}</td>
           <td>
             {{colaborador.contato.telefone1}}
             <br *ngIf="colaborador.contato.telefone2 && colaborador.contato.email" />
@@ -111,9 +111,9 @@
       <label><b>Cargo:</b> {{colaborador.cargo?.cargo}}</label>
       <label><b>Data de nascimento:</b> {{colaborador.dataNascimento}}</label>
       <label><b>Contato: </b>
-          {{colaborador.contato.telefone1}}
-          {{colaborador.contato.telefone2}}
-          {{colaborador.contato.email}}
+        {{colaborador.contato.telefone1}}
+        {{colaborador.contato.telefone2}}
+        {{colaborador.contato.email}}
       </label>
     </div>
   </div>
