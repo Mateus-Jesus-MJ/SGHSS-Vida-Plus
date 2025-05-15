@@ -23,7 +23,8 @@ export interface Colaborador {
   historicoCargos?: Cargo[];
   historicoAvaliacao?: AvaliacaoColaborador[];
   treinamentos?: TreinamentoColaborador[];
-  formacoes?: FormacoesColaborador[];
+  formacoes?: FormacaoColaborador[];
+  cursos?: CursoColaborador[];
 }
 
 export interface AvaliacaoColaborador {
@@ -48,14 +49,14 @@ export interface TreinamentoColaborador {
   instituicaoEnsino?: string;
 }
 
-export interface FormacoesColaborador {
+export interface FormacaoColaborador {
   nivelEscolaridade: string;
   formacao: string;
   anoConclusao?: string;
   instituicaoEnsino?: string;
 }
 
-export interface CursosColaborador {
+export interface CursoColaborador {
   titulo: string;
   data?: string;
   cargaHoraria?: string;

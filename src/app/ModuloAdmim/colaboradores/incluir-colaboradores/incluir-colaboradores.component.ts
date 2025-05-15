@@ -13,7 +13,7 @@ import { CargosService } from '../../../_services/cargos.service';
 import { ColaboradorService } from '../../../_services/colaborador.service';
 import { Endereco } from '../../../_models/endereco';
 import { Contato } from '../../../_models/contato';
-import { Colaborador } from '../../../_models/colaborador';
+import { Colaborador, FormacaoColaborador } from '../../../_models/colaborador';
 
 @Component({
   selector: 'app-incluir-colaboradores',
@@ -22,7 +22,7 @@ import { Colaborador } from '../../../_models/colaborador';
   styleUrl: './incluir-colaboradores.component.scss'
 })
 export class IncluirColaboradoresComponent {
-form!: FormGroup;
+  form!: FormGroup;
   estados!: Estado[];
   municipios!: Municipo[];
   imageChangedEvent: any = '';
@@ -33,6 +33,7 @@ form!: FormGroup;
   cargos!: Cargo[];
   isCargoSelect: boolean = false;
   cargoSelecionado?: Cargo | null;
+  formacoesColaborador?: FormacaoColaborador[] | null;
 
   constructor(
     private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
@@ -84,6 +85,20 @@ form!: FormGroup;
       }
     })
     this.loader.stop();
+
+    if (!this.formacoesColaborador) {
+      this.formacoesColaborador = [];
+    }
+
+    const formacaoColaborador: FormacaoColaborador = {
+      instituicaoEnsino: 'Colegio Publico',
+      formacao: 'Ensino Médio',
+      anoConclusao: '2017',
+      nivelEscolaridade: 'Ensino Médio'
+    };
+
+    this.formacoesColaborador.push(formacaoColaborador);
+    console.log(this.formacoesColaborador);
   }
 
 
@@ -313,6 +328,18 @@ form!: FormGroup;
     }
   }
 
+  visualizarFormacao(formacao: FormacaoColaborador) {
+
+  }
+
+  editarFormacao(formacao: FormacaoColaborador) {
+
+  }
+
+  excluirFormacao(formacao: FormacaoColaborador) {
+
+  }
+
 
   submit() {
     if (this.form.invalid) {
@@ -342,30 +369,30 @@ form!: FormGroup;
       numero: formData.enderecoNumero
     }
 
-    const contato: Contato ={
+    const contato: Contato = {
       email: formData.email,
       telefone1: formData.telefone1,
       telefone2: formData.telefone2
     }
 
-    const colaborador : Colaborador = {
+    const colaborador: Colaborador = {
       imagem: this.imagemCortada,
       nome: formData.nome,
-      dataNascimento : formData.dataNascimento,
+      dataNascimento: formData.dataNascimento,
       cpf: formData.cpf,
       identidade: formData.identidade,
       endereco: endereco,
       contato: contato,
       cargoId: this.cargoSelecionado!.id!,
       salario: formData.salario,
-      dataInicio : formData.dataInicio,
-      dataDemissao :'',
-      escolaridade : 'Ensino Superior Incompleto'
+      dataInicio: formData.dataInicio,
+      dataDemissao: '',
+      escolaridade: 'Ensino Superior Incompleto'
     }
 
 
     this.colaboradorService.incluir(colaborador).subscribe({
-    next: (res: any) => {
+      next: (res: any) => {
         this.form.reset();
         this.toastr.success(res);
         this.imagemCortada = "";
