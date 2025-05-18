@@ -6,7 +6,7 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { Estado, Municipo } from '../../../_models/Estado';
 import { ConsultaEstadosMunicipiosService } from '../../../_services/consulta-estados-municipios.service';
-import { Cargo } from '../../../_models/cargo';
+import { Cargo, Especialidade } from '../../../_models/cargo';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToastrService } from 'ngx-toastr';
 import { CargosService } from '../../../_services/cargos.service';
@@ -35,6 +35,7 @@ export class IncluirColaboradoresComponent {
   cargos!: Cargo[];
   isCargoSelect: boolean = false;
   cargoSelecionado?: Cargo | null;
+  especialidades: Especialidade[] = [];
   formacoesColaborador: FormacaoColaborador[] = [];
   opcoesEscolaridade = environment.niveisDeEscolaridade;
 
@@ -315,6 +316,45 @@ export class IncluirColaboradoresComponent {
       this.isCargoSelect = false;
       this.toastr.error("Selecione um cargo válido");
     }
+  }
+
+  incluirEspecialidade() {
+    showAlert('Especialidades do cargo',
+      `<div class="form-floating mb-3">
+        <input type="text" class="form-control text-uppercase" id="especialidade" placeholder="">
+        <label for="especialidade">Especialidade</label>
+      </div>`,
+      'info',"primary","",true,"",
+      () => {
+        const input = (document.getElementById('especialidade') as HTMLInputElement);
+        if (!input || input.value.trim() === '') {
+          this.toastr.error('Por favor, preencha a especialidade');
+          return false;
+        }
+        return input.value.toUpperCase();
+      }
+    ).then((result) => {
+      if (result.isConfirmed && result.value) {
+        this.loader.startBackground();
+
+        const especialidade = result.value;
+
+        if (!this.especialidades.some(e => e.especialidade.toUpperCase() === especialidade)) {
+          const nova: Especialidade = { especialidade: especialidade };
+          this.especialidades.push(nova);
+        } else {
+          this.toastr.error('Especialidade já cadastrada');
+        }
+
+        this.loader.stopBackground();
+      }
+    });
+
+  }
+
+  removerEspecialidade(especialidade: string) {
+    this.especialidades =
+      this.especialidades.filter(e => e.especialidade !== especialidade);
   }
 
   textHtmlAdicionarFormacao(): string {

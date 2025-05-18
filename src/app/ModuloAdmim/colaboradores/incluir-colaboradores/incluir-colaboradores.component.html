@@ -233,10 +233,11 @@
           </div>
           <div class="col-lg-4">
             <div class="form-floating mb-5">
-              <input type="text" class="form-control" placeholder="" mask="separator.2" thousandSeparator="."
-                prefix="R$ " formGroupName="salario" mask="separator.2" thousandSeparator="." prefix="R$ "
-                [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true"
-                [class.is-invalid]="form.get('salario')?.invalid && form.get('salario')?.touched">
+              <input type="text" class="form-control" placeholder="" formControlName="salario"
+              mask="separator.2" thousandSeparator="."
+              prefix="R$ " formGroupName="salario" mask="separator.2" thousandSeparator="." prefix="R$ "
+              [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true"
+              [class.is-invalid]="form.get('salario')?.invalid && form.get('salario')?.touched">
               <label>Salario</label>
             </div>
           </div>
@@ -248,6 +249,23 @@
             </div>
           </div>
         </div>
+        <div class="card MT-3">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <h4>Especialidades</h4>
+            <button class="btn btn-primary btn-icon-split" (click)="incluirEspecialidade()">
+              <span class="icon"><i class="fa fa-plus"></i></span>
+              <span class="text px-4">Incluir</span>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="border-top py-3" *ngFor="let especialidade of especialidades">
+              {{especialidade.especialidade}}
+              <i class="fa fa-trash text-danger me-1 float-end mx-3" role="button"
+              (click)="removerEspecialidade(especialidade.especialidade)"></i> 
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <!-- Outro Item -->
@@ -282,7 +300,8 @@
               <td>{{formacao.formacao}}</td>
               <td>{{formacao.anoConclusao}}</td>
               <td>{{formacao.instituicaoEnsino}}</td>
-              <td><i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirFormacao(formacao)"></i></td>
+              <td><i class="fa fa-trash text-danger float-end mx-3" role="button"
+                  (click)="excluirFormacao(formacao)"></i></td>
             </tr>
           </tbody>
         </table>
