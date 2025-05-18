@@ -14,6 +14,8 @@ import { ColaboradorService } from '../../../_services/colaborador.service';
 import { Endereco } from '../../../_models/endereco';
 import { Contato } from '../../../_models/contato';
 import { Colaborador, FormacaoColaborador } from '../../../_models/colaborador';
+import { environment } from '../../../../environments/environment.development';
+import { showAlert } from '../../../_util.ts/sweetalert-util';
 
 @Component({
   selector: 'app-incluir-colaboradores',
@@ -33,7 +35,8 @@ export class IncluirColaboradoresComponent {
   cargos!: Cargo[];
   isCargoSelect: boolean = false;
   cargoSelecionado?: Cargo | null;
-  formacoesColaborador?: FormacaoColaborador[] | null;
+  formacoesColaborador: FormacaoColaborador[] = [];
+  opcoesEscolaridade = environment.niveisDeEscolaridade;
 
   constructor(
     private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
@@ -85,20 +88,6 @@ export class IncluirColaboradoresComponent {
       }
     })
     this.loader.stop();
-
-    if (!this.formacoesColaborador) {
-      this.formacoesColaborador = [];
-    }
-
-    const formacaoColaborador: FormacaoColaborador = {
-      instituicaoEnsino: 'Colegio Publico',
-      formacao: 'Ensino Médio',
-      anoConclusao: '2017',
-      nivelEscolaridade: 'Ensino Médio'
-    };
-
-    this.formacoesColaborador.push(formacaoColaborador);
-    console.log(this.formacoesColaborador);
   }
 
 
@@ -328,16 +317,115 @@ export class IncluirColaboradoresComponent {
     }
   }
 
-  visualizarFormacao(formacao: FormacaoColaborador) {
+  textHtmlAdicionarFormacao(): string {
+    const options = this.opcoesEscolaridade.map(opcao =>
+      `<option value="${opcao.value}">${opcao.label}</option>`
+    ).join('');
 
+    return `
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="form-floating mb-3">
+          <select class="form-select" id="nivelEscolaridade">
+            <option value="" disabled selected></option>
+            ${options}
+          </select>
+          <label for="nivelEscolaridade" class="label-required">Nível de Escolaridade</label>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="form-floating mb-3">
+          <input class="form-control text-uppercase" id="formacao"/>
+          <label for="formacao" class="label-required">Formação</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-2">
+        <div class="form-floating mb-3">
+          <input type="number" class="form-control text-uppercase" id="anoConclusao"/>
+          <label for="anoConclusao" class="label-required">Ano de Conclusão</label>
+        </div>
+      </div>
+      <div class="col-lg-10">
+        <div class="form-floating mb-3">
+          <input class="form-control text-uppercase" id="instituicaoEnsino"/>
+          <label for="instituicaoEnsino" class="label-required">Instituição de Ensino</label>
+        </div>
+      </div>
+    </div>`;
   }
 
-  editarFormacao(formacao: FormacaoColaborador) {
+  getDadosFormacao(): any {
+    const nivelEscolaridade = (document.getElementById('nivelEscolaridade') as HTMLSelectElement)?.value.toUpperCase() || '';
+    const formacao = (document.getElementById('formacao') as HTMLInputElement)?.value.toUpperCase() || '';
+    const anoConclusao = (document.getElementById('anoConclusao') as HTMLInputElement)?.value.toUpperCase() || '';
+    const instituicaoEnsino = (document.getElementById('instituicaoEnsino') as HTMLInputElement)?.value.toUpperCase() || '';
+
+
+    const formacaoColaborador: FormacaoColaborador = {
+      nivelEscolaridade,
+      formacao,
+      anoConclusao,
+      instituicaoEnsino
+    }
+
+    return formacaoColaborador;
+  }
+
+  adicionarFormacao() {
+    showAlert(
+      'Adicionar Formação',
+      this.textHtmlAdicionarFormacao(),
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true,
+      '90vw',
+      () => {
+        const novaformacao = this.getDadosFormacao();
+
+        if (novaformacao.formacao.trim() === "" || novaformacao.nivelEscolaridade === "") {
+          this.toastr.error("Os seguintes campos não podem ser vazios:\nFormação e Nível de Escolaridade.");
+          return false;
+        }
+
+        const jaExiste = this.formacoesColaborador!.some(e =>
+          e.nivelEscolaridade === novaformacao.nivelEscolaridade &&
+          e.formacao.trim().toUpperCase() === novaformacao.formacao.trim().toUpperCase()
+        );
+
+        if (jaExiste) {
+          this.toastr.error("Já existe uma formação com essas informações cadastrada");
+          return false;
+        }
+
+        return novaformacao;
+      }
+    ).then(result => {
+      if (result.isConfirmed && result.value) {
+        this.loader.startBackground();
+        this.formacoesColaborador!.push(result.value);
+        this.loader.stopBackground();
+      }
+    });
 
   }
 
   excluirFormacao(formacao: FormacaoColaborador) {
-
+    showAlert(
+      'Remover Formação',
+      `Deseja mesmo remover a formação em ${formacao.formacao}`,
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true).then(result => {
+        if (result.isConfirmed) {
+          this.loader.startBackground();
+          this.formacoesColaborador = this.formacoesColaborador.filter(f => !(f.nivelEscolaridade === formacao.nivelEscolaridade && f.formacao.trim().toUpperCase() === formacao.formacao.trim().toUpperCase()));
+          this.loader.stopBackground();
+        }
+      });
   }
 
 

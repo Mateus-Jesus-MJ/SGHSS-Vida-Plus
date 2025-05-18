@@ -28,14 +28,16 @@
   <div class="my-3 d-none d-md-flex">
     <nav class="w-100">
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <button class="nav-link active" id="nav-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-geral" type="button"
-          role="tab" aria-controls="nav-geral" aria-selected="true">Geral</button>
+        <button class="nav-link active" id="nav-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-geral"
+          type="button" role="tab" aria-controls="nav-geral" aria-selected="true">Geral</button>
+        <button class="nav-link" id="nav-cargo-tab" data-bs-toggle="tab" data-bs-target="#nav-cargo" type="button"
+          role="tab" aria-controls="nav-cargo" aria-selected="false">Cargo</button>
         <button class="nav-link" id="nav-formacao-tab" data-bs-toggle="tab" data-bs-target="#nav-formacao" type="button"
           role="tab" aria-controls="nav-formacao" aria-selected="false">Formações</button>
         <button class="nav-link" id="nav-cursos-tab" data-bs-toggle="tab" data-bs-target="#nav-cursos" type="button"
           role="tab" aria-controls="nav-cursos" aria-selected="false">Cursos</button>
-          <button class="nav-link" id="nav-avaliacoes-tab" data-bs-toggle="tab" data-bs-target="#nav-avaliacoes" type="button"
-          role="tab" aria-controls="nav-avaliacoes" aria-selected="false">Avaliações</button>
+        <button class="nav-link" id="nav-avaliacoes-tab" data-bs-toggle="tab" data-bs-target="#nav-avaliacoes"
+          type="button" role="tab" aria-controls="nav-avaliacoes" aria-selected="false">Avaliações</button>
       </div>
     </nav>
   </div>
@@ -43,10 +45,12 @@
     <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
       <button class="nav-link active" id="v-pills-geral-tab" data-bs-toggle="pill" data-bs-target="#nav-geral"
         type="button" role="tab" aria-controls="v-pills-geral" aria-selected="true">Geral</button>
+      <button class="nav-link" id="v-pills-cargo-tab" data-bs-toggle="pill" data-bs-target="#nav-cargo" type="button"
+        role="tab" aria-controls="v-pills-cargo" aria-selected="false">Cargo</button>
       <button class="nav-link" id="v-pills-formacao-tab" data-bs-toggle="pill" data-bs-target="#nav-formacao"
         type="button" role="tab" aria-controls="v-pills-formacao" aria-selected="false">Formações</button>
-      <button class="nav-link" id="v-pills-cursos-tab" data-bs-toggle="pill" data-bs-target="#nav-cursos"
-        type="button" role="tab" aria-controls="v-pills-cursos" aria-selected="false">Cursos</button>
+      <button class="nav-link" id="v-pills-cursos-tab" data-bs-toggle="pill" data-bs-target="#nav-cursos" type="button"
+        role="tab" aria-controls="v-pills-cursos" aria-selected="false">Cursos</button>
       <button class="nav-link" id="v-pills-avaliacoes-tab" data-bs-toggle="pill" data-bs-target="#nav-avaliacoes"
         type="button" role="tab" aria-controls="v-pills-avaliacoes" aria-selected="false">Avaliações</button>
     </div>
@@ -212,6 +216,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <!-- Outro Item -->
+    <div class="tab-pane fade" id="nav-cargo" role="tabpanel" aria-labelledby="nav-cargo-tab" tabindex="0">
       <div class="mt-3">
         <h5>Cargo</h5>
         <div class="row mt-3">
@@ -245,16 +252,21 @@
     </div>
     <!-- Outro Item -->
     <div class="tab-pane fade" id="nav-formacao" role="tabpanel" aria-labelledby="nav-formacao-tab" tabindex="0">
-      <div class="mt-3 d-none d-none d-md-flex">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Formações</h5>
+        <button class="btn btn-primary d-md-none" (click)="adicionarFormacao()">
+          <i class="fa fa-plus"></i>
+        </button>
+      </div>
+      <div class="d-none d-none d-md-flex">
         <table class="table border rounded table-striped align-middle">
           <thead>
-            <tr>
-              <th></th>
+            <tr class="text-center">
               <th>Formação</th>
               <th>Ano de Conclusão</th>
               <th>Instituição de Ensino</th>
               <th>
-                <button class="btn btn-primary btn-icon-split float-end" (click)="submit()">
+                <button class="btn btn-primary btn-icon-split float-end" (click)="adicionarFormacao()">
                   <span class="icon">
                     <i class="fa fa-plus"></i>
                   </span>
@@ -266,43 +278,19 @@
             </tr>
           </thead>
           <tbody class="table-group-divider">
+            <tr *ngFor="let formacao of formacoesColaborador">
+              <td>{{formacao.formacao}}</td>
+              <td>{{formacao.anoConclusao}}</td>
+              <td>{{formacao.instituicaoEnsino}}</td>
+              <td><i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirFormacao(formacao)"></i></td>
+            </tr>
           </tbody>
         </table>
       </div>
       <div class="mt-3 d-md-none">
-        <div class="d-flex justify-content-between">
-        <h5 class="mb-3">Formações</h5>
-        <button class="btn btn-primary">
-          <i class="fa fa-plus"></i>
-        </button>
-        </div>
         <div class="card p-3 mb-3" *ngFor="let formacao of formacoesColaborador">
           <div class="d-flex justify-content-end mb-1">
-            <div class="dropdown">
-              <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <i class="fas fa-ellipsis-v"></i>
-              </button>
-              <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
-                <li>
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="visualizarFormacao(formacao!)">
-                    <i class="fas fa-eye"></i>&nbsp;Visualizar
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="editarFormacao(formacao!)">
-                    <i class="fas fa-pen"></i>&nbsp;Editar
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluirFormacao(formacao)">
-                    <i class="fas fa-trash"></i>&nbsp;Excluir
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirFormacao(formacao)"></i>
           </div>
           <label><b>Formação:</b> {{formacao.formacao}}</label>
           <label><b>Instituição de Ensino:</b> {{formacao.instituicaoEnsino}}</label>
