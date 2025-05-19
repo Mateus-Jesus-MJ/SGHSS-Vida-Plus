@@ -38,6 +38,9 @@ export class IncluirColaboradoresComponent {
   especialidades: Especialidade[] = [];
   formacoesColaborador: FormacaoColaborador[] = [];
   opcoesEscolaridade = environment.niveisDeEscolaridade;
+  selectedFile: File | null = null;
+  previewUrl: string | null = null;
+  isImage: boolean = false;
 
   constructor(
     private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
@@ -324,7 +327,7 @@ export class IncluirColaboradoresComponent {
         <input type="text" class="form-control text-uppercase" id="especialidade" placeholder="">
         <label for="especialidade">Especialidade</label>
       </div>`,
-      'info',"primary","",true,"",
+      'info', "primary", "", true, "",
       () => {
         const input = (document.getElementById('especialidade') as HTMLInputElement);
         if (!input || input.value.trim() === '') {
@@ -356,6 +359,11 @@ export class IncluirColaboradoresComponent {
     this.especialidades =
       this.especialidades.filter(e => e.especialidade !== especialidade);
   }
+
+
+  ////////////////////////////////
+  //      Voltado a formação    //
+  ////////////////////////////////
 
   textHtmlAdicionarFormacao(): string {
     const options = this.opcoesEscolaridade.map(opcao =>
@@ -467,6 +475,130 @@ export class IncluirColaboradoresComponent {
         }
       });
   }
+
+  ////////////////////////////////
+  //            Cursos          //
+  ////////////////////////////////
+
+  textHtmlAdicionarCurso(): string {
+    return `
+    <div class="row">
+      <div class="col-lg-10">
+        <div class="row">
+          <div class="col-lg-10">
+            <div class="form-floating mb-3">
+              <input class="form-control text-uppercase" id="curso"/>
+              <label for="formacao" class="label-required">Curso</label>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <div class="form-floating mb-3">
+            <input type="number" class="form-control text-uppercase" id="anoConclusao"/>
+            <label for="anoConclusao" class="label-required">Ano de Conclusão</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2">
+            <div class="form-floating mb-3">
+              <input type="number" class="form-control text-uppercase" id="cargaHoraria"/>
+              <label for="cargaHoraria" class="label-required">Carga Horária</label>
+            </div>
+          </div>
+          <div class="col-lg-10">
+            <div class="form-floating mb-3">
+              <input class="form-control text-uppercase" id="instituicaoEnsino"/>
+              <label for="instituicaoEnsino" class="label-required">Instituição de Ensino</label>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="col-lg-2 text-center">
+        <label for="certificado" class="form-label">Certificado</label>
+        <input type="file" class="form-control mb-2" (change)="onFileSelected($event)" accept="image/*,.pdf" />
+
+        <div style="max-width: 100%; height: auto; border: 1px solid #ccc; padding: 4px;">
+          <ng-container *ngIf="previewUrl; else noPreview">
+            <img *ngIf="isImage; else pdfPreview" [src]="previewUrl" style="max-width: 100%; height: auto;" />
+          </ng-container>
+          <ng-template #pdfPreview>
+            <i class="fas fa-file-pdf fa-3x text-danger"></i>
+            <div class="small">${this.selectedFile?.name}</div>
+          </ng-template>
+          <ng-template #noPreview>
+            <span class="text-muted">Sem preview</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>`;
+  }
+
+
+  adicionarCurso() {
+    showAlert(
+      'Adicionar Curso',
+      this.textHtmlAdicionarCurso(),
+      'info',
+      'primary',
+      '<i class="fas fa-award"></i>',
+      true,
+      '90vw',
+      () => {
+        const novaformacao = this.getDadosFormacao();
+
+        if (novaformacao.formacao.trim() === "" || novaformacao.nivelEscolaridade === "") {
+          this.toastr.error("Os seguintes campos não podem ser vazios:\nFormação e Nível de Escolaridade.");
+          return false;
+        }
+
+        const jaExiste = this.formacoesColaborador!.some(e =>
+          e.nivelEscolaridade === novaformacao.nivelEscolaridade &&
+          e.formacao.trim().toUpperCase() === novaformacao.formacao.trim().toUpperCase()
+        );
+
+        if (jaExiste) {
+          this.toastr.error("Já existe uma formação com essas informações cadastrada");
+          return false;
+        }
+
+        return novaformacao;
+      }
+    ).then(result => {
+      if (result.isConfirmed && result.value) {
+        this.loader.startBackground();
+        this.formacoesColaborador!.push(result.value);
+        this.loader.stopBackground();
+      }
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      const file = this.selectedFile;
+
+      const reader = new FileReader();
+      if (file.type.startsWith('image/')) {
+        this.isImage = true;
+        reader.onload = () => this.previewUrl = reader.result as string;
+        reader.readAsDataURL(file);
+      } else if (file.type === 'application/pdf') {
+        this.isImage = false;
+        this.previewUrl = 'pdf'; // só um marcador para exibir o ícone
+      } else {
+        this.previewUrl = null;
+        this.isImage = false;
+      }
+    }
+  }
+
+
+
+
+
+
+
 
 
   submit() {

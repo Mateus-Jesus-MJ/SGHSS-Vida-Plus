@@ -62,5 +62,4 @@ export interface CursoColaborador {
   cargaHoraria?: string;
   certificado?: string;
   instituicaoEnsino?: string;
-  historicoDeCargos?: Cargo[];
 }

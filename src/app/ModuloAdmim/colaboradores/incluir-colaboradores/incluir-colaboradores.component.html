@@ -233,11 +233,10 @@
           </div>
           <div class="col-lg-4">
             <div class="form-floating mb-5">
-              <input type="text" class="form-control" placeholder="" formControlName="salario"
-              mask="separator.2" thousandSeparator="."
-              prefix="R$ " formGroupName="salario" mask="separator.2" thousandSeparator="." prefix="R$ "
-              [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true"
-              [class.is-invalid]="form.get('salario')?.invalid && form.get('salario')?.touched">
+              <input type="text" class="form-control" placeholder="" formControlName="salario" mask="separator.2"
+                thousandSeparator="." prefix="R$ " formGroupName="salario" mask="separator.2" thousandSeparator="."
+                prefix="R$ " [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true"
+                [class.is-invalid]="form.get('salario')?.invalid && form.get('salario')?.touched">
               <label>Salario</label>
             </div>
           </div>
@@ -249,23 +248,28 @@
             </div>
           </div>
         </div>
-        <div class="card MT-3">
-          <div class="card-body d-flex justify-content-between align-items-center">
-            <h4>Especialidades</h4>
-            <button class="btn btn-primary btn-icon-split" (click)="incluirEspecialidade()">
-              <span class="icon"><i class="fa fa-plus"></i></span>
-              <span class="text px-4">Incluir</span>
-            </button>
-          </div>
-          <div class="card-body">
-            <div class="border-top py-3" *ngFor="let especialidade of especialidades">
-              {{especialidade.especialidade}}
-              <i class="fa fa-trash text-danger me-1 float-end mx-3" role="button"
-              (click)="removerEspecialidade(especialidade.especialidade)"></i> 
-            </div>
-          </div>
+        <div>
+          <table class="table border rounded table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Especialidades</th>
+                <th><button class="btn btn-primary btn-icon-split float-end" (click)="incluirEspecialidade()">
+                    <span class="icon"><i class="fa fa-plus"></i></span>
+                    <span class="text px-4">Incluir</span>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let especialidade of especialidades">
+                <td>{{especialidade.especialidade}}</td>
+                <td> <i class="fa fa-trash text-danger me-1 float-end mx-3" role="button"
+                    (click)="removerEspecialidade(especialidade.especialidade)"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
       </div>
     </div>
     <!-- Outro Item -->
@@ -301,7 +305,8 @@
               <td>{{formacao.anoConclusao}}</td>
               <td>{{formacao.instituicaoEnsino}}</td>
               <td><i class="fa fa-trash text-danger float-end mx-3" role="button"
-                  (click)="excluirFormacao(formacao)"></i></td>
+                  (click)="excluirFormacao(formacao)"></i>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -318,12 +323,52 @@
       </div>
     </div>
     <div class="tab-pane fade" id="nav-cursos" role="tabpanel" aria-labelledby="nav-cursos-tab" tabindex="0">
-      <h5>Cursos</h5>
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Cursos</h5>
+        <button class="btn btn-primary d-md-none" (click)="adicionarFormacao()">
+          <i class="fa fa-plus"></i>
+        </button>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Curso</th>
+              <th>Ano de Conclusão</th>
+              <th>cargaHoraria</th>
+              <th>Instituição</th>
+              <th>
+                <button class="btn btn-primary btn-icon-split float-end" (click)="adicionarCurso()">
+                  <span class="icon">
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span class="text px-4">
+                    Adicionar
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let formacao of formacoesColaborador">
+              <td>{{formacao.formacao}}</td>
+              <td>{{formacao.anoConclusao}}</td>
+              <td>{{formacao.instituicaoEnsino}}</td>
+              <td><i class="fa fa-trash text-danger float-end mx-3" role="button"
+                  (click)="excluirFormacao(formacao)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="tab-pane fade" id="nav-avaliacoes" role="tabpanel" aria-labelledby="nav-avaliacoes-tab" tabindex="0">
       <h5>Avaliações</h5>
     </div>
   </div>
+
+
+
   <!-- Final do forms para celular -->
   <div class="d-md-none d-flex justify-content-center">
     <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="!isEstadoSelect && form.invalid"
