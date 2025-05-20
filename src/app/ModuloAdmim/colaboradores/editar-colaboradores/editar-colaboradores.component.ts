@@ -6,14 +6,16 @@ import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { ConsultaEstadosMunicipiosService } from '../../../_services/consulta-estados-municipios.service';
 import { Estado, Municipo } from '../../../_models/Estado';
-import { Cargo } from '../../../_models/cargo';
+import { Cargo, Especialidade } from '../../../_models/cargo';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToastrService } from 'ngx-toastr';
 import { CargosService } from '../../../_services/cargos.service';
 import { ColaboradorService } from '../../../_services/colaborador.service';
-import { Colaborador } from '../../../_models/colaborador';
+import { Colaborador, CursoColaborador, FormacaoColaborador, TreinamentoColaborador } from '../../../_models/colaborador';
 import { Contato } from '../../../_models/contato';
 import { Endereco } from '../../../_models/endereco';
+import { environment } from '../../../../environments/environment.development';
+import { showAlert } from '../../../_util.ts/sweetalert-util';
 
 @Component({
   selector: 'app-editar-colaboradores',
@@ -34,6 +36,11 @@ export class EditarColaboradoresComponent implements OnInit {
   cargos!: Cargo[];
   isCargoSelect: boolean = false;
   cargoSelecionado?: Cargo | null;
+  especialidades: Especialidade[] = [];
+  formacoesColaborador: FormacaoColaborador[] = [];
+  opcoesEscolaridade = environment.niveisDeEscolaridade;
+  cursosColaborador: CursoColaborador[] = [];
+  treinamentosColaborador: TreinamentoColaborador[] = [];
 
   constructor(
     private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
@@ -136,7 +143,11 @@ export class EditarColaboradoresComponent implements OnInit {
       dataInicio: colaborador.dataInicio
     });
     this.imagemCortada = colaborador.imagem!;
-    this.cargoSelecionado = colaborador.cargo
+    this.cargoSelecionado = colaborador.cargo;
+    this.especialidades = colaborador.especialidade!;
+    this.formacoesColaborador = colaborador.formacoes!;
+    this.cursosColaborador = colaborador.cursos!;
+    this.treinamentosColaborador = colaborador.treinamentos!;
   }
 
   navigate(rota: string) {
@@ -346,11 +357,13 @@ export class EditarColaboradoresComponent implements OnInit {
     this.form.get('cargo')?.setValue(cargo);
     const cargoSelect = this.form.get('cargo')?.value?.toLowerCase();
     this.cargoSelecionado = this.cargos.find(c => c.cargo.toLocaleLowerCase() === cargoSelect);
+    this.form.get('salario')?.setValue(this.cargoSelecionado!.salarioBase);
 
+    console.log(this.cargoSelecionado!.salarioBase);
   }
 
   validaCargo() {
-    const cargoSelect = this.form.get('cargo')?.value?.toLowerCase();
+    const cargoSelect = this.form.get('cargo')?.value?.toLowerCase(); // normaliza para minúsculo
 
     const cargo = this.cargos.find(c => c.cargo.toLocaleLowerCase() === cargoSelect);
 
@@ -363,6 +376,376 @@ export class EditarColaboradoresComponent implements OnInit {
       this.isCargoSelect = false;
       this.toastr.error("Selecione um cargo válido");
     }
+  }
+
+  incluirEspecialidade() {
+    showAlert('Especialidades do cargo',
+      `<div class="form-floating mb-3">
+          <input type="text" class="form-control text-uppercase" id="especialidade" placeholder="">
+          <label for="especialidade">Especialidade</label>
+        </div>`,
+      'info', "primary", "", true, "",
+      () => {
+        const input = (document.getElementById('especialidade') as HTMLInputElement);
+        if (!input || input.value.trim() === '') {
+          this.toastr.error('Por favor, preencha a especialidade');
+          return false;
+        }
+        return input.value.toUpperCase();
+      }
+    ).then((result) => {
+      if (result.isConfirmed && result.value) {
+        this.loader.startBackground();
+
+        const especialidade = result.value;
+
+        if (!this.especialidades.some(e => e.especialidade.toUpperCase() === especialidade)) {
+          const nova: Especialidade = { especialidade: especialidade };
+          this.especialidades.push(nova);
+        } else {
+          this.toastr.error('Especialidade já cadastrada');
+        }
+
+        this.loader.stopBackground();
+      }
+    });
+
+  }
+
+  removerEspecialidade(especialidade: string) {
+    this.especialidades =
+      this.especialidades.filter(e => e.especialidade !== especialidade);
+  }
+
+
+  ////////////////////////////////
+  //      Voltado a formação    //
+  ////////////////////////////////
+
+  textHtmlAdicionarFormacao(): string {
+    const options = this.opcoesEscolaridade.map(opcao =>
+      `<option value="${opcao.value}">${opcao.label}</option>`
+    ).join('');
+
+    return `
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="form-floating mb-3">
+            <select class="form-select" id="nivelEscolaridade">
+              <option value="" disabled selected></option>
+              ${options}
+            </select>
+            <label for="nivelEscolaridade" class="label-required">Nível de Escolaridade</label>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="form-floating mb-3">
+            <input class="form-control text-uppercase" id="formacao"/>
+            <label for="formacao" class="label-required">Formação</label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="form-floating mb-3">
+            <input type="number" class="form-control text-uppercase" id="anoConclusao"/>
+            <label for="anoConclusao" >Ano de Conclusão</label>
+          </div>
+        </div>
+        <div class="col-lg-10">
+          <div class="form-floating mb-3">
+            <input class="form-control text-uppercase" id="instituicaoEnsino"/>
+            <label for="instituicaoEnsino" >Instituição de Ensino</label>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  getDadosFormacao(): any {
+    const nivelEscolaridade = (document.getElementById('nivelEscolaridade') as HTMLSelectElement)?.value.toUpperCase() || '';
+    const formacao = (document.getElementById('formacao') as HTMLInputElement)?.value.toUpperCase() || '';
+    const anoConclusao = (document.getElementById('anoConclusao') as HTMLInputElement)?.value.toUpperCase() || '';
+    const instituicaoEnsino = (document.getElementById('instituicaoEnsino') as HTMLInputElement)?.value.toUpperCase() || '';
+
+
+    const formacaoColaborador: FormacaoColaborador = {
+      nivelEscolaridade,
+      formacao,
+      anoConclusao,
+      instituicaoEnsino,
+    }
+
+    return formacaoColaborador;
+  }
+
+  adicionarFormacao() {
+    showAlert(
+      'Adicionar Formação',
+      this.textHtmlAdicionarFormacao(),
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true,
+      '90vw',
+      () => {
+        const novaformacao = this.getDadosFormacao();
+
+        if (novaformacao.formacao.trim() === "" || novaformacao.nivelEscolaridade === "") {
+          this.toastr.error("Os seguintes campos não podem ser vazios:\nFormação e Nível de Escolaridade.");
+          return false;
+        }
+
+        const jaExiste = this.formacoesColaborador!.some(e =>
+          e.nivelEscolaridade === novaformacao.nivelEscolaridade &&
+          e.formacao.trim().toUpperCase() === novaformacao.formacao.trim().toUpperCase()
+        );
+
+        if (jaExiste) {
+          this.toastr.error("Já existe uma formação com essas informações cadastrada");
+          return false;
+        }
+
+        return novaformacao;
+      }
+    ).then(result => {
+      if (result.isConfirmed && result.value) {
+        this.loader.startBackground();
+        this.formacoesColaborador!.push(result.value);
+        this.loader.stopBackground();
+      }
+    });
+
+  }
+
+  excluirFormacao(formacao: FormacaoColaborador) {
+    showAlert(
+      'Remover Formação',
+      `Deseja mesmo remover a formação em ${formacao.formacao}`,
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true).then(result => {
+        if (result.isConfirmed) {
+          this.loader.startBackground();
+          this.formacoesColaborador = this.formacoesColaborador.filter(f => !(f.nivelEscolaridade === formacao.nivelEscolaridade && f.formacao.trim().toUpperCase() === formacao.formacao.trim().toUpperCase()));
+          this.loader.stopBackground();
+        }
+      });
+  }
+
+  ////////////////////////////////
+  //            Cursos          //
+  ////////////////////////////////
+
+  textHtmlAdicionarCurso(): string {
+    return `
+          <div class="row">
+            <div class="col-lg-10">
+              <div class="form-floating mb-3">
+                <input class="form-control text-uppercase" id="curso"/>
+                <label for="formacao" class="label-required">Curso</label>
+              </div>
+            </div>
+            <div class="col-lg-2">
+              <div class="form-floating mb-3">
+              <input type="number" class="form-control text-uppercase" id="anoConclusao"/>
+              <label for="anoConclusao" >Ano de Conclusão</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-2">
+              <div class="form-floating mb-3">
+                <input type="number" class="form-control text-uppercase" id="cargaHoraria"/>
+                <label for="cargaHoraria" >Carga Horária</label>
+              </div>
+            </div>
+            <div class="col-lg-10">
+              <div class="form-floating mb-3">
+                <input class="form-control text-uppercase" id="instituicaoEnsino"/>
+                <label for="instituicaoEnsino" >Instituição de Ensino</label>
+              </div>
+            </div>
+          </div>`;
+  }
+
+
+  adicionarCurso() {
+    showAlert(
+      'Adicionar Curso',
+      this.textHtmlAdicionarCurso(),
+      'info',
+      'primary',
+      '<i class="fas fa-award"></i>',
+      true,
+      '90vw',
+      () => {
+        const titulo = (document.getElementById('curso') as HTMLInputElement)?.value.trim().toUpperCase();
+        const data = (document.getElementById('anoConclusao') as HTMLInputElement)?.value.trim().toUpperCase();
+        const cargaHoraria = (document.getElementById('cargaHoraria') as HTMLInputElement)?.value.trim().toUpperCase();
+        const instituicao = (document.getElementById('instituicaoEnsino') as HTMLInputElement)?.value.trim().toUpperCase();
+
+        if (!titulo || !data) {
+          this.toastr.error('Título e ano de conclusão são obrigatórios.');
+          return false;
+        }
+
+        const jaExiste = this.cursosColaborador!.some(c =>
+          c.titulo.trim().toUpperCase() === titulo &&
+          c.data?.trim().toUpperCase() === data &&
+          c.instituicaoEnsino?.trim().toUpperCase() === instituicao
+        );
+
+        if (jaExiste) {
+          this.toastr.error("Já existe um curso com essas informações cadastrado");
+          return false;
+        }
+
+        const novoCurso: CursoColaborador = {
+          titulo,
+          data,
+          cargaHoraria,
+          instituicaoEnsino: instituicao,
+        };
+
+        return novoCurso;
+      }
+    ).then(result => {
+      if (result.isConfirmed && result.value) {
+        this.cursosColaborador.push(result.value);
+      }
+    });
+  }
+
+  excluirCurso(curso: CursoColaborador) {
+    showAlert(
+      'Remover Curso',
+      `Deseja mesmo remover o curso de ${curso.titulo}`,
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true).then(result => {
+        if (result.isConfirmed) {
+          this.loader.startBackground();
+          this.cursosColaborador = this.cursosColaborador.filter(c => !(c.titulo === curso.titulo && c.instituicaoEnsino?.trim().toUpperCase() === curso.instituicaoEnsino?.trim().toUpperCase() && c.data == curso.data));
+          this.loader.stopBackground();
+        }
+      });
+  }
+
+  //////////////////////////////////////
+  //            Treinamentos          //
+  //////////////////////////////////////
+
+  textHtmlAdicionarTreinamento(): string {
+    return `
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="form-floating mb-3">
+                <input class="form-control text-uppercase" id="treinamento"/>
+                <label for="formacao" class="label-required">Treinamento</label>
+              </div>
+            </div>
+            <div class="col-lg-2">
+              <div class="form-floating mb-3">
+              <input type="date" class="form-control text-uppercase" id="data"/>
+              <label for="data" >Data</label>
+              </div>
+            </div>
+            <div class="col-lg-2">
+              <div class="form-floating mb-3">
+                <input type="number" class="form-control text-uppercase" id="cargaHoraria"/>
+                <label for="cargaHoraria" >Carga Horária</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+          <div class="col-lg-6">
+              <div class="form-floating mb-3">
+                <input class="form-control text-uppercase" id="instrutor"/>
+                <label for="instrutor" >Instrutor</label>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-floating mb-3">
+                <input class="form-control text-uppercase" id="instituicaoEnsino"/>
+                <label for="instituicaoEnsino" >Instituição de Ensino</label>
+              </div>
+            </div>
+          </div>`;
+  }
+
+  adicionarTreinamento() {
+    showAlert(
+      'Adicionar Treinamento',
+      this.textHtmlAdicionarTreinamento(),
+      'info',
+      'primary',
+      '<i class="fas fa-chalkboard-teacher"></i>',
+      true,
+      '90vw',
+      () => {
+        const titulo = (document.getElementById('treinamento') as HTMLInputElement)?.value.trim().toUpperCase();
+        const data = (document.getElementById('data') as HTMLInputElement)?.value.trim().toUpperCase();
+        const cargaHoraria = (document.getElementById('cargaHoraria') as HTMLInputElement)?.value.trim().toUpperCase();
+        const instituicao = (document.getElementById('instituicaoEnsino') as HTMLInputElement)?.value.trim().toUpperCase();
+        const instrutor = (document.getElementById('instrutor') as HTMLInputElement)?.value.trim().toUpperCase();
+
+
+
+        if (titulo === "") {
+          this.toastr.error("O titulo do treinamento não pode ser vazio");
+          return false;
+        }
+
+        const jaExiste = this.treinamentosColaborador!.some(t =>
+          t.titulo === titulo &&
+          t.data?.trim().toUpperCase() === data &&
+          t.instituicaoEnsino?.trim().toUpperCase() === instituicao &&
+          t.cargaHoraria?.trim().toUpperCase() === cargaHoraria &&
+          t.instrutor?.trim().toUpperCase() === instrutor
+        );
+
+        if (jaExiste) {
+          this.toastr.error("Já existe uma formação com essas informações cadastrada");
+          return false;
+        }
+
+        const novoTreinamento: TreinamentoColaborador = {
+          titulo,
+          data,
+          cargaHoraria,
+          instrutor,
+          instituicaoEnsino: instituicao
+        }
+
+        return novoTreinamento;
+      }
+    ).then(result => {
+      if (result.isConfirmed && result.value) {
+        this.loader.startBackground();
+        this.treinamentosColaborador!.push(result.value);
+        this.loader.stopBackground();
+      }
+    });
+  }
+
+  excluirTreinamento(treinamento: TreinamentoColaborador) {
+    showAlert(
+      'Remover Treinamento',
+      `Deseja mesmo remover o curso de ${treinamento.titulo}`,
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true).then(result => {
+        if (result.isConfirmed) {
+          this.loader.startBackground();
+          this.cursosColaborador = this.treinamentosColaborador.filter(t => !(t.titulo.trim().toUpperCase() === treinamento.titulo &&
+            t.instituicaoEnsino?.trim().toUpperCase() === treinamento.instituicaoEnsino?.trim().toUpperCase() &&
+            t.data == treinamento.data));
+          this.loader.stopBackground();
+        }
+      });
   }
 
 
@@ -411,9 +794,14 @@ export class EditarColaboradoresComponent implements OnInit {
       cargoId: this.cargoSelecionado!.id!,
       salario: formData.salario,
       dataInicio: formData.dataInicio,
-      dataDemissao :'',
-      escolaridade : 'Ensino Superior Incompleto'
+      dataDemissao: '',
+      escolaridade: 'Ensino Superior Incompleto',
+      formacoes: this.formacoesColaborador,
+      cursos: this.cursosColaborador,
+      treinamentos: this.treinamentosColaborador,
+      especialidade: this.especialidades
     }
+
     this.colaboradorService.editar(colaborador).subscribe({
       next: (res: any) => {
         this.toastr.success(res);

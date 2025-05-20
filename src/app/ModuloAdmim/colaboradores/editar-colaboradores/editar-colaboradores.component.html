@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-between mb-3">
   <h3>
-    <a class="d-md-none btn btn-secondary" routerLink="/admin/cargos"><i class="fa fa-arrow-left"></i></a>
-    Incluir Colaborador
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/colaboradores"><i class="fa fa-arrow-left"></i></a>
+    Editar Colaborador
   </h3>
   <div class="d-flex justify-content-between d-none d-none d-md-flex">
     <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/colaboradores">
@@ -25,191 +25,414 @@
 </div>
 <hr />
 <form class="m-3" [formGroup]="form">
-  <div class="row">
-    <div class="col-12 col-md-10 order-2 order-md-1">
-      <h5 class="mt-3">Dados Gerais</h5>
-      <div class="row mt-3">
-        <div class="col-lg-12">
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
-              [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched" />
-            <label for="nome" class="label-required">Nome Completo</label>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="form-floating mb-3">
-            <input type="date" class="form-control" id="dataNascimento" formControlName="dataNascimento"
-              [class.is-invalid]="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched"
-              placeholder="" />
-            <label for="dataNascimento" class="label-required">Data de Nascimento</label>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="cpf" formControlName="cpf"
-              [class.is-invalid]="form.get('cpf')?.invalid && form.get('cpf')?.touched" mask="000.000.000-00"
-              placeholder="" maxlength="14" (blur)="validaCPF()" />
-            <label for="cpf" class="label-required">CPF</label>
-            <div *ngIf="form.get('cpf')?.errors?.['invalidcpf']" class="invalid-feedback">
-              cpf inválido
+  <div class="my-3 d-none d-md-flex">
+    <nav class="w-100">
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-geral"
+          type="button" role="tab" aria-controls="nav-geral" aria-selected="true">Geral</button>
+        <button class="nav-link" id="nav-cargo-tab" data-bs-toggle="tab" data-bs-target="#nav-cargo" type="button"
+          role="tab" aria-controls="nav-cargo" aria-selected="false">Cargo</button>
+        <button class="nav-link" id="nav-formacao-tab" data-bs-toggle="tab" data-bs-target="#nav-formacao" type="button"
+          role="tab" aria-controls="nav-formacao" aria-selected="false">Formações</button>
+        <button class="nav-link" id="nav-cursos-tab" data-bs-toggle="tab" data-bs-target="#nav-cursos" type="button"
+          role="tab" aria-controls="nav-cursos" aria-selected="false">Cursos</button>
+        <button class="nav-link" id="nav-treinamentos-tab" data-bs-toggle="tab" data-bs-target="#nav-treinamentos"
+          type="button" role="tab" aria-controls="nav-treinamentos" aria-selected="false">Treinamentos</button>
+      </div>
+    </nav>
+  </div>
+  <div class="my-3 d-md-none">
+    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      <button class="nav-link active" id="v-pills-geral-tab" data-bs-toggle="pill" data-bs-target="#nav-geral"
+        type="button" role="tab" aria-controls="v-pills-geral" aria-selected="true">Geral</button>
+      <button class="nav-link" id="v-pills-cargo-tab" data-bs-toggle="pill" data-bs-target="#nav-cargo" type="button"
+        role="tab" aria-controls="v-pills-cargo" aria-selected="false">Cargo</button>
+      <button class="nav-link" id="v-pills-formacao-tab" data-bs-toggle="pill" data-bs-target="#nav-formacao"
+        type="button" role="tab" aria-controls="v-pills-formacao" aria-selected="false">Formações</button>
+      <button class="nav-link" id="v-pills-cursos-tab" data-bs-toggle="pill" data-bs-target="#nav-cursos" type="button"
+        role="tab" aria-controls="v-pills-cursos" aria-selected="false">Cursos</button>
+      <button class="nav-link" id="v-pills-treinamentos-tab" data-bs-toggle="pill" data-bs-target="#nav-treinamentos"
+        type="button" role="tab" aria-controls="v-pills-treinamentos" aria-selected="false">Treinamentos</button>
+    </div>
+  </div>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-geral" role="tabpanel" aria-labelledby="nav-geral-tab" tabindex="0">
+      <div class="row">
+        <h5 class="mb-3 d-md-none">Dados Gerais</h5>
+        <div class="col-12 col-lg-10 order-2 order-lg-1">
+          <h5 class="mt-3 d-none d-none d-md-flex">Dados Gerais</h5>
+          <div class="row mt-3">
+            <div class="col-lg-12">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
+                  [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched" />
+                <label for="nome" class="label-required">Nome Completo</label>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-floating mb-3">
+                <input type="date" class="form-control" id="dataNascimento" formControlName="dataNascimento"
+                  [class.is-invalid]="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched"
+                  placeholder="" />
+                <label for="dataNascimento" class="label-required">Data de Nascimento</label>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="cpf" formControlName="cpf"
+                  [class.is-invalid]="form.get('cpf')?.invalid && form.get('cpf')?.touched" mask="000.000.000-00"
+                  placeholder="" maxlength="14" (blur)="validaCPF()" />
+                <label for="cpf" class="label-required">CPF</label>
+                <div *ngIf="form.get('cpf')?.errors?.['invalidcpf']" class="invalid-feedback">
+                  cpf inválido
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="identidade" formControlName="identidade"
+                  [class.is-invalid]="form.get('identidade')?.invalid && form.get('identidade')?.touched"
+                  placeholder="" />
+                <label for="identidade">RG</label>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-4">
-          <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="identidade" formControlName="identidade"
-              [class.is-invalid]="form.get('identidade')?.invalid && form.get('identidade')?.touched" placeholder="" />
-            <label for="identidade">RG</label>
+        <!--Imagem do perfil do hospital -->
+        <div class="col-12 col-md-2 order-1 order-md-2 text-center">
+        <div class="card bg-secondary position-relative mx-auto"
+          style="width: 200px; aspect-ratio: 1/1; overflow: hidden;">
+          <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
+
+            <!-- Imagem já cortada -->
+            <img *ngIf="imagemCortada" [src]="imagemCortada" alt="Imagem do Colaborador" class="img-fluid w-100 h-100"
+              style="object-fit: cover;">
+            <button *ngIf="imagemCortada" class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm position-absolute"
+              style="bottom: 10px; left: 50%; transform: translateX(-50%);" data-bs-toggle="modal"
+              data-bs-target="#modalCrop">
+              Alterar
+            </button>
+
+            <!-- Ícone e botão (se não tiver imagem) -->
+            <ng-container *ngIf="!imagemCortada">
+              <i class="fa fa-user fa-2x text-light"></i>
+              <button class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm" data-bs-toggle="modal"
+                data-bs-target="#modalCrop">
+                Adicionar
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="mt-3">
+        <h5>Endereço</h5>
+        <div class="row mt-3">
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep"
+                (blur)="buscarCEP()">
+              <label for="enderecoCep">CEP</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
+                formControlName="enderecoLogradouro"
+                [class.is-invalid]="form.get('enderecoLogradouro')?.invalid && form.get('enderecoLogradouro')?.touched">
+              <label for="enderecoLogradouro" class="label-required">Logradouro</label>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="enderecoNumero" placeholder=""
+                formControlName="enderecoNumero"
+                [class.is-invalid]="form.get('enderecoNumero')?.invalid && form.get('enderecoNumero')?.touched">
+              <label for="enderecoNumero" class="label-required">Número</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="enderecoComplemento" placeholder=""
+                formControlName="enderecoComplemento">
+              <label for="enderecoComplemento">Complemento</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="enderecoBairro" placeholder=""
+                formControlName="enderecoBairro"
+                [class.is-invalid]="form.get('enderecoBairro')?.invalid && form.get('enderecoBairro')?.touched">
+              <label for="enderecoBairro" class="label-required">Bairro</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <select class="form-select" formControlName="enderecoUF" (input)="buscarMunicipios($event)"
+                [class.is-invalid]="form.get('enderecoUF')?.invalid && form.get('enderecoUF')?.touched">
+                <option value="" disabled selected></option>
+                <option *ngFor="let estado of estados" [value]="estado.sigla">{{estado.nome}}</option>
+              </select>
+              <label for="enderecoBairro" class="label-required">Estado</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input class="form-control" formControlName="enderecoMunicipio" [disabled]="!isEstadoSelect"
+                [class.is-invalid]="form.get('enderecoMunicipio')?.invalid && form.get('enderecoMunicipio')?.touched"
+                list="municipioList" />
+              <datalist id="municipioList">
+                <option *ngFor="let municipio of municipios" [value]="municipio.nome">
+              </datalist>
+              <label for="enderecoMunicipio" class="label-required">Municipio</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3">
+        <h5>Contato</h5>
+        <div class="row mt-3">
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="email" placeholder="" formControlName="email">
+              <label for="email">Email</label>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-floating mb-3">
+              <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1"
+                prefix="+55 " [instantPrefix]="true" mask="(00) 0000-0000||(00) 0 0000-0000" />
+              <label for="telefone1">Telefone</label>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-floating mb-5">
+              <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2"
+                prefix="+55 " [instantPrefix]="true" mask="(00) 0000-0000||(00) 0 0000-0000" />
+              <label for="telefone2">Telefone</label>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <!--Imagem do perfil do hospital -->
-    <div class="col-12 col-md-2 order-1 order-md-2 text-center">
-      <div class="card bg-secondary position-relative mx-auto"
-        style="width: 200px; aspect-ratio: 1/1; overflow: hidden;">
-        <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
+    <!-- Outro Item -->
+    <div class="tab-pane fade" id="nav-cargo" role="tabpanel" aria-labelledby="nav-cargo-tab" tabindex="0">
+      <div class="mt-3">
+        <h5>Cargo</h5>
+        <div class="row mt-3">
+          <div class="col-lg-4">
+            <div class="form-floating input-group mb-5">
+              <input type="text" class="form-control" placeholder="" formControlName="cargo" (blur)="validaCargo()"
+                readonly [class.is-invalid]="form.get('cargo')?.invalid && form.get('cargo')?.touched" />
+              <label>Cargo</label>
+              <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalCargos"
+                role="button"><i class="fas fa-search"></i></button>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-5">
+              <input type="text" class="form-control" placeholder="" formControlName="salario" mask="separator.2"
+                thousandSeparator="." prefix="R$ " formGroupName="salario" mask="separator.2" thousandSeparator="."
+                prefix="R$ " [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true"
+                [class.is-invalid]="form.get('salario')?.invalid && form.get('salario')?.touched">
+              <label>Salario</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-5">
+              <input type="date" class="form-control" placeholder="" formControlName="dataInicio"
+                [class.is-invalid]="form.get('dataInicio')?.invalid && form.get('dataInicio')?.touched" />
+              <label>Data de Inicio</label>
+            </div>
+          </div>
+        </div>
+        <div>
+          <table class="table border rounded table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Especialidades</th>
+                <th><button class="btn btn-primary btn-icon-split float-end" (click)="incluirEspecialidade()">
+                    <span class="icon"><i class="fa fa-plus"></i></span>
+                    <span class="text px-4">Incluir</span>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let especialidade of especialidades">
+                <td>{{especialidade.especialidade}}</td>
+                <td> <i class="fa fa-trash text-danger me-1 float-end mx-3" role="button"
+                    (click)="removerEspecialidade(especialidade.especialidade)"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Outro Item -->
+    <div class="tab-pane fade" id="nav-formacao" role="tabpanel" aria-labelledby="nav-formacao-tab" tabindex="0">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Formações</h5>
+        <button class="btn btn-primary d-md-none" (click)="adicionarFormacao()">
+          <i class="fa fa-plus"></i>
+        </button>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Formação</th>
+              <th>Ano de Conclusão</th>
+              <th>Instituição de Ensino</th>
+              <th>
+                <button class="btn btn-primary btn-icon-split float-end" (click)="adicionarFormacao()">
+                  <span class="icon">
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span class="text px-4">
+                    Adicionar
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let formacao of formacoesColaborador">
+              <td>{{formacao.formacao}}</td>
+              <td>{{formacao.anoConclusao}}</td>
+              <td>{{formacao.instituicaoEnsino}}</td>
+              <td><i class="fa fa-trash text-danger float-end mx-3" role="button"
+                  (click)="excluirFormacao(formacao)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let formacao of formacoesColaborador">
+          <div class="d-flex justify-content-end mb-1">
+            <i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirFormacao(formacao)"></i>
+          </div>
+          <label><b>Formação:</b> {{formacao.formacao}}</label>
+          <label><b>Instituição de Ensino:</b> {{formacao.instituicaoEnsino}}</label>
+          <label><b>Ano de Conclusão:</b> {{formacao.anoConclusao}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-cursos" role="tabpanel" aria-labelledby="nav-cursos-tab" tabindex="0">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Cursos</h5>
+        <button class="btn btn-primary d-md-none" (click)="adicionarCurso()">
+          <i class="fa fa-plus"></i>
+        </button>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Curso</th>
+              <th>Ano de Conclusão</th>
+              <th>cargaHoraria</th>
+              <th>Instituição</th>
+              <th>
+                <button class="btn btn-primary btn-icon-split float-end" (click)="adicionarCurso()">
+                  <span class="icon">
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span class="text px-4">
+                    Adicionar
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let curso of cursosColaborador">
+              <td>{{curso.titulo}}</td>
+              <td>{{curso.data}}</td>
+              <td>{{curso.cargaHoraria}}</td>
+              <td>{{curso.instituicaoEnsino}}</td>
+              <td><i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirCurso(curso)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let curso of cursosColaborador">
+          <div class="d-flex justify-content-end mb-1">
+            <i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirCurso(curso)"></i>
+          </div>
+          <label><b>Curso:</b> {{curso.titulo}}</label>
+          <label><b>Ano de Conclusão:</b> {{curso.data}}</label>
+          <label><b>Carga Horária:</b> {{curso.cargaHoraria}}</label>
+          <label><b>Instituição de Ensino:</b> {{curso.instituicaoEnsino}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-treinamentos" role="tabpanel" aria-labelledby="nav-treinamentos-tab"
+      tabindex="0">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Treinamentos</h5>
+        <button class="btn btn-primary d-md-none" (click)="adicionarTreinamento()">
+          <i class="fa fa-plus"></i>
+        </button>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Treinamento</th>
+              <th>Data</th>
+              <th>cargaHoraria</th>
+              <th>Instrutor</th>
+              <th>Instituição</th>
+              <th>
+                <button class="btn btn-primary btn-icon-split float-end" (click)="adicionarTreinamento()">
+                  <span class="icon">
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span class="text px-4">
+                    Adicionar
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let treinamento of treinamentosColaborador">
+              <td>{{treinamento.titulo}}</td>
+              <td>{{treinamento.data}}</td>
+              <td>{{treinamento.cargaHoraria}}</td>
+              <td>{{treinamento.instrutor}}</td>
+              <td>{{treinamento.instituicaoEnsino}}</td>
+              <td>
+                <i class="fa fa-trash text-danger float-end mx-3" role="button"
+                  (click)="excluirTreinamento(treinamento)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let treinamento of treinamentosColaborador">
+          <div class="d-flex justify-content-end mb-1">
+            <i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirTreinamento(treinamento)"></i>
+          </div>
+          <label><b>Treinamento:</b> {{treinamento.titulo}}</label>
+          <label><b>Data:</b> {{treinamento.data}}</label>
+          <label><b>Carga Horária:</b> {{treinamento.cargaHoraria}}</label>
+          <label><b>Instrutor:</b> {{treinamento.instrutor}}</label>
+          <label><b>Instituição:</b> {{treinamento.instituicaoEnsino}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <!-- Imagem já cortada -->
-          <img *ngIf="imagemCortada" [src]="imagemCortada" alt="Imagem do hospital" class="img-fluid w-100 h-100"
-            style="object-fit: cover;">
-          <button *ngIf="imagemCortada" class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm position-absolute"
-            style="bottom: 10px; left: 50%; transform: translateX(-50%);" data-bs-toggle="modal"
-            data-bs-target="#modalCrop">
-            Alterar
-          </button>
-
-          <!-- Ícone e botão (se não tiver imagem) -->
-          <ng-container *ngIf="!imagemCortada">
-            <i class="fa fa-user fa-2x text-light"></i>
-            <button class="btn btn-light btn-sm mt-2 rounded-pill shadow-sm" data-bs-toggle="modal"
-              data-bs-target="#modalCrop">
-              Adicionar
-            </button>
-          </ng-container>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="mt-3">
-    <h5>Endereço</h5>
-    <div class="row mt-3">
-      <div class="col-lg-4">
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep"
-            (blur)="buscarCEP()">
-          <label for="enderecoCep">CEP</label>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-6">
-        <div class="form-floating mb-3">
-          <input type="email" class="form-control" id="enderecoLogradouro" placeholder=""
-            formControlName="enderecoLogradouro"
-            [class.is-invalid]="form.get('enderecoLogradouro')?.invalid && form.get('enderecoLogradouro')?.touched">
-          <label for="enderecoLogradouro" class="label-required">Logradouro</label>
-        </div>
-      </div>
-      <div class="col-lg-2">
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="enderecoNumero" placeholder="" formControlName="enderecoNumero"
-            [class.is-invalid]="form.get('enderecoNumero')?.invalid && form.get('enderecoNumero')?.touched">
-          <label for="enderecoNumero" class="label-required">Número</label>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="enderecoComplemento" placeholder=""
-            formControlName="enderecoComplemento">
-          <label for="enderecoComplemento">Complemento</label>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro"
-            [class.is-invalid]="form.get('enderecoBairro')?.invalid && form.get('enderecoBairro')?.touched">
-          <label for="enderecoBairro" class="label-required">Bairro</label>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="form-floating mb-3">
-          <select class="form-select" formControlName="enderecoUF" (input)="buscarMunicipios($event)"
-            [class.is-invalid]="form.get('enderecoUF')?.invalid && form.get('enderecoUF')?.touched">
-            <option value="" disabled selected></option>
-            <option *ngFor="let estado of estados" [value]="estado.sigla">{{estado.nome}}</option>
-          </select>
-          <label for="enderecoBairro" class="label-required">Estado</label>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="form-floating mb-3">
-          <input class="form-control" formControlName="enderecoMunicipio" [disabled]="!isEstadoSelect"
-            [class.is-invalid]="form.get('enderecoMunicipio')?.invalid && form.get('enderecoMunicipio')?.touched"
-            list="municipioList" />
-          <datalist id="municipioList">
-            <option *ngFor="let municipio of municipios" [value]="municipio.nome">
-          </datalist>
-          <label for="enderecoMunicipio" class="label-required">Municipio</label>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="mt-3">
-    <h5>Contato</h5>
-    <div class="row mt-3">
-      <div class="col-lg-6">
-        <div class="form-floating mb-3">
-          <input type="email" class="form-control" id="email" placeholder="" formControlName="email">
-          <label for="email">Email</label>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div class="form-floating mb-3">
-          <input type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1" prefix="+55 "
-            [instantPrefix]="true" mask="(00) 0000-0000||(00) 0 0000-0000" />
-          <label for="telefone1">Telefone</label>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div class="form-floating mb-5">
-          <input type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2"
-            prefix="+55 " [instantPrefix]="true" mask="(00) 0000-0000||(00) 0 0000-0000" />
-          <label for="telefone2">Telefone</label>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="mt-3">
-    <h5>Cargo</h5>
-    <div class="row mt-3">
-      <div class="col-lg-4">
-        <div class="form-floating input-group mb-5">
-          <input type="text" class="form-control" placeholder="" formControlName="cargo" (blur)="validaCargo()" readonly
-            [class.is-invalid]="form.get('cargo')?.invalid && form.get('cargo')?.touched" />
-          <label>Cargo</label>
-          <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalCargos"
-            role="button"><i class="fas fa-search"></i></button>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="form-floating mb-5">
-          <input type="text" class="form-control" placeholder="" formControlName="salario" mask="separator.2"
-            thousandSeparator="." prefix="R$ " mask="separator.2" thousandSeparator="." prefix="R$ "
-            [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true"
-            [class.is-invalid]="form.get('salario')?.invalid && form.get('salario')?.touched">
-          <label>Salario</label>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="form-floating mb-5">
-          <input type="date" class="form-control" placeholder="" formControlName="dataInicio"
-            [class.is-invalid]="form.get('dataInicio')?.invalid && form.get('dataInicio')?.touched" />
-          <label>Data de Inicio</label>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Final do forms para celular -->
   <div class="d-md-none d-flex justify-content-center">
     <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="!isEstadoSelect && form.invalid"
       aria-label="Gravar Colaborador">
@@ -246,6 +469,9 @@
     </div>
   </div>
 </div>
+
+
+
 <div class="modal fade" id="modalCargos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-full">
     <div class="modal-content">
@@ -255,12 +481,12 @@
       </div>
       <div class="modal-body">
         <div class="d-flex justify-content-end">
-          <div class="form-floating">
+          <!-- <div class="form-floating">
             <input type="text" class="form-control" placeholder="" />
             <label>Pesquisar</label>
-          </div>
+          </div> -->
         </div>
-        <div class="mt-3">
+        <div class="mt-3 d-none d-md-flex">
           <table class="table border rounded table-striped align-middle">
             <thead>
               <tr>
@@ -285,6 +511,22 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="mt-3 d-md-none">
+          <div class="card mb-3" *ngFor="let cargo of cargos">
+            <div class="card-body">
+              <div class="d-flex justify-content-end mb-1">
+                <i class="fa fa-check text-success" role="button" (click)="selecionarCargo(cargo.cargo)"
+                  data-bs-dismiss="modal"></i>
+              </div>
+              <label><b>Cargo:</b> {{cargo.cargo}}</label>
+              <label><b>Descrição de Função:</b> {{cargo.descricaoDeFuncao}}</label>
+              <label><b>Escolaridade:</b> {{cargo.escolaridade}}</label>
+              <label><b>Salario Base:</b> R$ {{ cargo.salarioBase | mask: 'separator.2': { thousandSeparator: '.',
+                decimalMarker: ',', leadZero: true } }}
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>

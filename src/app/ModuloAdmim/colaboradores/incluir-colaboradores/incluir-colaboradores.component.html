@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-between mb-3">
   <h3>
-    <a class="d-md-none btn btn-secondary" routerLink="/admin/cargos"><i class="fa fa-arrow-left"></i></a>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/colaboradores"><i class="fa fa-arrow-left"></i></a>
     Incluir Colaborador
   </h3>
   <div class="d-flex justify-content-between d-none d-none d-md-flex">
@@ -36,8 +36,10 @@
           role="tab" aria-controls="nav-formacao" aria-selected="false">Formações</button>
         <button class="nav-link" id="nav-cursos-tab" data-bs-toggle="tab" data-bs-target="#nav-cursos" type="button"
           role="tab" aria-controls="nav-cursos" aria-selected="false">Cursos</button>
-        <button class="nav-link" id="nav-avaliacoes-tab" data-bs-toggle="tab" data-bs-target="#nav-avaliacoes"
-          type="button" role="tab" aria-controls="nav-avaliacoes" aria-selected="false">Avaliações</button>
+        <button class="nav-link" id="nav-treinamentos-tab" data-bs-toggle="tab" data-bs-target="#nav-treinamentos"
+          type="button" role="tab" aria-controls="nav-treinamentos" aria-selected="false">Treinamentos</button>
+        <!-- <button class="nav-link" id="nav-avaliacoes-tab" data-bs-toggle="tab" data-bs-target="#nav-avaliacoes"
+          type="button" role="tab" aria-controls="nav-avaliacoes" aria-selected="false">Avaliações</button> -->
       </div>
     </nav>
   </div>
@@ -51,8 +53,10 @@
         type="button" role="tab" aria-controls="v-pills-formacao" aria-selected="false">Formações</button>
       <button class="nav-link" id="v-pills-cursos-tab" data-bs-toggle="pill" data-bs-target="#nav-cursos" type="button"
         role="tab" aria-controls="v-pills-cursos" aria-selected="false">Cursos</button>
-      <button class="nav-link" id="v-pills-avaliacoes-tab" data-bs-toggle="pill" data-bs-target="#nav-avaliacoes"
-        type="button" role="tab" aria-controls="v-pills-avaliacoes" aria-selected="false">Avaliações</button>
+      <button class="nav-link" id="v-pills-treinamentos-tab" data-bs-toggle="pill" data-bs-target="#nav-treinamentos"
+        type="button" role="tab" aria-controls="v-pills-treinamentos" aria-selected="false">Treinamentos</button>
+      <!-- <button class="nav-link" id="v-pills-avaliacoes-tab" data-bs-toggle="pill" data-bs-target="#nav-avaliacoes"
+        type="button" role="tab" aria-controls="v-pills-avaliacoes" aria-selected="false">Avaliações</button> -->
     </div>
   </div>
   <div class="tab-content" id="nav-tabContent">
@@ -325,7 +329,7 @@
     <div class="tab-pane fade" id="nav-cursos" role="tabpanel" aria-labelledby="nav-cursos-tab" tabindex="0">
       <div class="d-flex justify-content-between mt-3">
         <h5>Cursos</h5>
-        <button class="btn btn-primary d-md-none" (click)="adicionarFormacao()">
+        <button class="btn btn-primary d-md-none" (click)="adicionarCurso()">
           <i class="fa fa-plus"></i>
         </button>
       </div>
@@ -350,24 +354,87 @@
             </tr>
           </thead>
           <tbody class="table-group-divider">
-            <tr *ngFor="let formacao of formacoesColaborador">
-              <td>{{formacao.formacao}}</td>
-              <td>{{formacao.anoConclusao}}</td>
-              <td>{{formacao.instituicaoEnsino}}</td>
-              <td><i class="fa fa-trash text-danger float-end mx-3" role="button"
-                  (click)="excluirFormacao(formacao)"></i>
+            <tr *ngFor="let curso of cursosColaborador">
+              <td>{{curso.titulo}}</td>
+              <td>{{curso.data}}</td>
+              <td>{{curso.cargaHoraria}}</td>
+              <td>{{curso.instituicaoEnsino}}</td>
+              <td><i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirCurso(curso)"></i>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let curso of cursosColaborador">
+          <div class="d-flex justify-content-end mb-1">
+            <i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirCurso(curso)"></i>
+          </div>
+          <label><b>Curso:</b> {{curso.titulo}}</label>
+          <label><b>Ano de Conclusão:</b> {{curso.data}}</label>
+          <label><b>Carga Horária:</b> {{curso.cargaHoraria}}</label>
+          <label><b>Instituição de Ensino:</b> {{curso.instituicaoEnsino}}</label>
+        </div>
+      </div>
     </div>
-    <div class="tab-pane fade" id="nav-avaliacoes" role="tabpanel" aria-labelledby="nav-avaliacoes-tab" tabindex="0">
-      <h5>Avaliações</h5>
+    <div class="tab-pane fade" id="nav-treinamentos" role="tabpanel" aria-labelledby="nav-treinamentos-tab"
+      tabindex="0">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Treinamentos</h5>
+        <button class="btn btn-primary d-md-none" (click)="adicionarTreinamento()">
+          <i class="fa fa-plus"></i>
+        </button>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Treinamento</th>
+              <th>Data</th>
+              <th>cargaHoraria</th>
+              <th>Instrutor</th>
+              <th>Instituição</th>
+              <th>
+                <button class="btn btn-primary btn-icon-split float-end" (click)="adicionarTreinamento()">
+                  <span class="icon">
+                    <i class="fa fa-plus"></i>
+                  </span>
+                  <span class="text px-4">
+                    Adicionar
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let treinamento of treinamentosColaborador">
+              <td>{{treinamento.titulo}}</td>
+              <td>{{treinamento.data}}</td>
+              <td>{{treinamento.cargaHoraria}}</td>
+              <td>{{treinamento.instrutor}}</td>
+              <td>{{treinamento.instituicaoEnsino}}</td>
+              <td>
+                <i class="fa fa-trash text-danger float-end mx-3" role="button"
+                  (click)="excluirTreinamento(treinamento)"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let treinamento of treinamentosColaborador">
+          <div class="d-flex justify-content-end mb-1">
+            <i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="excluirTreinamento(treinamento)"></i>
+          </div>
+          <label><b>Treinamento:</b> {{treinamento.titulo}}</label>
+          <label><b>Data:</b> {{treinamento.data}}</label>
+          <label><b>Carga Horária:</b> {{treinamento.cargaHoraria}}</label>
+          <label><b>Instrutor:</b> {{treinamento.instrutor}}</label>
+          <label><b>Instituição:</b> {{treinamento.instituicaoEnsino}}</label>
+        </div>
+      </div>
     </div>
   </div>
-
-
 
   <!-- Final do forms para celular -->
   <div class="d-md-none d-flex justify-content-center">
@@ -418,12 +485,12 @@
       </div>
       <div class="modal-body">
         <div class="d-flex justify-content-end">
-          <div class="form-floating">
+          <!-- <div class="form-floating">
             <input type="text" class="form-control" placeholder="" />
             <label>Pesquisar</label>
-          </div>
+          </div> -->
         </div>
-        <div class="mt-3">
+        <div class="mt-3 d-none d-md-flex">
           <table class="table border rounded table-striped align-middle">
             <thead>
               <tr>
@@ -448,6 +515,22 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="mt-3 d-md-none">
+          <div class="card mb-3" *ngFor="let cargo of cargos">
+            <div class="card-body">
+              <div class="d-flex justify-content-end mb-1">
+                <i class="fa fa-check text-success" role="button" (click)="selecionarCargo(cargo.cargo)"
+                  data-bs-dismiss="modal"></i>
+              </div>
+              <label><b>Cargo:</b> {{cargo.cargo}}</label>
+              <label><b>Descrição de Função:</b> {{cargo.descricaoDeFuncao}}</label>
+              <label><b>Escolaridade:</b> {{cargo.escolaridade}}</label>
+              <label><b>Salario Base:</b> R$ {{ cargo.salarioBase | mask: 'separator.2': { thousandSeparator: '.',
+                decimalMarker: ',', leadZero: true } }}
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>

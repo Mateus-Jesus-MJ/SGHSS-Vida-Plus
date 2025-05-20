@@ -1,0 +1,320 @@
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/colaboradores"><i class="fa fa-arrow-left"></i></a>
+    Visualizar Colaborador
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/colaboradores">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+  </div>
+</div>
+<hr />
+<form class="m-3" [formGroup]="form">
+  <div class="my-3 d-none d-md-flex">
+    <nav class="w-100">
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-geral"
+          type="button" role="tab" aria-controls="nav-geral" aria-selected="true">Geral</button>
+        <button class="nav-link" id="nav-cargo-tab" data-bs-toggle="tab" data-bs-target="#nav-cargo" type="button"
+          role="tab" aria-controls="nav-cargo" aria-selected="false">Cargo</button>
+        <button class="nav-link" id="nav-formacao-tab" data-bs-toggle="tab" data-bs-target="#nav-formacao" type="button"
+          role="tab" aria-controls="nav-formacao" aria-selected="false">Formações</button>
+        <button class="nav-link" id="nav-cursos-tab" data-bs-toggle="tab" data-bs-target="#nav-cursos" type="button"
+          role="tab" aria-controls="nav-cursos" aria-selected="false">Cursos</button>
+        <button class="nav-link" id="nav-treinamentos-tab" data-bs-toggle="tab" data-bs-target="#nav-treinamentos"
+          type="button" role="tab" aria-controls="nav-treinamentos" aria-selected="false">Treinamentos</button>
+      </div>
+    </nav>
+  </div>
+  <div class="my-3 d-md-none">
+    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      <button class="nav-link active" id="v-pills-geral-tab" data-bs-toggle="pill" data-bs-target="#nav-geral"
+        type="button" role="tab" aria-controls="v-pills-geral" aria-selected="true">Geral</button>
+      <button class="nav-link" id="v-pills-cargo-tab" data-bs-toggle="pill" data-bs-target="#nav-cargo" type="button"
+        role="tab" aria-controls="v-pills-cargo" aria-selected="false">Cargo</button>
+      <button class="nav-link" id="v-pills-formacao-tab" data-bs-toggle="pill" data-bs-target="#nav-formacao"
+        type="button" role="tab" aria-controls="v-pills-formacao" aria-selected="false">Formações</button>
+      <button class="nav-link" id="v-pills-cursos-tab" data-bs-toggle="pill" data-bs-target="#nav-cursos" type="button"
+        role="tab" aria-controls="v-pills-cursos" aria-selected="false">Cursos</button>
+      <button class="nav-link" id="v-pills-treinamentos-tab" data-bs-toggle="pill" data-bs-target="#nav-treinamentos"
+        type="button" role="tab" aria-controls="v-pills-treinamentos" aria-selected="false">Treinamentos</button>
+    </div>
+  </div>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-geral" role="tabpanel" aria-labelledby="nav-geral-tab" tabindex="0">
+      <div class="row">
+        <h5 class="mb-3 d-md-none">Dados Gerais</h5>
+        <div class="col-12 col-lg-10 order-2 order-lg-1">
+          <h5 class="mt-3 d-none d-none d-md-flex">Dados Gerais</h5>
+          <div class="row mt-3">
+            <div class="col-lg-12">
+              <div class="form-floating mb-3">
+                <input readonly type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder="" />
+                <label for="nome" class="label-required">Nome Completo</label>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-floating mb-3">
+                <input readonly type="date" class="form-control" id="dataNascimento" formControlName="dataNascimento" placeholder="" />
+                <label for="dataNascimento" class="label-required">Data de Nascimento</label>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-floating mb-3">
+                <input readonly type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="" maxlength="14" />
+                <label for="cpf" class="label-required">CPF</label>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="form-floating mb-3">
+                <input readonly type="text" class="form-control" id="identidade" formControlName="identidade" placeholder="" />
+                <label for="identidade">RG</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Imagem do perfil do hospital -->
+        <div class="col-12 col-md-2 order-1 order-md-2 text-center">
+          <div class="card bg-secondary position-relative mx-auto"
+            style="width: 200px; aspect-ratio: 1/1; overflow: hidden;">
+            <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
+
+              <!-- Imagem já cortada -->
+              <img *ngIf="imagemCortada" [src]="imagemCortada" alt="Imagem do Colaborador" class="img-fluid w-100 h-100"
+                style="object-fit: cover;">
+
+              <!-- Ícone e botão (se não tiver imagem) -->
+              <ng-container *ngIf="!imagemCortada">
+                <i class="fa fa-user fa-2x text-light"></i>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3">
+        <h5>Endereço</h5>
+        <div class="row mt-3">
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input readonly type="text" class="form-control" id="enderecoCep" placeholder="" formControlName="enderecoCep" />
+              <label for="enderecoCep">CEP</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input readonly type="email" class="form-control" id="enderecoLogradouro" placeholder=""
+                formControlName="enderecoLogradouro" />
+              <label for="enderecoLogradouro" class="label-required">Logradouro</label>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <div class="form-floating mb-3">
+              <input readonly type="text" class="form-control" id="enderecoNumero" placeholder="" formControlName="enderecoNumero" />
+              <label for="enderecoNumero" class="label-required">Número</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input readonly type="text" class="form-control" id="enderecoComplemento" placeholder="" formControlName="enderecoComplemento" />
+              <label for="enderecoComplemento">Complemento</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input readonly type="text" class="form-control" id="enderecoBairro" placeholder="" formControlName="enderecoBairro" />
+              <label for="enderecoBairro" class="label-required">Bairro</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input readonly class="form-select" formControlName="enderecoUF" />
+              <label for="enderecoBairro" class="label-required">Estado</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-3">
+              <input readonly class="form-control" formControlName="enderecoMunicipio" [disabled]="!isEstadoSelect" />
+              <label for="enderecoMunicipio" class="label-required">Municipio</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-3">
+        <h5>Contato</h5>
+        <div class="row mt-3">
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input readonly type="email" class="form-control" id="email" placeholder="" formControlName="email">
+              <label for="email">Email</label>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-floating mb-3">
+              <input readonly type="tel" class="form-control" id="telefone1" placeholder="" formControlName="telefone1"
+                prefix="+55 " [instantPrefix]="true" mask="(00) 0000-0000||(00) 0 0000-0000" />
+              <label for="telefone1">Telefone</label>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-floating mb-5">
+              <input readonly type="text" class="form-control" id="telefone2" placeholder="" formControlName="telefone2"
+                prefix="+55 " [instantPrefix]="true" mask="(00) 0000-0000||(00) 0 0000-0000" />
+              <label for="telefone2">Telefone</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Outro Item -->
+    <div class="tab-pane fade" id="nav-cargo" role="tabpanel" aria-labelledby="nav-cargo-tab" tabindex="0">
+      <div class="mt-3">
+        <h5>Cargo</h5>
+        <div class="row mt-3">
+          <div class="col-lg-4">
+            <div class="form-floating input-group mb-5">
+              <input readonly type="text" class="form-control" placeholder="" formControlName="cargo" />
+              <label>Cargo</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-5">
+              <input readonly type="text" class="form-control" placeholder="" formControlName="salario" mask="separator.2"
+                thousandSeparator="." prefix="R$ " formGroupName="salario" mask="separator.2" thousandSeparator="."
+                prefix="R$ " [allowNegativeNumbers]="false" [leadZero]="true" [instantPrefix]="true" />
+              <label>Salario</label>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="form-floating mb-5">
+              <input readonly type="date" class="form-control" placeholder="" formControlName="dataInicio" />
+              <label>Data de Inicio</label>
+            </div>
+          </div>
+        </div>
+        <div>
+          <table class="table border rounded table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Especialidades</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let especialidade of especialidades">
+                <td>{{especialidade.especialidade}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Outro Item -->
+    <div class="tab-pane fade" id="nav-formacao" role="tabpanel" aria-labelledby="nav-formacao-tab" tabindex="0">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Formações</h5>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Formação</th>
+              <th>Ano de Conclusão</th>
+              <th>Instituição de Ensino</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let formacao of formacoesColaborador">
+              <td>{{formacao.formacao}}</td>
+              <td>{{formacao.anoConclusao}}</td>
+              <td>{{formacao.instituicaoEnsino}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let formacao of formacoesColaborador">
+          <label><b>Formação:</b> {{formacao.formacao}}</label>
+          <label><b>Instituição de Ensino:</b> {{formacao.instituicaoEnsino}}</label>
+          <label><b>Ano de Conclusão:</b> {{formacao.anoConclusao}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-cursos" role="tabpanel" aria-labelledby="nav-cursos-tab" tabindex="0">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Cursos</h5>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Curso</th>
+              <th>Ano de Conclusão</th>
+              <th>cargaHoraria</th>
+              <th>Instituição</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let curso of cursosColaborador">
+              <td>{{curso.titulo}}</td>
+              <td>{{curso.data}}</td>
+              <td>{{curso.cargaHoraria}}</td>
+              <td>{{curso.instituicaoEnsino}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let curso of cursosColaborador">
+          <label><b>Curso:</b> {{curso.titulo}}</label>
+          <label><b>Ano de Conclusão:</b> {{curso.data}}</label>
+          <label><b>Carga Horária:</b> {{curso.cargaHoraria}}</label>
+          <label><b>Instituição de Ensino:</b> {{curso.instituicaoEnsino}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-treinamentos" role="tabpanel" aria-labelledby="nav-treinamentos-tab"
+      tabindex="0">
+      <div class="d-flex justify-content-between mt-3">
+        <h5>Treinamentos</h5>
+      </div>
+      <div class="d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>Treinamento</th>
+              <th>Data</th>
+              <th>cargaHoraria</th>
+              <th>Instrutor</th>
+              <th>Instituição</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let treinamento of treinamentosColaborador">
+              <td>{{treinamento.titulo}}</td>
+              <td>{{treinamento.data}}</td>
+              <td>{{treinamento.cargaHoraria}}</td>
+              <td>{{treinamento.instrutor}}</td>
+              <td>{{treinamento.instituicaoEnsino}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let treinamento of treinamentosColaborador">
+          <label><b>Treinamento:</b> {{treinamento.titulo}}</label>
+          <label><b>Data:</b> {{treinamento.data}}</label>
+          <label><b>Carga Horária:</b> {{treinamento.cargaHoraria}}</label>
+          <label><b>Instrutor:</b> {{treinamento.instrutor}}</label>
+          <label><b>Instituição:</b> {{treinamento.instituicaoEnsino}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

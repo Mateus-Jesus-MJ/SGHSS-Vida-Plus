@@ -18,6 +18,7 @@ import { CargosEditarComponent } from './ModuloAdmim/cargos/cargos-editar/cargos
 import { CargosVisualizarComponent } from './ModuloAdmim/cargos/cargos-visualizar/cargos-visualizar.component';
 import { IncluirColaboradoresComponent } from './ModuloAdmim/colaboradores/incluir-colaboradores/incluir-colaboradores.component';
 import { EditarColaboradoresComponent } from './ModuloAdmim/colaboradores/editar-colaboradores/editar-colaboradores.component';
+import { VisualizarColaboradoresComponent } from './ModuloAdmim/colaboradores/visualizar-colaboradores/visualizar-colaboradores.component';
 
 
 export const routes: Routes = [
@@ -100,6 +101,15 @@ export const routes: Routes = [
                 tipoPermitido: 'pa',
               funcionalidade: 'colaboradores',
               acesso: 'editar'
+            }
+          },
+          {
+            path: 'visualizar/:id',
+            component: VisualizarColaboradoresComponent,
+            data:{
+              tipoPermitido: 'pa',
+              funcionalidade: 'colaboradores',
+              acesso: 'visualizar'
             }
           }
         ]

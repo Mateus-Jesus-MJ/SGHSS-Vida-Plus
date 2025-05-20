@@ -1,4 +1,4 @@
-import { Cargo } from "./cargo";
+import { Cargo, Especialidade } from "./cargo";
 import { Contato } from "./contato";
 import { Endereco } from "./endereco";
 import { User } from "./User";
@@ -25,6 +25,7 @@ export interface Colaborador {
   treinamentos?: TreinamentoColaborador[];
   formacoes?: FormacaoColaborador[];
   cursos?: CursoColaborador[];
+  especialidade?: Especialidade[];
 }
 
 export interface AvaliacaoColaborador {
@@ -44,8 +45,7 @@ export interface TreinamentoColaborador {
   titulo: string;
   data?: string;
   cargaHoraria?: string;
-  palestrante?: string;
-  certificado?: string;
+  instrutor?: string;
   instituicaoEnsino?: string;
 }
 
@@ -60,6 +60,5 @@ export interface CursoColaborador {
   titulo: string;
   data?: string;
   cargaHoraria?: string;
-  certificado?: string;
   instituicaoEnsino?: string;
 }

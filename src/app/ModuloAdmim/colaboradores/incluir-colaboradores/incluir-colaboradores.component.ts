@@ -13,7 +13,7 @@ import { CargosService } from '../../../_services/cargos.service';
 import { ColaboradorService } from '../../../_services/colaborador.service';
 import { Endereco } from '../../../_models/endereco';
 import { Contato } from '../../../_models/contato';
-import { Colaborador, FormacaoColaborador } from '../../../_models/colaborador';
+import { Colaborador, CursoColaborador, FormacaoColaborador, TreinamentoColaborador } from '../../../_models/colaborador';
 import { environment } from '../../../../environments/environment.development';
 import { showAlert } from '../../../_util.ts/sweetalert-util';
 
@@ -38,9 +38,8 @@ export class IncluirColaboradoresComponent {
   especialidades: Especialidade[] = [];
   formacoesColaborador: FormacaoColaborador[] = [];
   opcoesEscolaridade = environment.niveisDeEscolaridade;
-  selectedFile: File | null = null;
-  previewUrl: string | null = null;
-  isImage: boolean = false;
+  cursosColaborador: CursoColaborador[] = [];
+  treinamentosColaborador: TreinamentoColaborador[] = [];
 
   constructor(
     private consultaEstadoMunicipios: ConsultaEstadosMunicipiosService,
@@ -392,13 +391,13 @@ export class IncluirColaboradoresComponent {
       <div class="col-lg-2">
         <div class="form-floating mb-3">
           <input type="number" class="form-control text-uppercase" id="anoConclusao"/>
-          <label for="anoConclusao" class="label-required">Ano de Conclusão</label>
+          <label for="anoConclusao" >Ano de Conclusão</label>
         </div>
       </div>
       <div class="col-lg-10">
         <div class="form-floating mb-3">
           <input class="form-control text-uppercase" id="instituicaoEnsino"/>
-          <label for="instituicaoEnsino" class="label-required">Instituição de Ensino</label>
+          <label for="instituicaoEnsino" >Instituição de Ensino</label>
         </div>
       </div>
     </div>`;
@@ -415,7 +414,7 @@ export class IncluirColaboradoresComponent {
       nivelEscolaridade,
       formacao,
       anoConclusao,
-      instituicaoEnsino
+      instituicaoEnsino,
     }
 
     return formacaoColaborador;
@@ -482,8 +481,6 @@ export class IncluirColaboradoresComponent {
 
   textHtmlAdicionarCurso(): string {
     return `
-    <div class="row">
-      <div class="col-lg-10">
         <div class="row">
           <div class="col-lg-10">
             <div class="form-floating mb-3">
@@ -494,7 +491,7 @@ export class IncluirColaboradoresComponent {
           <div class="col-lg-2">
             <div class="form-floating mb-3">
             <input type="number" class="form-control text-uppercase" id="anoConclusao"/>
-            <label for="anoConclusao" class="label-required">Ano de Conclusão</label>
+            <label for="anoConclusao" >Ano de Conclusão</label>
             </div>
           </div>
         </div>
@@ -502,35 +499,16 @@ export class IncluirColaboradoresComponent {
           <div class="col-lg-2">
             <div class="form-floating mb-3">
               <input type="number" class="form-control text-uppercase" id="cargaHoraria"/>
-              <label for="cargaHoraria" class="label-required">Carga Horária</label>
+              <label for="cargaHoraria" >Carga Horária</label>
             </div>
           </div>
           <div class="col-lg-10">
             <div class="form-floating mb-3">
               <input class="form-control text-uppercase" id="instituicaoEnsino"/>
-              <label for="instituicaoEnsino" class="label-required">Instituição de Ensino</label>
+              <label for="instituicaoEnsino" >Instituição de Ensino</label>
             </div>
           </div>
-        </div>
-      </div>
-       <div class="col-lg-2 text-center">
-        <label for="certificado" class="form-label">Certificado</label>
-        <input type="file" class="form-control mb-2" (change)="onFileSelected($event)" accept="image/*,.pdf" />
-
-        <div style="max-width: 100%; height: auto; border: 1px solid #ccc; padding: 4px;">
-          <ng-container *ngIf="previewUrl; else noPreview">
-            <img *ngIf="isImage; else pdfPreview" [src]="previewUrl" style="max-width: 100%; height: auto;" />
-          </ng-container>
-          <ng-template #pdfPreview>
-            <i class="fas fa-file-pdf fa-3x text-danger"></i>
-            <div class="small">${this.selectedFile?.name}</div>
-          </ng-template>
-          <ng-template #noPreview>
-            <span class="text-muted">Sem preview</span>
-          </ng-template>
-        </div>
-      </div>
-    </div>`;
+        </div>`;
   }
 
 
@@ -544,16 +522,130 @@ export class IncluirColaboradoresComponent {
       true,
       '90vw',
       () => {
-        const novaformacao = this.getDadosFormacao();
+        const titulo = (document.getElementById('curso') as HTMLInputElement)?.value.trim().toUpperCase();
+        const data = (document.getElementById('anoConclusao') as HTMLInputElement)?.value.trim().toUpperCase();
+        const cargaHoraria = (document.getElementById('cargaHoraria') as HTMLInputElement)?.value.trim().toUpperCase();
+        const instituicao = (document.getElementById('instituicaoEnsino') as HTMLInputElement)?.value.trim().toUpperCase();
 
-        if (novaformacao.formacao.trim() === "" || novaformacao.nivelEscolaridade === "") {
-          this.toastr.error("Os seguintes campos não podem ser vazios:\nFormação e Nível de Escolaridade.");
+        if (!titulo || !data) {
+          this.toastr.error('Título e ano de conclusão são obrigatórios.');
           return false;
         }
 
-        const jaExiste = this.formacoesColaborador!.some(e =>
-          e.nivelEscolaridade === novaformacao.nivelEscolaridade &&
-          e.formacao.trim().toUpperCase() === novaformacao.formacao.trim().toUpperCase()
+        const jaExiste = this.cursosColaborador!.some(c =>
+          c.titulo.trim().toUpperCase() === titulo &&
+          c.data?.trim().toUpperCase() === data &&
+          c.instituicaoEnsino?.trim().toUpperCase() === instituicao
+        );
+
+        if (jaExiste) {
+          this.toastr.error("Já existe um curso com essas informações cadastrado");
+          return false;
+        }
+
+        const novoCurso: CursoColaborador = {
+          titulo,
+          data,
+          cargaHoraria,
+          instituicaoEnsino: instituicao,
+        };
+
+        return novoCurso;
+      }
+    ).then(result => {
+      if (result.isConfirmed && result.value) {
+        this.cursosColaborador.push(result.value);
+      }
+    });
+  }
+
+  excluirCurso(curso: CursoColaborador) {
+    showAlert(
+      'Remover Curso',
+      `Deseja mesmo remover o curso de ${curso.titulo}`,
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true).then(result => {
+        if (result.isConfirmed) {
+          this.loader.startBackground();
+          this.cursosColaborador = this.cursosColaborador.filter(c => !(c.titulo === curso.titulo && c.instituicaoEnsino?.trim().toUpperCase() === curso.instituicaoEnsino?.trim().toUpperCase() && c.data == curso.data));
+          this.loader.stopBackground();
+        }
+      });
+  }
+
+  //////////////////////////////////////
+  //            Treinamentos          //
+  //////////////////////////////////////
+
+  textHtmlAdicionarTreinamento(): string {
+    return `
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="form-floating mb-3">
+              <input class="form-control text-uppercase" id="treinamento"/>
+              <label for="formacao" class="label-required">Treinamento</label>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <div class="form-floating mb-3">
+            <input type="date" class="form-control text-uppercase" id="data"/>
+            <label for="data" >Data</label>
+            </div>
+          </div>
+          <div class="col-lg-2">
+            <div class="form-floating mb-3">
+              <input type="number" class="form-control text-uppercase" id="cargaHoraria"/>
+              <label for="cargaHoraria" >Carga Horária</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+        <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input class="form-control text-uppercase" id="instrutor"/>
+              <label for="instrutor" >Instrutor</label>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-floating mb-3">
+              <input class="form-control text-uppercase" id="instituicaoEnsino"/>
+              <label for="instituicaoEnsino" >Instituição de Ensino</label>
+            </div>
+          </div>
+        </div>`;
+  }
+
+  adicionarTreinamento() {
+    showAlert(
+      'Adicionar Treinamento',
+      this.textHtmlAdicionarTreinamento(),
+      'info',
+      'primary',
+      '<i class="fas fa-chalkboard-teacher"></i>',
+      true,
+      '90vw',
+      () => {
+        const titulo = (document.getElementById('treinamento') as HTMLInputElement)?.value.trim().toUpperCase();
+        const data = (document.getElementById('data') as HTMLInputElement)?.value.trim().toUpperCase();
+        const cargaHoraria = (document.getElementById('cargaHoraria') as HTMLInputElement)?.value.trim().toUpperCase();
+        const instituicao = (document.getElementById('instituicaoEnsino') as HTMLInputElement)?.value.trim().toUpperCase();
+        const instrutor = (document.getElementById('instrutor') as HTMLInputElement)?.value.trim().toUpperCase();
+
+
+
+        if (titulo === "") {
+          this.toastr.error("O titulo do treinamento não pode ser vazio");
+          return false;
+        }
+
+        const jaExiste = this.treinamentosColaborador!.some(t =>
+          t.titulo === titulo &&
+          t.data?.trim().toUpperCase() === data &&
+          t.instituicaoEnsino?.trim().toUpperCase() === instituicao &&
+          t.cargaHoraria?.trim().toUpperCase() === cargaHoraria &&
+          t.instrutor?.trim().toUpperCase() === instrutor
         );
 
         if (jaExiste) {
@@ -561,44 +653,42 @@ export class IncluirColaboradoresComponent {
           return false;
         }
 
-        return novaformacao;
+        const novoTreinamento: TreinamentoColaborador = {
+          titulo,
+          data,
+          cargaHoraria,
+          instrutor,
+          instituicaoEnsino: instituicao
+        }
+
+        return novoTreinamento;
       }
     ).then(result => {
       if (result.isConfirmed && result.value) {
         this.loader.startBackground();
-        this.formacoesColaborador!.push(result.value);
+        this.treinamentosColaborador!.push(result.value);
         this.loader.stopBackground();
       }
     });
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      this.selectedFile = input.files[0];
-      const file = this.selectedFile;
-
-      const reader = new FileReader();
-      if (file.type.startsWith('image/')) {
-        this.isImage = true;
-        reader.onload = () => this.previewUrl = reader.result as string;
-        reader.readAsDataURL(file);
-      } else if (file.type === 'application/pdf') {
-        this.isImage = false;
-        this.previewUrl = 'pdf'; // só um marcador para exibir o ícone
-      } else {
-        this.previewUrl = null;
-        this.isImage = false;
-      }
-    }
+  excluirTreinamento(treinamento: TreinamentoColaborador) {
+    showAlert(
+      'Remover Treinamento',
+      `Deseja mesmo remover o curso de ${treinamento.titulo}`,
+      'info',
+      'primary',
+      '<i class="fas fa-user-graduate"></i>',
+      true).then(result => {
+        if (result.isConfirmed) {
+          this.loader.startBackground();
+          this.cursosColaborador = this.treinamentosColaborador.filter(t => !(t.titulo.trim().toUpperCase() === treinamento.titulo &&
+            t.instituicaoEnsino?.trim().toUpperCase() === treinamento.instituicaoEnsino?.trim().toUpperCase() &&
+            t.data == treinamento.data));
+          this.loader.stopBackground();
+        }
+      });
   }
-
-
-
-
-
-
-
 
 
   submit() {
@@ -647,7 +737,11 @@ export class IncluirColaboradoresComponent {
       salario: formData.salario,
       dataInicio: formData.dataInicio,
       dataDemissao: '',
-      escolaridade: 'Ensino Superior Incompleto'
+      escolaridade: 'Ensino Superior Incompleto',
+      formacoes: this.formacoesColaborador,
+      cursos: this.cursosColaborador,
+      treinamentos: this.treinamentosColaborador,
+      especialidade: this.especialidades
     }
 
 
@@ -656,6 +750,10 @@ export class IncluirColaboradoresComponent {
         this.form.reset();
         this.toastr.success(res);
         this.imagemCortada = "";
+        this.especialidades = [];
+        this.formacoesColaborador = [];
+        this.cursosColaborador = [];
+        this.treinamentosColaborador = [];
         this.loader.stop();
       },
       error: (err: any) => {

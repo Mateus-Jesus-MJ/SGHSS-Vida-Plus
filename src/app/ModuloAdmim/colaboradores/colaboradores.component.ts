@@ -47,6 +47,7 @@ export class ColaboradoresComponent implements OnInit {
   }
 
   buscarColaboradores() {
+    this.loaderSercice.start();
     if (this.rotaFilhaAtiva) return
 
     this.colaboradorService.buscarColaboradoresComCargo().subscribe({
