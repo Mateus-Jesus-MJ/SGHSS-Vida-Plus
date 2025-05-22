@@ -69,6 +69,7 @@ export class EditarColaboradoresComponent implements OnInit {
       cargo: new FormControl('', [Validators.required]),
       salario: new FormControl('', [Validators.required]),
       dataInicio: new FormControl('', [Validators.required]),
+      crm: new FormControl('')
     });
   }
 
@@ -765,6 +766,12 @@ export class EditarColaboradoresComponent implements OnInit {
     formData.enderecoBairro = formData.enderecoBairro.toUpperCase();
     formData.enderecoUF = formData.enderecoUF.toUpperCase();
     formData.enderecoMunicipio = formData.enderecoMunicipio.toUpperCase();
+
+    if(formData.cargo == "Médico"){
+      if(formData.crm == ""){
+        this.toastr.error("Falha ao incluir colaborador. Motivo: O crm do médico não pode ser vazio","", {progressBar: true});
+      }
+    }
 
     const endereco: Endereco = {
       cep: formData.enderecoCep,

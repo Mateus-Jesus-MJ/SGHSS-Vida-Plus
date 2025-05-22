@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-between mb-3">
   <h3>
     <a class="d-md-none btn btn-secondary" routerLink="/admin/usuarios"><i class="fa fa-arrow-left"></i></a>
-    Incluir Hospital
+    Editar Usuário
   </h3>
   <div class="d-flex justify-content-between d-none d-none d-md-flex">
     <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/usuarios">
@@ -38,6 +38,15 @@
         <input type="text" class="form-control" id="usuario" formControlName="usuario" placeholder=""
           [class.is-invalid]="editarform.get('usuario')?.invalid && editarform.get('usuario')?.touched" readonly/>
         <label for="usuario" class="label-required">Usuário</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating input-group mb-5">
+        <input type="text" class="form-control" placeholder="" formControlName="colaborador" readonly
+          [class.is-invalid]="editarform.get('colaborador')?.invalid && editarform.get('colaborador')?.touched" />
+        <label>Matricula Colaborador</label>
+        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalColaboradores"
+          role="button"><i class="fas fa-search"></i></button>
       </div>
     </div>
     <div class="col-lg-6">
@@ -96,3 +105,61 @@
     </button>
   </div>
 </form>
+
+<div class="modal fade" id="modalColaboradores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Selecionar Cargos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end">
+          <!-- <div class="form-floating">
+            <input type="text" class="form-control" placeholder="" />
+            <label>Pesquisar</label>
+          </div> -->
+        </div>
+        <div class="mt-3 d-none d-md-flex">
+          <table class="table border rounded table-striped align-middle">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Matricula</th>
+                <th>Colaborador</th>
+                <th>Cargo</th>
+                <th>CPF</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <tr *ngFor="let colaborador of colaboradores">
+                <td>
+                  <i class="fa fa-check text-success" role="button" (click)="selecionarColaborador(colaborador)"
+                    data-bs-dismiss="modal"></i>
+                </td>
+                <td>{{ colaborador.id }}</td>
+                <td>{{colaborador.nome}}</td>
+                <td>{{colaborador.cargo!.cargo}}</td>
+                <td style="min-width: 150px;">{{ colaborador.cpf | mask: "000.000.000-00" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3 d-md-none">
+          <div class="card mb-3" *ngFor="let colaborador of colaboradores">
+            <div class="card-body">
+              <div class="d-flex justify-content-end mb-1">
+                <i class="fa fa-check text-success" role="button" (click)="selecionarColaborador(colaborador)"
+                  data-bs-dismiss="modal"></i>
+              </div>
+              <label><b>Matricula:</b> {{colaborador.id}}</label>
+              <label><b>Colaborador</b> {{colaborador.nome}}</label>
+              <label><b>Cargo:</b> {{colaborador.cargo!.cargo}}</label>
+              <label><b>CPF:</b> {{ colaborador.cpf | mask: "000.000.000-00" }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -7,10 +7,13 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../../../environments/environment.development';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ColaboradorService } from '../../../_services/colaborador.service';
+import { Colaborador } from '../../../_models/colaborador';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-editar-usuario',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, NgxMaskPipe],
   templateUrl: './editar-usuario.component.html',
   styleUrl: './editar-usuario.component.scss'
 })
@@ -19,13 +22,15 @@ export class EditarUsuarioComponent implements OnInit {
   usuario: User | null = null;
   gruposPermissoes: any[] = [];
   isGrupoPermissoesEmpty = false;
+  colaboradores: Colaborador[] = [];
 
   constructor(private routeAcitive: ActivatedRoute,
     private usuarioService: UserServiceService,
     private router: Router,
     private userService: UserServiceService,
     private toastr: ToastrService,
-    private ngxUiLoaderService: NgxUiLoaderService
+    private ngxUiLoaderService: NgxUiLoaderService,
+    private colaboradorService: ColaboradorService
   ) {
     this.editarform = new FormGroup({
       nome: new FormControl('', [Validators.required]),
@@ -33,6 +38,7 @@ export class EditarUsuarioComponent implements OnInit {
       email: new FormControl('', [Validators.required]),
       tipoUsuario: new FormControl('', [Validators.required]),
       tipoUsuarioLabel: new FormControl('', [Validators.required]),
+      colaborador: new FormControl(''),
       admin: new FormControl(false),
       permissoes: new FormGroup({})
     });
@@ -98,7 +104,17 @@ export class EditarUsuarioComponent implements OnInit {
       email: user.email,
       tipoUsuario: user.tipoUsuario,
       admin: user.autorizacoes?.some(autorizacao => autorizacao.funcionalidade === 'admin'),
-      permissoes: user.autorizacoes || {}
+      permissoes: user.autorizacoes || {},
+      colaborador: user.colaborador
+    });
+
+    this.colaboradorService.buscarColaboradoresComCargo().subscribe({
+      next: (colaboradores: Colaborador[]) => {
+        this.colaboradores = colaboradores;
+      },
+      error: () => {
+        this.toastr.error("Erro inesperado ao buscar colaboradores! Tente novamente mais tarde", "", { "progressBar": true })
+      }
     });
 
     this.adicionarPermissoes(user);
@@ -136,14 +152,24 @@ export class EditarUsuarioComponent implements OnInit {
     });
   }
 
+  selecionarColaborador(colaborador: Colaborador) {
+    this.ngxUiLoaderService.startBackground();
+
+    this.editarform.get("colaborador")?.setValue(colaborador.id);
+    this.editarform.get("nome")?.setValue(colaborador.nome);
+
+    this.ngxUiLoaderService.stopBackground();
+  }
+
   submit() {
     this.ngxUiLoaderService.start();
     const formData = this.editarform.value;
 
     const usuario: User = this.usuario!;
 
-    usuario.nome = formData.nome.toUpperCase(),
-      usuario.email = formData.email;
+    usuario.nome = formData.nome.toUpperCase();
+    usuario.email = formData.email;
+    usuario.colaborador = formData.colaborador;
 
     let permissoesInserir: Autorizacao[] = [];
 
@@ -159,7 +185,7 @@ export class EditarUsuarioComponent implements OnInit {
 
     usuario.autorizacoes = permissoesInserir;
 
-    console.log(permissoesInserir);
+    console.log(usuario);
 
     this.userService.editarUser(usuario).subscribe({
       next: (res: any) => {
