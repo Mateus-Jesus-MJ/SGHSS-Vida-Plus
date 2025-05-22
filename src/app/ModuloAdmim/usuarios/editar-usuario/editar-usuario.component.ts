@@ -105,7 +105,7 @@ export class EditarUsuarioComponent implements OnInit {
       tipoUsuario: user.tipoUsuario,
       admin: user.autorizacoes?.some(autorizacao => autorizacao.funcionalidade === 'admin'),
       permissoes: user.autorizacoes || {},
-      colaborador: user.colaborador
+      colaborador: user.colaborador || ''
     });
 
     this.colaboradorService.buscarColaboradoresComCargo().subscribe({

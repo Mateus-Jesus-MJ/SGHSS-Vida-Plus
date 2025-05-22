@@ -13399,3 +13399,13 @@ input[list] {
         max-height: 90vh;
         padding-top: 0;
     }
+
+.toast-top-right,
+.toast-top-left,
+.toast-bottom-right,
+.toast-bottom-left,
+.toast-top-center,
+.toast-bottom-center {
+  position: fixed !important;
+  z-index: 1050; // ou maior se necessário
+}
