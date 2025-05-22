@@ -185,8 +185,6 @@ export class EditarUsuarioComponent implements OnInit {
 
     usuario.autorizacoes = permissoesInserir;
 
-    console.log(usuario);
-
     this.userService.editarUser(usuario).subscribe({
       next: (res: any) => {
         this.toastr.success(res);

@@ -179,7 +179,6 @@ export class UserServiceService extends BaseService {
   //   });
   // }
   editarUser(usuario: User): Observable<any> {
-    console.log(usuario);
 
   const userCollection = collection(this.firestore, this.tabelaUsuarios);
 
