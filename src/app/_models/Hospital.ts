@@ -1,3 +1,4 @@
+import { Colaborador } from "./colaborador";
 import { Endereco } from "./endereco";
 
 export interface Hospital{
@@ -6,7 +7,8 @@ export interface Hospital{
   razaoSocial: string;
   nomeFantasia: string;
   //alterar para colaborador
-  diretor?: string;
+  idDiretor?: string;
+  diretor?: Colaborador;
   endereco: Endereco,
   email?: string,
   telefone1?: string,

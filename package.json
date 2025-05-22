@@ -25,6 +25,7 @@
     "@sweetalert2/ngx-sweetalert2": "^13.0.0",
     "bootstrap": "^5.3.5",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "firebase": "^11.6.0",
     "fontawesome-free": "^1.0.4",
     "jquery": "^3.7.1",

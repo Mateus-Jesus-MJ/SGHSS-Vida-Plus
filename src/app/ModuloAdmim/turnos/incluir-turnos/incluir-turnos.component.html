@@ -1,0 +1,61 @@
+<form [formGroup]="form" (ngSubmit)="salvar()">
+  <div class="p-4">
+    <div class="d-flex gap-3 align-items-center mb-3">
+      <label>Mês:</label>
+      <select class="form-select w-auto" formControlName="mes" (change)="gerarTabela()">
+        <option *ngFor="let m of meses" [value]="m.valor">{{ m.nome }}</option>
+      </select>
+
+      <label>Ano:</label>
+      <input class="form-control w-auto" type="number" formControlName="ano" (ngModelChange)="gerarTabela()" />
+    </div>
+
+    <div class="d-none d-md-flex">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Início</th>
+            <th>Início Intervalo</th>
+            <th>Término Intervalo</th>
+            <th>Término</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="turnos">
+          <tr *ngFor="let turno of turnos.controls; let i = index" [formGroupName]="i">
+            <td><input class="form-control" formControlName="data" readonly></td>
+            <td><input class="form-control" type="time" formControlName="inicio"></td>
+            <td><input class="form-control" type="time" formControlName="inicioIntervalo"></td>
+            <td><input class="form-control" type="time" formControlName="terminoIntervalo"></td>
+            <td><input class="form-control" type="time" formControlName="termino"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-md-none" formArrayName="turnos">
+      <div class="card mb-3 p-3 border shadow-sm" *ngFor="let turno of turnos.controls; let i = index"
+        [formGroupName]="i">
+        <div class="mb-2">
+          <label class="form-label">Data</label>
+          <input class="form-control" formControlName="data" readonly>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Início</label>
+          <input class="form-control" type="time" formControlName="inicio">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Início Intervalo</label>
+          <input class="form-control" type="time" formControlName="inicioIntervalo">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Término Intervalo</label>
+          <input class="form-control" type="time" formControlName="terminoIntervalo">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Término</label>
+          <input class="form-control" type="time" formControlName="termino">
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

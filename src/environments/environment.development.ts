@@ -42,6 +42,11 @@ export const environment = {
             rota: 'cargos',
             permissoes: ['visualizar', 'incluir', 'editar','excluir']
           },
+          {
+            label: 'Turnos',
+            rota: 'turnos',
+            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+          }
         ]
       }
     },
@@ -59,7 +64,7 @@ export const environment = {
       }
     }
   ],
-  
+
   grupoPermissoesAtendimento: [
     {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']}
   ],

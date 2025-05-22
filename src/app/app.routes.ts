@@ -19,6 +19,8 @@ import { CargosVisualizarComponent } from './ModuloAdmim/cargos/cargos-visualiza
 import { IncluirColaboradoresComponent } from './ModuloAdmim/colaboradores/incluir-colaboradores/incluir-colaboradores.component';
 import { EditarColaboradoresComponent } from './ModuloAdmim/colaboradores/editar-colaboradores/editar-colaboradores.component';
 import { VisualizarColaboradoresComponent } from './ModuloAdmim/colaboradores/visualizar-colaboradores/visualizar-colaboradores.component';
+import { TurnosComponent } from './ModuloAdmim/turnos/turnos.component';
+import { IncluirTurnosComponent } from './ModuloAdmim/turnos/incluir-turnos/incluir-turnos.component';
 
 
 export const routes: Routes = [
@@ -97,8 +99,8 @@ export const routes: Routes = [
           {
             path: 'editar/:id',
             component: EditarColaboradoresComponent,
-            data:{
-                tipoPermitido: 'pa',
+            data: {
+              tipoPermitido: 'pa',
               funcionalidade: 'colaboradores',
               acesso: 'editar'
             }
@@ -106,7 +108,7 @@ export const routes: Routes = [
           {
             path: 'visualizar/:id',
             component: VisualizarColaboradoresComponent,
-            data:{
+            data: {
               tipoPermitido: 'pa',
               funcionalidade: 'colaboradores',
               acesso: 'visualizar'
@@ -184,6 +186,26 @@ export const routes: Routes = [
           },
           {
             path: '**', redirectTo: ''
+          }
+        ]
+      },
+      {
+        path: 'turnos',
+        component: TurnosComponent,
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'turnos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirTurnosComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'turnos',
+              acesso: 'incluir'
+            }
           }
         ]
       },
