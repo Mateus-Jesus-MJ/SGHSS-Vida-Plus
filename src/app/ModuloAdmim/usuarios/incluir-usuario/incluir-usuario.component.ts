@@ -1,35 +1,56 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserServiceService } from '../../../_services/user-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Autorizacao, User } from '../../../_models/User';
-import { forkJoin, never } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
-import { NgxUiLoaderModule, NgxUiLoaderService } from 'ngx-ui-loader';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { Colaborador } from '../../../_models/colaborador';
+import { ColaboradorService } from '../../../_services/colaborador.service';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-incluir-usuario',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterModule, NgxMaskPipe],
   templateUrl: './incluir-usuario.component.html',
   styleUrl: './incluir-usuario.component.scss'
 })
-export class IncluirUsuarioComponent {
+export class IncluirUsuarioComponent implements OnInit {
   incluirForm!: FormGroup;
   gruposPermissoes: any[] = [];
-  // gruposPermissoes: { funcionalidade: string; permissoes: string[] }[] = [];
   isGrupoPermissoesEmpty = false;
+  colaboradores: Colaborador[] = [];
 
-  constructor(private userService: UserServiceService, private ngxUiLoaderService: NgxUiLoaderService, private toastr: ToastrService) {
+
+  constructor(private userService: UserServiceService,
+    private ngxUiLoaderService: NgxUiLoaderService,
+    private toastr: ToastrService,
+    private colaboradorService: ColaboradorService
+  ) {
     this.incluirForm = new FormGroup({
       nome: new FormControl('', [Validators.required]),
       usuario: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       tipoUsuario: new FormControl('', [Validators.required]),
+      colaborador: new FormControl(),
       admin: new FormControl(false),
       permissoes: new FormGroup({})
     });
+  }
+
+  ngOnInit(): void {
+    this.ngxUiLoaderService.start();
+    this.colaboradorService.buscarColaboradoresComCargo().subscribe({
+      next: (colaboradores: Colaborador[]) => {
+        this.colaboradores = colaboradores;
+      },
+      error: () => {
+        this.toastr.error("Erro inesperado ao buscar colaboradores! Tente novamente mais tarde", "", { "progressBar": true })
+      }
+    })
+    this.ngxUiLoaderService.stop();
   }
 
   buscarGrupoPermissoes() {
@@ -81,6 +102,14 @@ export class IncluirUsuarioComponent {
     });
   }
 
+  selecionarColaborador(colaborador: Colaborador){
+    this.ngxUiLoaderService.startBackground();
+
+    this.incluirForm.get("colaborador")?.setValue(colaborador.id);
+    this.incluirForm.get("nome")?.setValue(colaborador.nome);
+
+    this.ngxUiLoaderService.stopBackground();
+  }
 
 
   submit() {
@@ -101,6 +130,7 @@ export class IncluirUsuarioComponent {
       senha: '#Sounovonovidaplus01',
       tipoUsuario: formData.tipoUsuario,
       status: true,
+      colaborador: formData.colaborador
     }
 
     let permissoesInserir: Autorizacao[] = [];
@@ -161,5 +191,4 @@ export class IncluirUsuarioComponent {
 
     return permissoesInserir;
   }
-
 }

@@ -134,21 +134,16 @@ export class EditarUsuarioComponent implements OnInit {
       this.isGrupoPermissoesEmpty = true;
       this.ngxUiLoaderService.stop();
     });
-  } 
+  }
 
   submit() {
     this.ngxUiLoaderService.start();
     const formData = this.editarform.value;
 
-    const usuario: User = {
-      id: this.usuario?.id,
-      nome: formData.nome.toUpperCase(),
-      usuario: formData.usuario,
-      email: formData.email,
-      senha: this.usuario!.senha,
-      tipoUsuario: formData.tipoUsuario,
-      status: this.usuario!.status
-    }
+    const usuario: User = this.usuario!;
+
+    usuario.nome = formData.nome.toUpperCase(),
+      usuario.email = formData.email;
 
     let permissoesInserir: Autorizacao[] = [];
 
