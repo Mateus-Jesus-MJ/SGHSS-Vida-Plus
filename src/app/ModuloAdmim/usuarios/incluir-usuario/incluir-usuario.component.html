@@ -44,10 +44,12 @@
       </div>
     </div>
     <div class="col-lg-6">
-      <div class="form-floating mb-3">
+      <div class="form-floating input-group mb-5">
         <input type="text" class="form-control text-uppercase" id="nome" formControlName="nome" placeholder=""
           [class.is-invalid]="incluirForm.get('nome')?.invalid && incluirForm.get('nome')?.touched" />
-        <label for="nome" class="label-required">Nome</label>
+        <label for="nome" class="label-required">Colaborador</label>
+        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalCargos"
+          role="button"><i class="fas fa-search"></i></button>
       </div>
     </div>
     <div class="col-lg-6">
