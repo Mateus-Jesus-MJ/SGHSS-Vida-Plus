@@ -61,193 +61,136 @@ export class UserServiceService extends BaseService {
   //   });
   // }
   novouser(usuario: User): Observable<any> {
-  const userCollection = collection(this.firestore, this.tabelaUsuarios);
+    const userCollection = collection(this.firestore, this.tabelaUsuarios);
 
-  const qUsuario = query(userCollection,
-    where('usuario', '==', usuario.usuario),
-    where('tipoUsuario', '==', usuario.tipoUsuario)
-  );
+    const qUsuario = query(userCollection,
+      where('usuario', '==', usuario.usuario),
+      where('tipoUsuario', '==', usuario.tipoUsuario)
+    );
 
-  const qEmail = query(userCollection,
-    where('email', '==', usuario.email),
-    where('tipoUsuario', '==', usuario.tipoUsuario)
-  );
+    const qEmail = query(userCollection,
+      where('email', '==', usuario.email),
+      where('tipoUsuario', '==', usuario.tipoUsuario)
+    );
 
-  return new Observable(observer => {
-    const promessas = [
-      getDocs(qUsuario),
-      getDocs(qEmail)
-    ];
+    return new Observable(observer => {
+      const promessas = [
+        getDocs(qUsuario),
+        getDocs(qEmail)
+      ];
 
-    // Se colaborador existir, adiciona a consulta
-    let colaboradorQueryPromise: Promise<any> | null = null;
-    if (usuario.colaborador) {
-      const qColaborador = query(userCollection, where('colaborador', '==', usuario.colaborador));
-      colaboradorQueryPromise = getDocs(qColaborador);
-      promessas.push(colaboradorQueryPromise);
-    }
+      // Se colaborador existir, adiciona a consulta
+      let colaboradorQueryPromise: Promise<any> | null = null;
+      if (usuario.colaborador) {
+        const qColaborador = query(userCollection, where('colaborador', '==', usuario.colaborador));
+        colaboradorQueryPromise = getDocs(qColaborador);
+        promessas.push(colaboradorQueryPromise);
+      }
 
-    Promise.all(promessas)
-      .then(resultados => {
-        const [snapshotUsuario, snapshotEmail, snapshotColaborador] = resultados;
+      Promise.all(promessas)
+        .then(resultados => {
+          const [snapshotUsuario, snapshotEmail, snapshotColaborador] = resultados;
 
-        if (!snapshotUsuario.empty) {
-          observer.error('Já existe um usuário com este nome de usuário.');
-          return;
-        }
-        if (!snapshotEmail.empty) {
-          observer.error('Já existe um usuário com este e-mail.');
-          return;
-        }
+          if (!snapshotUsuario.empty) {
+            observer.error('Já existe um usuário com este nome de usuário.');
+            return;
+          }
+          if (!snapshotEmail.empty) {
+            observer.error('Já existe um usuário com este e-mail.');
+            return;
+          }
 
-        if (colaboradorQueryPromise && !snapshotColaborador.empty) {
-          observer.error('Já existe um usuário associado a este colaborador.');
-          return;
-        }
-
-        addDoc(userCollection, structuredClone(usuario))
-          .then(() => {
-            observer.next('Usuário criado com sucesso.');
-            observer.complete();
-          })
-          .catch(error => {
-            observer.error(`Erro ao criar usuário. motivo: ${error.message}`);
-          });
-      })
-      .catch(error => {
-        observer.error(`Erro ao verificar usuário ou email. motivo: ${error.message}`);
-      });
-  });
-}
-
-  // editarUser(usuario: User): Observable<any> {
-  //   const userCollection = collection(this.firestore, this.tabelaUsuarios);
-
-  //   const qUsuario = query(userCollection,
-  //     where('usuario', '==', usuario.usuario),
-  //     where('tipoUsuario', '==', usuario.tipoUsuario)
-  //   );
-
-  //   const qEmail = query(userCollection,
-  //     where('email', '==', usuario.email),
-  //     where('tipoUsuario', '==', usuario.tipoUsuario)
-  //   );
-
-  //   const qColaborador = query(userCollection, where('colaborador', '==', usuario.colaborador))
-
-  //   return new Observable(observer => {
-  //     Promise.all([
-  //       getDocs(qUsuario),
-  //       getDocs(qEmail),
-  //       getDocs(qColaborador)
-  //     ])
-  //       .then(([snapshotUsuario, snapshotEmail, snapshotColaborador]) => {
-  //         const outroUsuarioMesmoNome = snapshotUsuario.docs.find(doc => doc.id !== usuario.id);
-  //         if (outroUsuarioMesmoNome) {
-  //           observer.error('Já existe outro usuário com este nome de usuário.');
-  //           return;
-  //         }
-  //         const outroUsuarioMesmoEmail = snapshotEmail.docs.find(doc => doc.id !== usuario.id);
-  //         if (outroUsuarioMesmoEmail) {
-  //           observer.error('Já existe outro usuário com este e-mail.');
-  //           return;
-  //         }
-  //         if (!snapshotColaborador.empty) {
-  //           observer.error('Já existe um usuário associado a este colaborador.');
-  //           return;
-  //         }
-
-  //         const userDocRef = doc(this.firestore, this.tabelaUsuarios, usuario.id!);
-
-  //         const { id, ...dadosParaAtualizar } = usuario;
-
-  //         from(updateDoc(userDocRef, structuredClone(dadosParaAtualizar)))
-  //           .subscribe({
-  //             next: () => {
-  //               observer.next('Usuário atualizado com sucesso.');
-  //               observer.complete();
-  //             },
-  //             error: (error) => {
-  //               observer.error(`Erro ao atualizar usuário. motivo: ${error.message}`);
-  //             }
-  //           });
-
-  //       })
-  //       .catch(error => {
-  //         observer.error(`Erro ao verificar usuário ou email. motivo: ${error.message}`);
-  //       });
-  //   });
-  // }
-  editarUser(usuario: User): Observable<any> {
-
-  const userCollection = collection(this.firestore, this.tabelaUsuarios);
-
-  const qUsuario = query(userCollection,
-    where('usuario', '==', usuario.usuario),
-    where('tipoUsuario', '==', usuario.tipoUsuario)
-  );
-
-  const qEmail = query(userCollection,
-    where('email', '==', usuario.email),
-    where('tipoUsuario', '==', usuario.tipoUsuario)
-  );
-
-  return new Observable(observer => {
-    const promessas = [
-      getDocs(qUsuario),
-      getDocs(qEmail)
-    ];
-
-    let colaboradorQueryPromise: Promise<any> | null = null;
-    if (usuario.colaborador) {
-      const qColaborador = query(userCollection, where('colaborador', '==', usuario.colaborador));
-      colaboradorQueryPromise = getDocs(qColaborador);
-      promessas.push(colaboradorQueryPromise);
-    }
-
-    Promise.all(promessas)
-      .then(resultados => {
-        const [snapshotUsuario, snapshotEmail, snapshotColaborador] = resultados;
-
-        const outroUsuarioMesmoNome = snapshotUsuario.docs.find(doc => doc.id !== usuario.id);
-        if (outroUsuarioMesmoNome) {
-          observer.error('Já existe outro usuário com este nome de usuário.');
-          return;
-        }
-
-        const outroUsuarioMesmoEmail = snapshotEmail.docs.find(doc => doc.id !== usuario.id);
-        if (outroUsuarioMesmoEmail) {
-          observer.error('Já existe outro usuário com este e-mail.');
-          return;
-        }
-
-        if (colaboradorQueryPromise && !snapshotColaborador.empty) {
-          const outroUsuarioMesmoColaborador = snapshotColaborador.docs.find(doc => doc.id !== usuario.id);
-          if (outroUsuarioMesmoColaborador) {
+          if (colaboradorQueryPromise && !snapshotColaborador.empty) {
             observer.error('Já existe um usuário associado a este colaborador.');
             return;
           }
-        }
 
-        const userDocRef = doc(this.firestore, this.tabelaUsuarios, usuario.id!);
-        const { id, ...dadosParaAtualizar } = usuario;
-
-        from(updateDoc(userDocRef, structuredClone(dadosParaAtualizar)))
-          .subscribe({
-            next: () => {
-              observer.next('Usuário atualizado com sucesso.');
+          addDoc(userCollection, structuredClone(usuario))
+            .then(() => {
+              observer.next('Usuário criado com sucesso.');
               observer.complete();
-            },
-            error: (error) => {
-              observer.error(`Erro ao atualizar usuário. motivo: ${error.message}`);
+            })
+            .catch(error => {
+              observer.error(`Erro ao criar usuário. motivo: ${error.message}`);
+            });
+        })
+        .catch(error => {
+          observer.error(`Erro ao verificar usuário ou email. motivo: ${error.message}`);
+        });
+    });
+  }
+
+
+  editarUser(usuario: User): Observable<any> {
+
+    const userCollection = collection(this.firestore, this.tabelaUsuarios);
+
+    const qUsuario = query(userCollection,
+      where('usuario', '==', usuario.usuario),
+      where('tipoUsuario', '==', usuario.tipoUsuario)
+    );
+
+    const qEmail = query(userCollection,
+      where('email', '==', usuario.email),
+      where('tipoUsuario', '==', usuario.tipoUsuario)
+    );
+
+    return new Observable(observer => {
+      const promessas = [
+        getDocs(qUsuario),
+        getDocs(qEmail)
+      ];
+
+      let colaboradorQueryPromise: Promise<any> | null = null;
+      if (usuario.colaborador) {
+        const qColaborador = query(userCollection, where('colaborador', '==', usuario.colaborador));
+        colaboradorQueryPromise = getDocs(qColaborador);
+        promessas.push(colaboradorQueryPromise);
+      }
+
+      Promise.all(promessas)
+        .then(resultados => {
+          const [snapshotUsuario, snapshotEmail, snapshotColaborador] = resultados;
+
+          const outroUsuarioMesmoNome = snapshotUsuario.docs.find(doc => doc.id !== usuario.id);
+          if (outroUsuarioMesmoNome) {
+            observer.error('Já existe outro usuário com este nome de usuário.');
+            return;
+          }
+
+          const outroUsuarioMesmoEmail = snapshotEmail.docs.find(doc => doc.id !== usuario.id);
+          if (outroUsuarioMesmoEmail) {
+            observer.error('Já existe outro usuário com este e-mail.');
+            return;
+          }
+
+          if (colaboradorQueryPromise && !snapshotColaborador.empty) {
+            const outroUsuarioMesmoColaborador = snapshotColaborador.docs.find(doc => doc.id !== usuario.id);
+            if (outroUsuarioMesmoColaborador) {
+              observer.error('Já existe um usuário associado a este colaborador.');
+              return;
             }
-          });
-      })
-      .catch(error => {
-        observer.error(`Erro ao verificar usuário, e-mail ou colaborador. motivo: ${error.message}`);
-      });
-  });
-}
+          }
+
+          const userDocRef = doc(this.firestore, this.tabelaUsuarios, usuario.id!);
+          const { id, ...dadosParaAtualizar } = usuario;
+
+          from(updateDoc(userDocRef, structuredClone(dadosParaAtualizar)))
+            .subscribe({
+              next: () => {
+                observer.next('Usuário atualizado com sucesso.');
+                observer.complete();
+              },
+              error: (error) => {
+                observer.error(`Erro ao atualizar usuário. motivo: ${error.message}`);
+              }
+            });
+        })
+        .catch(error => {
+          observer.error(`Erro ao verificar usuário, e-mail ou colaborador. motivo: ${error.message}`);
+        });
+    });
+  }
 
 
   buscarUsuarios() {
