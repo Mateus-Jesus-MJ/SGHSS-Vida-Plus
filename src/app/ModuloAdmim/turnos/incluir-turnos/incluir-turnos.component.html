@@ -59,8 +59,15 @@
       </div>
     </div>
     <div class="col-xxl-2 col-xl-3 col-lg-4">
-      <button class="btn btn-info py-3 px-5 mb-3" data-bs-toggle="modal" data-bs-target="#modalReplicarTurno" role="button">
+      <button class="btn btn-info py-3 px-5 mb-3" data-bs-toggle="modal" data-bs-target="#modalReplicarTurno"
+        role="button">
         <i class="fas fa-clone"></i> Replicar turnos
+      </button>
+    </div>
+    <div class="col-xxl-2 col-xl-3 col-lg-4">
+      <button class="btn btn-info py-3 px-5 mb-3" data-bs-toggle="modal" data-bs-target="#modalTurnoPorEscala"
+        role="button">
+        <i class="fas fa-calendar-alt"></i> Turnos por Escala
       </button>
     </div>
   </div>
@@ -230,7 +237,8 @@
             </table>
           </div>
           <div class="d-xl-none" formArrayName="semanaForm">
-            <div class="card mb-3 p-3 border shadow-sm" *ngFor="let dia of diasDaSemana; let i = index" [formGroupName]="i">
+            <div class="card mb-3 p-3 border shadow-sm" *ngFor="let dia of diasDaSemana; let i = index"
+              [formGroupName]="i">
               <div class="mb-2">
                 {{ dia.nome }}
               </div>
@@ -259,25 +267,66 @@
               </div>
             </div>
           </div>
-
-
-
-          <!-- <div formArrayName="semanaForm">
-            <div *ngFor="let dia of diasDaSemana; let i = index" [formGroupName]="i">
-              <label><strong>{{ dia.nome }}</strong></label>
-              <div class="row g-2">
-                <div class="col"><input type="time" class="form-control" formControlName="inicio" /></div>
-                <div class="col"><input type="time" class="form-control" formControlName="inicioIntervalo" /></div>
-                <div class="col"><input type="time" class="form-control" formControlName="terminoIntervalo" /></div>
-                <div class="col"><input type="time" class="form-control" formControlName="termino" /></div>
-              </div>
-            </div>
-          </div> -->
         </form>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button class="btn btn-primary" (click)="aplicarTurno()" data-bs-dismiss="modal">Aplicar ao Mês</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalTurnoPorEscala" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Definir Turnos por Escala</h5>
+      </div>
+      <div class="modal-body py-3">
+        <form [formGroup]="turnoEscala">
+          <div class="row">
+            <div class="col-xxl-2 col-xl-3 col-lg-4">
+              <div class="form-floating mb-3">
+                <input type="number" class="form-control" placeholder="" formControlName="dataInicial" />
+                <label>1º Dia (d)</label>
+              </div>
+            </div>
+            <div class="col-xxl-2 col-xl-3 col-lg-4">
+              <div class="form-floating mb-3">
+                <input type="time" class="form-control" placeholder="" formControlName="inicio" />
+                <label>Hora Inicial</label>
+              </div>
+            </div>
+            <div class="col-xxl-2 col-xl-3 col-lg-4">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="36:00" formControlName="cargaHoraria" mask="00:00"
+                  [allowNegativeNumbers]="true" [showMaskTyped]="true" placeHolderCharacter="-" [dropSpecialCharacters]="false"/>
+                <label>Carga Horária</label>
+              </div>
+            </div>
+            <div class="col-xxl-2 col-xl-3 col-lg-4">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="horasDesanso" mask="00:00"
+                  [allowNegativeNumbers]="true" [showMaskTyped]="true" placeHolderCharacter="-" [dropSpecialCharacters]="false"/>
+                <label>Tempo de Descanso</label>
+              </div>
+            </div>
+            <div class="col-xxl-2 col-xl-3 col-lg-4">
+              <div class="form-floating mb-3">
+                <select class="form-select" formControlName="areaDeAtuacao">
+                  <option desabled></option>
+                  <option> Consulta</option>
+                </select>
+                <label>Tempo de Descanso</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" (click)="aplicarEscala()" data-bs-dismiss="modal">Aplicar ao Mês</button>
       </div>
     </div>
   </div>
