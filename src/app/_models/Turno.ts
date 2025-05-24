@@ -7,6 +7,7 @@ export interface Turno{
   colaborador?: Colaborador;
   idHospital: string;
   hospital?: Hospital;
+  areaDeAtuacao:string;
   data: string;
   horarioInicio: string;
   horarioInicioIntervalo: string;

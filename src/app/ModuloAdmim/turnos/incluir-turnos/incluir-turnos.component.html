@@ -1,61 +1,284 @@
-<form [formGroup]="form" (ngSubmit)="salvar()">
-  <div class="p-4">
-    <div class="d-flex gap-3 align-items-center mb-3">
-      <label>Mês:</label>
-      <select class="form-select w-auto" formControlName="mes" (change)="gerarTabela()">
-        <option *ngFor="let m of meses" [value]="m.valor">{{ m.nome }}</option>
-      </select>
-
-      <label>Ano:</label>
-      <input class="form-control w-auto" type="number" formControlName="ano" (ngModelChange)="gerarTabela()" />
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/usuarios"><i class="fa fa-arrow-left"></i></a>
+    Incluir Turno
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/usuarios">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar usuário">
+      <!-- [disabled]="form.invalid" -->
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Gravar
+      </span>
+    </button>
+  </div>
+</div>
+<hr />
+<form [formGroup]="form">
+  <div class="row">
+    <div class="col-xl-4 col-lg-6">
+      <div class="form-floating input-group mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="colaborador" readonly
+          [class.is-invalid]="form.get('colaborador')?.invalid && form.get('colaborador')?.touched" />
+        <label>Colaborador</label>
+        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalColaboradores"
+          role="button"><i class="fas fa-search"></i></button>
+      </div>
     </div>
-
-    <div class="d-none d-md-flex">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Início</th>
-            <th>Início Intervalo</th>
-            <th>Término Intervalo</th>
-            <th>Término</th>
-          </tr>
-        </thead>
-        <tbody formArrayName="turnos">
-          <tr *ngFor="let turno of turnos.controls; let i = index" [formGroupName]="i">
-            <td><input class="form-control" formControlName="data" readonly></td>
-            <td><input class="form-control" type="time" formControlName="inicio"></td>
-            <td><input class="form-control" type="time" formControlName="inicioIntervalo"></td>
-            <td><input class="form-control" type="time" formControlName="terminoIntervalo"></td>
-            <td><input class="form-control" type="time" formControlName="termino"></td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="col-xl-4 col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="cargo" readonly
+          [class.is-invalid]="form.get('cargo')?.invalid && form.get('cargo')?.touched" />
+        <label>Cargo</label>
+      </div>
     </div>
-    <div class="d-md-none" formArrayName="turnos">
-      <div class="card mb-3 p-3 border shadow-sm" *ngFor="let turno of turnos.controls; let i = index"
-        [formGroupName]="i">
-        <div class="mb-2">
-          <label class="form-label">Data</label>
-          <input class="form-control" formControlName="data" readonly>
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Início</label>
-          <input class="form-control" type="time" formControlName="inicio">
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Início Intervalo</label>
-          <input class="form-control" type="time" formControlName="inicioIntervalo">
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Término Intervalo</label>
-          <input class="form-control" type="time" formControlName="terminoIntervalo">
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Término</label>
-          <input class="form-control" type="time" formControlName="termino">
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-xxl-2 col-xl-3 col-lg-4">
+      <div class="form-floating mb-3">
+        <select class="form-select" formControlName="mes" (change)="gerarTabela()">
+          <option *ngFor="let m of meses" [value]="m.valor">{{ m.nome }}</option>
+        </select>
+        <label>Mês:</label>
+      </div>
+    </div>
+    <div class="col-xxl-2 col-xl-3 col-lg-4">
+      <div class="form-floating mb-3">
+        <input class="form-control" type="number" formControlName="ano" (blur)="gerarTabela()" placeholder="" />
+        <label>Ano:</label>
+      </div>
+    </div>
+    <div class="col-xxl-2 col-xl-3 col-lg-4">
+      <button class="btn btn-info py-3 px-5 mb-3" data-bs-toggle="modal" data-bs-target="#modalReplicarTurno" role="button">
+        <i class="fas fa-clone"></i> Replicar turnos
+      </button>
+    </div>
+  </div>
+  <div class="d-none d-xl-flex">
+    <table class="table table-bordered">
+      <thead class="text-center">
+        <tr>
+          <th>Data</th>
+          <th>Dia da Semana</th>
+          <th>Início</th>
+          <th>Início Intervalo</th>
+          <th>Término Intervalo</th>
+          <th>Término</th>
+          <th>Área de atuação</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="turnos">
+        <tr *ngFor="let turno of turnos.controls; let i = index" [formGroupName]="i">
+          <td><input class="form-control" formControlName="data" readonly></td>
+          <td>
+            <input class="form-control" [value]="getDiaSemana(turno.get('data')?.value)" readonly>
+          </td>
+          <td><input class="form-control" type="time" formControlName="inicio"></td>
+          <td><input class="form-control" type="time" formControlName="inicioIntervalo"></td>
+          <td><input class="form-control" type="time" formControlName="terminoIntervalo"></td>
+          <td><input class="form-control" type="time" formControlName="termino"></td>
+          <td><select class="form-select" formControlName="areaDeAtuacao">
+              <option desabled></option>
+              <option> Consulta</option>
+            </select>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="d-xl-none" formArrayName="turnos">
+    <div class="card mb-3 p-3 border shadow-sm" *ngFor="let turno of turnos.controls; let i = index"
+      [formGroupName]="i">
+      <div class="mb-2">
+        <label class="form-label">Data</label>
+        <input class="form-control" formControlName="data" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Dia da Semana</label>
+        <input class="form-control" [value]="getDiaSemana(turno.get('data')?.value)" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Início</label>
+        <input class="form-control" type="time" formControlName="inicio">
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Início Intervalo</label>
+        <input class="form-control" type="time" formControlName="inicioIntervalo">
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Término Intervalo</label>
+        <input class="form-control" type="time" formControlName="terminoIntervalo">
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Término</label>
+        <input class="form-control" type="time" formControlName="termino">
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Área de Trabalho</label>
+        <select class="form-select" formControlName="areaDeAtuacao">
+          <option desabled></option>
+          <option> Consulta</option>
+        </select>
       </div>
     </div>
   </div>
 </form>
+
+<div class="modal fade" id="modalColaboradores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Selecionar Cargos</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end">
+          <!-- <div class="form-floating">
+            <input type="text" class="form-control" placeholder="" />
+            <label>Pesquisar</label>
+          </div> -->
+        </div>
+        <div class="mt-3 d-none d-md-flex">
+          <table class="table border rounded table-striped align-middle">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Matricula</th>
+                <th>Colaborador</th>
+                <th>Cargo</th>
+                <th>CPF</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <tr *ngFor="let colaborador of colaboradores">
+                <td>
+                  <i class="fa fa-check text-success" role="button" (click)="selecionarColaborador(colaborador)"
+                    data-bs-dismiss="modal"></i>
+                </td>
+                <td>{{ colaborador.id }}</td>
+                <td>{{colaborador.nome}}</td>
+                <td>{{colaborador.cargo!.cargo}}</td>
+                <td style="min-width: 150px;">{{ colaborador.cpf | mask: "000.000.000-00" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3 d-md-none">
+          <div class="card mb-3" *ngFor="let colaborador of colaboradores">
+            <div class="card-body">
+              <div class="d-flex justify-content-end mb-1">
+                <i class="fa fa-check text-success" role="button" (click)="selecionarColaborador(colaborador)"
+                  data-bs-dismiss="modal"></i>
+              </div>
+              <label><b>Matricula:</b> {{colaborador.id}}</label>
+              <label><b>Colaborador</b> {{colaborador.nome}}</label>
+              <label><b>Cargo:</b> {{colaborador.cargo!.cargo}}</label>
+              <label><b>CPF:</b> {{ colaborador.cpf | mask: "000.000.000-00" }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Turno Padrão -->
+<div class="modal fade" id="modalReplicarTurno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Definir Turnos Semanais</h5>
+      </div>
+      <div class="modal-body py-3">
+        <form [formGroup]="form">
+          <div class="d-none d-xl-flex">
+            <table class="table table-bordered">
+              <thead class="text-center">
+                <tr>
+                  <th>Dia da Semana</th>
+                  <th>Início</th>
+                  <th>Início Intervalo</th>
+                  <th>Término Intervalo</th>
+                  <th>Término</th>
+                  <th>Área de atuação</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="semanaForm">
+                <tr *ngFor="let dia of diasDaSemana; let i = index" [formGroupName]="i">
+                  <td>{{ dia.nome }}</td>
+                  <td><input type="time" class="form-control" formControlName="inicio" /></td>
+                  <td><input type="time" class="form-control" formControlName="inicioIntervalo" /></td>
+                  <td><input type="time" class="form-control" formControlName="terminoIntervalo" /></td>
+                  <td><input type="time" class="form-control" formControlName="termino" /></td>
+                  <td><select class="form-select" formControlName="areaDeAtuacao">
+                      <option desabled></option>
+                      <option> Consulta</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-xl-none" formArrayName="semanaForm">
+            <div class="card mb-3 p-3 border shadow-sm" *ngFor="let dia of diasDaSemana; let i = index" [formGroupName]="i">
+              <div class="mb-2">
+                {{ dia.nome }}
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Início</label>
+                <input type="time" class="form-control" formControlName="inicio" />
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Início Intervalo</label>
+                <input class="form-control" type="time" formControlName="inicioIntervalo">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Término Intervalo</label>
+                <input class="form-control" type="time" formControlName="terminoIntervalo">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Término</label>
+                <input class="form-control" type="time" formControlName="termino">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Área de Trabalho</label>
+                <select class="form-select" formControlName="areaDeAtuacao">
+                  <option desabled></option>
+                  <option> Consulta</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- <div formArrayName="semanaForm">
+            <div *ngFor="let dia of diasDaSemana; let i = index" [formGroupName]="i">
+              <label><strong>{{ dia.nome }}</strong></label>
+              <div class="row g-2">
+                <div class="col"><input type="time" class="form-control" formControlName="inicio" /></div>
+                <div class="col"><input type="time" class="form-control" formControlName="inicioIntervalo" /></div>
+                <div class="col"><input type="time" class="form-control" formControlName="terminoIntervalo" /></div>
+                <div class="col"><input type="time" class="form-control" formControlName="termino" /></div>
+              </div>
+            </div>
+          </div> -->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" (click)="aplicarTurno()" data-bs-dismiss="modal">Aplicar ao Mês</button>
+      </div>
+    </div>
+  </div>
+</div>

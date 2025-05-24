@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { TurnosService } from '../../_services/turnos.service';
 
 @Component({
   selector: 'app-turnos',
@@ -20,70 +21,84 @@ export class TurnosComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private loaderSercice: NgxUiLoaderService,
+    private turnosService: TurnosService
   ) { }
 
   ngOnInit(): void {
-    this.loaderSercice.start();
+
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
-          // this.buscarColaboradores();
+          this.loaderSercice.start();
+          this.buscarTurnos();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
-
-      let turno: Turno = {
-        idColaborador: "teste",
-        idHospital: "teste",
-        data: "2025-05-22",
-        horarioInicio: "08:15:12",
-        horarioInicioIntervalo: "12:00:00",
-        horarioTerminoIntervalo: "14:00:00",
-        horarioTermino: "18:00:00",
-        numeroAtendimento: "10",
-      }
-
-      this.turnos!.push(turno);
+      this.loaderSercice.start();
+      this.buscarTurnos();
     }
-    this.loaderSercice.stop();
   }
 
   private verificarRotaFilhaAtiva(): void {
     this.rotaFilhaAtiva = this.route.children.length > 0;
   }
 
-  horarioParaSegundos(horario: string): number {
-    const [h, m, s] = horario.split(':').map(Number);
-    return h * 3600 + m * 60 + s;
+  buscarTurnos() {
+    this.turnosService.buscarTurnos().subscribe({
+      next: (turnos: Turno[]) => {
+        this.turnos = turnos;
+        this.loaderSercice.stop();
+      },
+      error: () => {
+        this.toastr.error("Erro inesperado ao buscar Turnos! /n Tente novamente mais tarde.", "", { progressBar: true });
+        this.loaderSercice.stop();
+      }
+    })
   }
 
-  segundosParaHorario(segundos: number): string {
-    const horas = Math.floor(segundos / 3600);
-    const minutos = Math.floor((segundos % 3600) / 60);
-    const seg = segundos % 60;
-
-    return `${this.padZero(horas)}:${this.padZero(minutos)}:${this.padZero(seg)}`;
-  }
 
   calcularCargaHoraria(turno: Turno): string {
-    const inicio = this.horarioParaSegundos(turno.horarioInicio);
-    const termino = this.horarioParaSegundos(turno.horarioTermino);
-    const inicioIntervalo = this.horarioParaSegundos(turno.horarioInicioIntervalo);
-    const terminoIntervalo = this.horarioParaSegundos(turno.horarioTerminoIntervalo);
+    const minutosTrabalhados = this.calcularMinutos(turno.horarioInicio, turno.horarioTermino);
+    const minutosIntervalo = this.calcularMinutos(turno.horarioInicioIntervalo, turno.horarioTerminoIntervalo);
 
-    const duracaoTotal = termino - inicio;
-    const duracaoIntervalo = terminoIntervalo - inicioIntervalo;
-    const duracaoLiquida = duracaoTotal - duracaoIntervalo;
+    const minutosTotais = minutosTrabalhados - minutosIntervalo;
+    const horas = Math.floor(minutosTotais / 60);
+    const minutos = minutosTotais % 60;
 
-    return this.segundosParaHorario(duracaoLiquida);
+    return `${this.padZero(horas)}:${this.padZero(minutos)}`;
+  }
+
+  calcularMinutos(inicio: string, fim: string): number {
+    const [h1, m1] = inicio.split(":").map(Number);
+    const [h2, m2] = fim.split(":").map(Number);
+    return (h2 * 60 + m2) - (h1 * 60 + m1);
   }
 
   padZero(n: number): string {
     return n < 10 ? '0' + n : '' + n;
   }
 
+  copiar(turno: Turno) {
+
+    this.loaderSercice.start();
+
+    this.turnosService.buscarTurnoMesPorTurnoParametro(turno).subscribe({
+      next: (turnos: Turno[]) => {
+        this.router.navigate(['admin/turnos/incluir'], {
+          state: {
+            turnosSemana: turnos
+          }
+        });
+      },
+      error: () => {
+        this.toastr.error("Erro inesperado ao buscar Turnos! /n Tente novamente mais tarde.", "", { progressBar: true });
+        this.loaderSercice.stop();
+      }
+    })
+  }
 }
+
