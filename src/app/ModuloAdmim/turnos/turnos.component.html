@@ -38,27 +38,21 @@
               </button>
               <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
                 <li>
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="copiar(turno)">
-                    <i class="fas fa-clone"></i> &nbsp;Copiar Turno do mês
-                  </a>
-                </li>
-                <!--     <li>
                   <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="visualizar(colaborador.id!)">
+                    (click)="visualizar(turno)">
                     <i class="fas fa-eye"></i>&nbsp;Visualizar
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="editar(colaborador.id!)">
-                    <i class="fas fa-pen"></i>&nbsp;Editar
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="copiar(turno)">
+                    <i class="fas fa-clone"></i> &nbsp;Copiar Turno do mês
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(colaborador)">
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(turno)">
                     <i class="fas fa-trash"></i>&nbsp;Excluir
                   </a>
-                </li>-->
+                </li>
               </ul>
             </div>
           </td>
@@ -76,31 +70,29 @@
   <div class="mt-3 d-md-none">
     <div class="card p-3 mb-3" *ngFor="let turno of turnos">
       <div class="d-flex justify-content-end mb-1">
-        <!-- <div class="dropdown">
+        <div class="dropdown">
           <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="fas fa-ellipsis-v"></i>
           </button>
           <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
             <li>
-              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                (click)="visualizar(colaborador.id!)">
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="visualizar(turno)">
                 <i class="fas fa-eye"></i>&nbsp;Visualizar
               </a>
             </li>
             <li>
-              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                (click)="editar(colaborador.id!)">
-                <i class="fas fa-pen"></i>&nbsp;Editar
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="copiar(turno)">
+                <i class="fas fa-clone"></i> &nbsp;Copiar Turno do mês
               </a>
             </li>
             <li>
-              <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(colaborador)">
+              <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(turno)">
                 <i class="fas fa-trash"></i>&nbsp;Excluir
               </a>
             </li>
           </ul>
-        </div> -->
+        </div>
       </div>
       <label><b>Data:</b> {{turno.data}}</label>
       <label><b>Colaborador:</b> {{turno.colaborador?.nome}}</label>

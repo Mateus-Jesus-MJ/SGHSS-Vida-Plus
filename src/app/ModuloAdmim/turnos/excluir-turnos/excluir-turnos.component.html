@@ -1,0 +1,122 @@
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/usuarios"><i class="fa fa-arrow-left"></i></a>
+    Excluir Turno
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/turnos">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-danger btn-icon-split" (click)="submit()" aria-label="Gravar usuário">
+      <!-- [disabled]="form.invalid" -->
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Confirmar
+      </span>
+    </button>
+  </div>
+</div>
+<hr />
+<form [formGroup]="form">
+  <div class="row">
+    <div class="col-xl-4 col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="colaborador" readonly
+          [class.is-invalid]="form.get('colaborador')?.invalid && form.get('colaborador')?.touched" />
+        <label>Colaborador</label>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="cargo" readonly
+          [class.is-invalid]="form.get('cargo')?.invalid && form.get('cargo')?.touched" />
+        <label>Cargo</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xxl-2 col-xl-3 col-lg-4">
+      <div class="form-floating mb-3">
+        <select class="form-control" formControlName="mes" (change)="gerarTabela()" readonly>
+          <option *ngFor="let m of meses" [value]="m.valor">{{ m.nome }}</option>
+        </select>
+        <label>Mês:</label>
+      </div>
+    </div>
+    <div class="col-xxl-2 col-xl-3 col-lg-4">
+      <div class="form-floating mb-3">
+        <input class="form-control" type="number" formControlName="ano" (blur)="gerarTabela()" placeholder="" readonly/>
+        <label>Ano:</label>
+      </div>
+    </div>
+  </div>
+  <div class="d-none d-xl-flex">
+    <table class="table table-bordered">
+      <thead class="text-center">
+        <tr>
+          <th>Data</th>
+          <th>Dia da Semana</th>
+          <th>Início</th>
+          <th>Início Intervalo</th>
+          <th>Término Intervalo</th>
+          <th>Término</th>
+          <th>Área de atuação</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="turnos">
+        <tr *ngFor="let turno of turnos.controls; let i = index" [formGroupName]="i">
+          <td><input class="form-control" formControlName="data" readonly></td>
+          <td>
+            <input class="form-control" [value]="getDiaSemana(turno.get('data')?.value)" readonly>
+          </td>
+          <td><input class="form-control" type="time" formControlName="inicio" readonly></td>
+          <td><input class="form-control" type="time" formControlName="inicioIntervalo" readonly></td>
+          <td><input class="form-control" type="time" formControlName="terminoIntervalo" readonly></td>
+          <td><input class="form-control" type="time" formControlName="termino" readonly></td>
+          <td><input class="form-control" formControlName="areaDeAtuacao" readonly /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="d-xl-none" formArrayName="turnos">
+    <div class="card mb-3 p-3 border shadow-sm" *ngFor="let turno of turnos.controls; let i = index"
+      [formGroupName]="i">
+      <div class="mb-2">
+        <label class="form-label">Data</label>
+        <input class="form-control" formControlName="data" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Dia da Semana</label>
+        <input class="form-control" [value]="getDiaSemana(turno.get('data')?.value)" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Início</label>
+        <input class="form-control" type="time" formControlName="inicio" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Início Intervalo</label>
+        <input class="form-control" type="time" formControlName="inicioIntervalo" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Término Intervalo</label>
+        <input class="form-control" type="time" formControlName="terminoIntervalo" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Término</label>
+        <input class="form-control" type="time" formControlName="termino" readonly>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Área de Trabalho</label>
+        <input class="form-control" formControlName="areaDeAtuacao" readonly />
+      </div>
+    </div>
+  </div>
+</form>
+

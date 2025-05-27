@@ -21,6 +21,7 @@ import { EditarColaboradoresComponent } from './ModuloAdmim/colaboradores/editar
 import { VisualizarColaboradoresComponent } from './ModuloAdmim/colaboradores/visualizar-colaboradores/visualizar-colaboradores.component';
 import { TurnosComponent } from './ModuloAdmim/turnos/turnos.component';
 import { IncluirTurnosComponent } from './ModuloAdmim/turnos/incluir-turnos/incluir-turnos.component';
+import { ExcluirTurnosComponent } from './ModuloAdmim/turnos/excluir-turnos/excluir-turnos.component';
 
 
 export const routes: Routes = [
@@ -205,6 +206,15 @@ export const routes: Routes = [
               tipoPermitido: 'pa',
               funcionalidade: 'turnos',
               acesso: 'incluir'
+            }
+          },
+          {
+            path: 'excluir',
+            component: ExcluirTurnosComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'turnos',
+              acesso: 'excluir'
             }
           }
         ]

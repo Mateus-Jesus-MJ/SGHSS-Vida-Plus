@@ -82,6 +82,10 @@ export class TurnosComponent implements OnInit {
     return n < 10 ? '0' + n : '' + n;
   }
 
+  visualizar(turno: Turno) {
+
+  }
+
   copiar(turno: Turno) {
 
     this.loaderSercice.start();
@@ -89,6 +93,26 @@ export class TurnosComponent implements OnInit {
     this.turnosService.buscarTurnoMesPorTurnoParametro(turno).subscribe({
       next: (turnos: Turno[]) => {
         this.router.navigate(['admin/turnos/incluir'], {
+          state: {
+            turnosSemana: turnos
+          }
+        });
+      },
+      error: () => {
+        this.toastr.error("Erro inesperado ao buscar Turnos! /n Tente novamente mais tarde.", "", { progressBar: true });
+        this.loaderSercice.stop();
+      }
+    })
+  }
+
+
+
+  excluir(turno: Turno) {
+    this.loaderSercice.start();
+
+    this.turnosService.buscarTurnoMesPorTurnoParametro(turno).subscribe({
+      next: (turnos: Turno[]) => {
+        this.router.navigate(['admin/turnos/excluir'], {
           state: {
             turnosSemana: turnos
           }
