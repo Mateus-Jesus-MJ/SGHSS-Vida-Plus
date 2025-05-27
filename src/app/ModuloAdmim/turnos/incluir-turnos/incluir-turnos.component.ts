@@ -171,7 +171,7 @@ export class IncluirTurnosComponent implements OnInit {
     };
 
     const cargaTotalMin = parseTimeStr(cargaHorariaStr);
-    const descansoMin = parseTimeStr(descansoStr) - 1;
+    let  descansoMin = parseTimeStr(descansoStr);
     const ano = Number(this.form.get("ano")!.value);
     const mes = Number(this.form.get("mes")!.value) + 1; // de 1 a 12
     const dia = Number(dataInicialStr);              // número do dia
@@ -200,6 +200,11 @@ export class IncluirTurnosComponent implements OnInit {
         maxFimDoDia.setHours(23, 59, 0, 0);
 
         const minutosDisponiveis = Math.max(0, Math.floor((+maxFimDoDia - +inicioTurno) / 60000));
+
+        if(minutosDisponiveis < restanteMin){
+          restanteMin -= 1;
+        }
+
         let minutosParaHoje = Math.min(restanteMin, minutosDisponiveis);
 
         const fimTurno = addMinutes(inicioTurno, minutosParaHoje);
