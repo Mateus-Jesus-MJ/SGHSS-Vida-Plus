@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, CollectionReference, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDocs, query, where } from '@angular/fire/firestore';
 import { catchError, forkJoin, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { Turno } from '../_models/Turno';
 import { ColaboradorService } from './colaborador.service';
@@ -34,7 +34,11 @@ export class TurnosService {
         );
 
         return forkJoin(turnoComColaborador$);
-      })
+      }),
+      map((turnosComColaborador: Turno[]) =>
+        // turnosComColaborador.sort((a, b) => a.data.localeCompare(b.data)) // crescente
+      turnosComColaborador.sort((a, b) => b.data.localeCompare(a.data)) // decrescente
+      )
     )
   }
 
@@ -71,6 +75,9 @@ export class TurnosService {
         where('data', '<=', `${mes}-31`)
       );
 
+      console.log('Turnos recebidos para inclusão:', turnos);
+
+
       return from(getDocs(q)).pipe(
         map(snapshot => ({
           existe: !snapshot.empty,
@@ -99,6 +106,23 @@ export class TurnosService {
       catchError(erro => {
         return throwError(() => `Erro ao incluir turno. Motivo: ${erro}`);
       })
+    );
+  }
+
+  excluir(turno: Turno): Observable<string> {
+    return this.buscarTurnoMesPorTurnoParametro(turno).pipe(
+      switchMap(async (turnos: Turno[]) => {
+        try {
+          for (const t of turnos) {
+            const ref = doc(this.firestore, `turnos/${t.id}`);
+            await deleteDoc(ref); // exclui um por vez
+          }
+          return 'Todos os turnos do mês foram excluídos com sucesso.';
+        } catch (err) {
+          throw new Error('Erro ao excluir os turnos do mês. Nenhum turno foi removido.');
+        }
+      }),
+      catchError(error => of(error.message || 'Erro desconhecido ao excluir os turnos.'))
     );
   }
 }

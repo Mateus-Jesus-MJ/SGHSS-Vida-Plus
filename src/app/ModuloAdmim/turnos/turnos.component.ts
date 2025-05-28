@@ -26,19 +26,18 @@ export class TurnosComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.loaderSercice.start();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
-          this.loaderSercice.start();
           this.buscarTurnos();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
-      this.loaderSercice.start();
       this.buscarTurnos();
     }
   }

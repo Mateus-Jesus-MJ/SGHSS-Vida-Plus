@@ -136,10 +136,6 @@ export class IncluirTurnosComponent implements OnInit {
       const index = dia.getDay() - 1;
       const turnoPadraoGroup = semanaFormArray.at(index) as FormGroup;
 
-      console.log(dia);
-      console.log(index);
-      console.log(turnoPadraoGroup);
-
       this.turnos.push(this.fb.group({
         data: [format(dia, 'yyyy-MM-dd')],
         inicio: [turnoPadraoGroup.get('inicio')?.value],
@@ -179,7 +175,6 @@ export class IncluirTurnosComponent implements OnInit {
 
 
     let inicio = new Date(ano, mes - 1, dia, hora, minuto); // mês - 1 porque começa do zero
-    console.log(inicio);
 
     const turnosDias = turnosArray.controls.map(c => c.get('data')?.value);
 
@@ -316,7 +311,7 @@ export class IncluirTurnosComponent implements OnInit {
     this.turnosService.incluir(this.turnosIncluir).subscribe({
       next: (res: any) => {
         this.toastr.success(res);
-        this.loader.stop();
+        this.router.navigate(['admin/turnos']);
       },
       error: (err: any) => {
         this.toastr.error(err);

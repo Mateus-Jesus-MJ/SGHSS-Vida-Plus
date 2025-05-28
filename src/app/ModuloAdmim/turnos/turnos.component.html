@@ -56,7 +56,7 @@
               </ul>
             </div>
           </td>
-          <td>{{turno.data}}</td>
+          <td>{{turno.data | date:'dd/MM/yyyy'}}</td>
           <td>{{turno.colaborador?.nome}}</td>
           <td>{{ calcularCargaHoraria(turno) }}</td>
           <td>{{ turno.horarioInicio}}</td>
@@ -94,7 +94,7 @@
           </ul>
         </div>
       </div>
-      <label><b>Data:</b> {{turno.data}}</label>
+      <label><b>Data:</b> {{turno.data | date:'dd/MM/yyyy'}}</label>
       <label><b>Colaborador:</b> {{turno.colaborador?.nome}}</label>
       <label><b>CargaHoraria:</b> {{ calcularCargaHoraria(turno) }}</label>
       <label><b>Inicio:</b> {{turno.horarioInicio}}</label>

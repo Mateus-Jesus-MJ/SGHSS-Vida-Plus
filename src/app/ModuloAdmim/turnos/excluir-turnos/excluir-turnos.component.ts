@@ -23,7 +23,6 @@ export class ExcluirTurnosComponent implements OnInit {
   form: FormGroup;
   turnoEscala: FormGroup;
   dias: Date[] = [];
-  colaboradores: Colaborador[] = [];
   colaborador?: Colaborador;
   turnosIncluir: Turno[] = [];
   meses = environment.meses;
@@ -78,7 +77,6 @@ export class ExcluirTurnosComponent implements OnInit {
 
   ngOnInit(): void {
     this.loader.start();
-    //this.buscarColaboradores()
     this.gerarTabela();
 
     if (this.turnosSemanaRecebidos?.length) {
@@ -86,6 +84,23 @@ export class ExcluirTurnosComponent implements OnInit {
     } else {
       this.router.navigate(['admin/turnos'])
     }
+    this.buscarcolaborador(this.turnosSemanaRecebidos![0].idColaborador!);
+  }
+
+  buscarcolaborador(id: string) {
+    console.log(id);
+    this.colaboradorService.buscarPorId(id).subscribe(
+      (colaborador) => {
+        if (colaborador) {
+          this.colaborador = colaborador
+          console.log(this.colaborador.nome)
+          this.form.get("colaborador")?.setValue(this.colaborador.nome);
+          this.form.get("cargo")?.setValue(this.colaborador.cargo?.cargo);
+        } else {
+          this.toastr.error("Colaborador não encontrado. Verifique o id informado e tente novamente\n se o problema persistir procure o administrador do sistema", "", { "progressBar": true });
+        }
+      }
+    )
   }
 
   aplicarTurnoPadrao(turnosSemana: any[]): void {
@@ -141,10 +156,17 @@ export class ExcluirTurnosComponent implements OnInit {
     return format(date, 'EEEE', { locale: ptBR });
   }
 
-
-
-
   submit() {
-
+    this.loader.start();
+    this.turnosService.excluir(this.turnosSemanaRecebidos![0]).subscribe({
+      next: (mensagem: string) => {
+        this.toastr.success(mensagem);
+        this.router.navigate(['admin/turnos']);
+      },
+      error: (err) => {
+        this.toastr.error('Erro inesperado: ' + err);
+        this.loader.stop();
+      }
+    });
   }
 }
