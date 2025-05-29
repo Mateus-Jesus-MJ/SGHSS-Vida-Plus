@@ -1,14 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-paginacao',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './paginacao.component.html',
   styleUrl: './paginacao.component.scss'
 })
 export class PaginacaoComponent {
   @Input() totalItems = 0;
-  @Input() itemsPerPage = 10;
+  @Input() itemsPerPage = 25;
   @Input() currentPage = 1;
 
   @Output() pageChange = new EventEmitter<number>();
