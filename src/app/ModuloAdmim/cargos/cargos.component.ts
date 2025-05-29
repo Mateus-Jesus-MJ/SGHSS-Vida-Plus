@@ -17,7 +17,7 @@ import { showAlert } from '../../_util.ts/sweetalert-util';
 })
 export class CargosComponent implements OnInit {
   rotaFilhaAtiva = false;
-  cargos!: Cargo[] | null;
+  cargos: Cargo[] = []
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -51,7 +51,7 @@ export class CargosComponent implements OnInit {
     if (this.rotaFilhaAtiva) return
 
     this.cargoService.buscarCargos().subscribe({
-      next: (cargos: Cargo[] | null) => {
+      next: (cargos: Cargo[]) => {
         this.cargos = cargos;
         this.ngxUiLoaderService.stop();
       },
