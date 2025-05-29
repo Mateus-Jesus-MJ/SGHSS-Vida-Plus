@@ -6,16 +6,24 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { TurnosService } from '../../_services/turnos.service';
+import { PaginacaoComponent } from "../_components/paginacao/paginacao.component";
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-turnos',
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, PaginacaoComponent, FormsModule],
   templateUrl: './turnos.component.html',
   styleUrl: './turnos.component.scss'
 })
 export class TurnosComponent implements OnInit {
   rotaFilhaAtiva = false;
-  turnos: Turno[] | null = [];
+  turnos: Turno[] = [];
+  turnosPaginados: Turno[] = []; // página atual
+  dadosFiltrados: any[] = [];
+  paginaAtual = 1;
+  itensPorPagina = 25;
+  textoFiltro: string = '';
+
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -50,6 +58,8 @@ export class TurnosComponent implements OnInit {
     this.turnosService.buscarTurnos().subscribe({
       next: (turnos: Turno[]) => {
         this.turnos = turnos;
+        this.dadosFiltrados = turnos;
+        this.paginarTurnos();
         this.loaderSercice.stop();
       },
       error: () => {
@@ -57,6 +67,57 @@ export class TurnosComponent implements OnInit {
         this.loaderSercice.stop();
       }
     })
+  }
+
+  paginarTurnos() {
+    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+    const fim = inicio + this.itensPorPagina;
+    this.turnosPaginados = this.dadosFiltrados.slice(inicio, fim);
+  }
+
+  onPaginaAlterada(novaPagina: number) {
+    this.paginaAtual = novaPagina;
+    this.paginarTurnos();
+  }
+
+  ngOnChanges() {
+    this.aplicarFiltro();
+  }
+
+  filtrarLista() {
+    this.paginaAtual = 1;
+    this.aplicarFiltro();
+  }
+
+  aplicarFiltro() {
+    const texto = this.textoFiltro.toLowerCase();
+
+    this.dadosFiltrados = this.turnos.filter((dado) =>
+      Object.entries(dado).some(([chave, valor]) => {
+        let valorStr = '';
+
+        if (typeof valor === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+          // Detecta data ISO e formata para dd/MM/yyyy
+          valorStr = this.formatarData(valor);
+        } else if (valor != null && typeof valor === 'object') {
+          // Se for objeto, verificar campos específicos como colaborador.nome
+          if ('nome' in valor && typeof valor['nome'] === 'string') {
+            valorStr = valor['nome'];
+          }
+        } else if (valor != null) {
+          valorStr = String(valor);
+        }
+
+        return valorStr.toLowerCase().includes(texto);
+      })
+    );
+
+    this.paginarTurnos();
+  }
+
+  formatarData(dataIso: string): string {
+    const [ano, mes, dia] = dataIso.split('-');
+    return `${dia}/${mes}/${ano}`;
   }
 
 
@@ -72,6 +133,9 @@ export class TurnosComponent implements OnInit {
   }
 
   calcularMinutos(inicio: string, fim: string): number {
+
+    if(inicio == "" || fim == "") return 0
+
     const [h1, m1] = inicio.split(":").map(Number);
     const [h2, m2] = fim.split(":").map(Number);
     return (h2 * 60 + m2) - (h1 * 60 + m1);
