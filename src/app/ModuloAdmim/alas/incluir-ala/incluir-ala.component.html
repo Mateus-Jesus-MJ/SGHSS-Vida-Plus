@@ -1,0 +1,128 @@
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/cargos"><i class="fa fa-arrow-left"></i></a>
+    Incluir Ala
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/alas">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="form.invalid"
+      aria-label="Gravar hospital">
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Gravar
+      </span>
+    </button>
+  </div>
+</div>
+<hr />
+<form class="m-3" [formGroup]="form">
+  <div class="row mt-5">
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control text-uppercase" id="nome" placeholder="" formControlName="nome">
+        <label for="nome">Ala</label>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-floating input-group mb-5">
+        <input type="text" class="form-control" placeholder="" formControlName="responsavel"
+          (blur)="validaResponsavel()" readonly
+          [class.is-invalid]="form.get('responsavel')?.invalid && form.get('responsavel')?.touched" />
+        <label for="responsavel">Responsavel</label>
+        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalCargos"
+          role="button"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <table class="table border">
+      <thead>
+        <tr>
+          <th>Hospital</th>
+          <th>Endereço</th>
+          <th>
+            <button class="btn btn-primary btn-icon-split float-end" data-bs-toggle="modal"
+              data-bs-target="#modalHospitais">
+              <span class="icon">
+                <i class="fa fa-plus"></i>
+              </span>
+              <span class="text px-4">
+                Adicionar
+              </span>
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="hospitaisSelecionados?.length === 0">
+          <td colspan="3" class="text-center">Nenhum hospital selecionado.</td>
+        </tr>
+        <tr *ngFor="let hospital of hospitaisSelecionados">
+          <td>{{hospital.nomeFantasia}}</td>
+          <td>{{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</td>
+          <td><i class="fa fa-trash"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal fade" id="modalHospitais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-full">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Selecionar Cargos</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex justify-content-end">
+            <!-- <div class="form-floating">
+            <input type="text" class="form-control" placeholder="" />
+            <label>Pesquisar</label>
+          </div> -->
+          </div>
+          <div class="mt-3 d-none d-md-flex">
+            <table class="table border rounded table-striped align-middle">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Cargo</th>
+                  <th>Descrição de Função</th>
+                  <th>Escolaridade</th>
+                  <th>Salario Base</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                <tr *ngFor="let hospital of hospitais">
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-3 d-md-none">
+            <div class="card mb-3" *ngFor="let hospital of hospitais">
+              <div class="card-body">
+                <div class="d-flex justify-content-end mb-1">
+
+                </div>
+                <!-- <label><b>Cargo:</b> {{cargo.cargo}}</label>
+                <label><b>Descrição de Função:</b> {{cargo.descricaoDeFuncao}}</label>
+                <label><b>Escolaridade:</b> {{cargo.escolaridade}}</label>
+                <label><b>Salario Base:</b> R$ {{ cargo.salarioBase | mask: 'separator.2': { thousandSeparator: '.',
+                  decimalMarker: ',', leadZero: true } }}
+                </label> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

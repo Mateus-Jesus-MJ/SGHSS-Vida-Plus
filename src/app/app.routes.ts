@@ -22,6 +22,8 @@ import { VisualizarColaboradoresComponent } from './ModuloAdmim/colaboradores/vi
 import { TurnosComponent } from './ModuloAdmim/turnos/turnos.component';
 import { IncluirTurnosComponent } from './ModuloAdmim/turnos/incluir-turnos/incluir-turnos.component';
 import { ExcluirTurnosComponent } from './ModuloAdmim/turnos/excluir-turnos/excluir-turnos.component';
+import { AlasComponent } from './ModuloAdmim/alas/alas.component';
+import { IncluirAlaComponent } from './ModuloAdmim/alas/incluir-ala/incluir-ala.component';
 
 
 export const routes: Routes = [
@@ -159,6 +161,73 @@ export const routes: Routes = [
         ]
       },
       {
+        path: 'turnos',
+        component: TurnosComponent,
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'turnos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirTurnosComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'turnos',
+              acesso: 'incluir'
+            }
+          },
+          {
+            path: 'excluir',
+            component: ExcluirTurnosComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'turnos',
+              acesso: 'excluir'
+            }
+          }
+        ]
+      },
+      {
+        path: 'alas',
+        component: AlasComponent,
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'ala',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirAlaComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'ala',
+              acesso: 'incluir'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarUsuarioComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'ala',
+              acesso: 'editar'
+            }
+          },
+          {
+            path: 'excluir',
+            component: ExcluirTurnosComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'ala',
+              acesso: 'excluir'
+            }
+          }
+        ]
+      },
+      {
         path: 'usuarios',
         component: UsuariosComponent,
         data: {
@@ -187,35 +256,6 @@ export const routes: Routes = [
           },
           {
             path: '**', redirectTo: ''
-          }
-        ]
-      },
-      {
-        path: 'turnos',
-        component: TurnosComponent,
-        data: {
-          tipoPermitido: 'pa',
-          funcionalidade: 'turnos',
-          acesso: 'visualizar'
-        },
-        children: [
-          {
-            path: 'incluir',
-            component: IncluirTurnosComponent,
-            data: {
-              tipoPermitido: 'pa',
-              funcionalidade: 'turnos',
-              acesso: 'incluir'
-            }
-          },
-          {
-            path: 'excluir',
-            component: ExcluirTurnosComponent,
-            data: {
-              tipoPermitido: 'pa',
-              funcionalidade: 'turnos',
-              acesso: 'excluir'
-            }
           }
         ]
       },

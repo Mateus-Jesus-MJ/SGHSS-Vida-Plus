@@ -1,0 +1,16 @@
+<router-outlet></router-outlet>
+<div *ngIf="!rotaFilhaAtiva">
+  <div class="d-flex justify-content-between">
+    <h3>Alas</h3>
+    <div class="d-flex justify-content-between">
+      <a class="btn btn-primary btn-icon-split" routerLink="/admin/alas/incluir">
+        <span class="icon">
+          <i class="fa fa-plus"></i>
+        </span>
+        <span class="text px-4">
+          Incluir
+        </span>
+      </a>
+    </div>
+  </div>
+</div>

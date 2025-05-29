@@ -24,6 +24,11 @@ export const environment = {
             rota: 'hospitais',
             permissoes: ['visualizar', 'incluir', 'editar','excluir']
           },
+          {
+            label: 'Alas',
+            rota: 'alas',
+            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+          }
         ]
       }
     },
@@ -45,7 +50,7 @@ export const environment = {
           {
             label: 'Turnos',
             rota: 'turnos',
-            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+            permissoes: ['visualizar', 'incluir','excluir']
           }
         ]
       }
