@@ -6,5 +6,5 @@ export interface Ala{
   idResponsavel?:string;
   responsavel?:string;
   status: boolean;
-  hospitais: Hospital[]
+  hospitais?: Hospital[]
 }

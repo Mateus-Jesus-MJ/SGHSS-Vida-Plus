@@ -27,60 +27,91 @@
 <form class="m-3" [formGroup]="form">
   <div class="row mt-5">
     <div class="col-lg-6">
-      <div class="form-floating mb-3">
+      <div class="form-floating mb-4">
         <input type="text" class="form-control text-uppercase" id="nome" placeholder="" formControlName="nome"
           [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched" />
-        <label for="nome">Ala</label>
+        <label for="nome">Nome</label>
       </div>
     </div>
     <div class="col-lg-4">
-      <div class="form-floating input-group mb-5">
-        <input type="text" class="form-control" placeholder="" formControlName="responsavel"
-          (blur)="validaResponsavel()" readonly
+      <div class="form-floating input-group mb-4">
+        <input type="text" class="form-control" placeholder="" formControlName="responsavel" readonly
           [class.is-invalid]="form.get('responsavel')?.invalid && form.get('responsavel')?.touched" />
         <label for="responsavel">Responsavel</label>
-        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalCargos"
-          role="button"><i class="fas fa-search"></i></button>
+        <button class="input-group-text px-3 bg-white"  (click)="abrirModalColaboradores('input')"
+        role="button"><i class="fas fa-search"></i></button>
+        <!-- data-bs-toggle="modal" data-bs-target="#modalColaboradores" -->
       </div>
     </div>
   </div>
   <div class="form-group">
-    <table class="table border">
-      <thead>
-        <tr>
-          <th colspan="5" class="bg-secondary text-center">Hospitais</th>
-        </tr>
-        <tr>
-          <th>Razão Social</th>
-          <th>Nome Fantasia</th>
-          <th>CNPJ</th>
-          <th>Endereço</th>
-          <th>
-            <button class="btn btn-primary btn-icon-split float-end" data-bs-toggle="modal"
-              data-bs-target="#modalHospitais">
-              <span class="icon">
-                <i class="fa fa-plus"></i>
-              </span>
-              <span class="text px-4">
-                Adicionar
-              </span>
-            </button>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngIf="hospitaisSelecionados?.length === 0">
-          <td colspan="3" class="text-center">Nenhum hospital selecionado.</td>
-        </tr>
-        <tr *ngFor="let hospital of hospitaisSelecionados">
-          <td>{{hospital.razaoSocial}}</td>
-          <td>{{hospital.nomeFantasia}}</td>
-          <td>{{hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
-          <td>{{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</td>
-          <td><i class="fa fa-trash text-danger float-end mx-3"></i></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="d-flex justify-content-between">
+      <h5>Formações</h5>
+      <button class="btn btn-primary d-md-none" data-bs-toggle="modal" data-bs-target="#modalHospitais">
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+    <div class="d-none d-none d-md-flex">
+      <table class="table border rounded table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Razão Social</th>
+            <th>Nome Fantasia</th>
+            <th>CNPJ</th>
+            <th>Endereço</th>
+            <th>Responsavel</th>
+            <th>
+              <button class="btn btn-primary btn-icon-split float-end" data-bs-toggle="modal"
+                data-bs-target="#modalHospitais">
+                <span class="icon">
+                  <i class="fa fa-plus"></i>
+                </span>
+                <span class="text px-4">
+                  Adicionar
+                </span>
+              </button>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="hospitaisSelecionados?.length === 0">
+            <td colspan="6" class="text-center">Nenhum hospital selecionado.</td>
+          </tr>
+          <tr *ngFor="let hospital of hospitaisSelecionados">
+            <td>{{hospital.razaoSocial}}</td>
+            <td>{{hospital.nomeFantasia}}</td>
+            <td>{{hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
+            <td>{{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</td>
+            <td>
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="" [formControlName]="'responsavel' + hospital.id!"  readonly>
+                <button class="input-group-text px-3 bg-white" (click)="abrirModalColaboradores('tabela', hospital.id)" role="button"><i class="fas fa-search"></i></button>
+              </div>
+            </td>
+            <td><i class="fa fa-trash text-danger float-end mx-3" role="button" (click)="removerHospital(hospital)"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3 d-md-none">
+      <div class="card mb-3" *ngFor="let hospital of hospitais">
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-1">
+            <div>
+              <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
+            </div>
+            <div class="form-check form-switch">
+              <i class="fa fa-trash text-danger float-end" role="button" (click)="removerHospital(hospital)"></i>
+            </div>
+          </div>
+          <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
+          <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
+          <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}</label>
+          <label><b>Endereço:</b> {{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</label>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="modal fade" id="modalHospitais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-full">
@@ -102,7 +133,9 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th>Hospital</th>
+                    <th>Razão Social</th>
+                    <th>Nome Fantasia</th>
+                    <th>CNPJ</th>
                     <th>Endereço</th>
                   </tr>
                 </thead>
@@ -114,7 +147,9 @@
                           id="hospital-{{hospital.id}}">
                       </div>
                     </td>
+                    <td>{{hospital.razaoSocial}}</td>
                     <td>{{hospital.nomeFantasia}}</td>
+                    <td>{{hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
                     <td>{{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</td>
                   </tr>
                 </tbody>
@@ -123,15 +158,18 @@
             <div class="mt-3 d-md-none">
               <div class="card mb-3" *ngFor="let hospital of hospitais">
                 <div class="card-body">
-                  <div class="d-flex justify-content-end mb-1">
-
+                  <div class="d-flex justify-content-between mb-1">
+                    <div>
+                      <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" [formControlName]="hospital.id!"
+                        id="hospital-{{hospital.id}}">
+                    </div>
                   </div>
-                  <!-- <label><b>Cargo:</b> {{cargo.cargo}}</label>
-              <label><b>Descrição de Função:</b> {{cargo.descricaoDeFuncao}}</label>
-              <label><b>Escolaridade:</b> {{cargo.escolaridade}}</label>
-              <label><b>Salario Base:</b> R$ {{ cargo.salarioBase | mask: 'separator.2': { thousandSeparator: '.',
-                decimalMarker: ',', leadZero: true } }}
-              </label> -->
+                  <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
+                  <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}</label>
+                  <label><b>Endereço:</b> {{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</label>
                 </div>
               </div>
             </div>
@@ -139,7 +177,63 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-          <button type="button" class="btn btn-primary" (click)="selecionarHospitais()">Confirmar</button>
+          <button type="button" class="btn btn-primary" (click)="selecionarHospitais()"
+            data-bs-dismiss="modal">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="modalColaboradores" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-full">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Selecionar Cargos</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex justify-content-end">
+            <!-- <div class="form-floating">
+            <input type="text" class="form-control" placeholder="" />
+            <label>Pesquisar</label>
+          </div> -->
+          </div>
+          <div class="mt-3 d-none d-md-flex">
+            <table class="table border rounded table-striped align-middle">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Matricula</th>
+                  <th>Colaborador</th>
+                  <th>Cargo</th>
+                  <th>CPF</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                <tr *ngFor="let colaborador of colaboradores">
+                  <td>
+                    <i class="fa fa-check text-success" role="button" (click)="selecionarColaborador(colaborador)"></i>
+                  </td>
+                  <td>{{ colaborador.id }}</td>
+                  <td>{{colaborador.nome}}</td>
+                  <td>{{colaborador.cargo!.cargo}}</td>
+                  <td style="min-width: 150px;">{{ colaborador.cpf | mask: "000.000.000-00" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-3 d-md-none">
+            <div class="card mb-3" *ngFor="let colaborador of colaboradores">
+              <div class="card-body">
+                <div class="d-flex justify-content-end mb-1">
+                  <i class="fa fa-check text-success" role="button" (click)="selecionarColaborador(colaborador)"></i>
+                </div>
+                <label><b>Matricula:</b> {{colaborador.id}}</label>
+                <label><b>Colaborador</b> {{colaborador.nome}}</label>
+                <label><b>Cargo:</b> {{colaborador.cargo!.cargo}}</label>
+                <label><b>CPF:</b> {{ colaborador.cpf | mask: "000.000.000-00" }}</label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
