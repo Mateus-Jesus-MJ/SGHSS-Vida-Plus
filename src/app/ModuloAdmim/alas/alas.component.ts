@@ -5,6 +5,7 @@ import { Ala } from '../../_models/ala';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToastrService } from 'ngx-toastr';
 import { filter } from 'rxjs';
+import { AlasService } from '../../_services/alas.service';
 
 @Component({
   selector: 'app-alas',
@@ -21,7 +22,7 @@ export class AlasComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private ngxUiLoaderService: NgxUiLoaderService,
-
+    private alasService: AlasService
   ) { }
 
   ngOnInit(): void {
@@ -30,17 +31,46 @@ export class AlasComponent implements OnInit {
       .subscribe(() => {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
-
+          this.buscarAlas();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
-
+      this.buscarAlas();
     }
   }
 
-   private verificarRotaFilhaAtiva(): void {
+  private verificarRotaFilhaAtiva(): void {
     this.rotaFilhaAtiva = this.route.children.length > 0;
   }
+
+  buscarAlas() {
+    if (this.rotaFilhaAtiva) return
+    this.ngxUiLoaderService.start();
+
+    this.alasService.buscarAlas().subscribe({
+      next: (alas: Ala[]) => {
+        this.alas = alas;
+        this.ngxUiLoaderService.stop();
+      },
+      error: () => {
+        this.toastr.error("Erro inesperado ao buscar alas! Tente novamente mais tarde", "", { progressBar: true })
+        this.ngxUiLoaderService.stop();
+      }
+    });
+  }
+
+  visualizar(id: string) {
+      this.router.navigate(['admin/alas/visualizar', id]);
+  }
+
+  editar(id: string) {
+
+  }
+
+  excluir(ala: Ala) {
+
+  }
+
 }

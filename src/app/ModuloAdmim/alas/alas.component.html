@@ -13,4 +13,81 @@
       </a>
     </div>
   </div>
+  <div class="mt-3 d-none d-none d-md-flex">
+    <table class="table border rounded table-striped align-middle">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Nome</th>
+          <th>Responsavel</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr *ngFor="let ala of alas">
+          <td>
+            <div class="dropdown">
+              <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
+                <li>
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                    (click)="visualizar(ala.id!)">
+                    <i class="fas fa-eye"></i>&nbsp;Visualizar
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="editar(ala.id!)">
+                    <i class="fas fa-pen"></i>&nbsp;Editar
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(ala)">
+                    <i class="fas fa-trash"></i>&nbsp;Excluir
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td>{{ala.nome}}</td>
+          <td>{{ ala.responsavel!.nome }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-3 d-md-none">
+    <div class="card p-3 mb-3" *ngFor="let ala of alas">
+      <div class="d-flex justify-content-between mb-1">
+        <div>
+          <label><b>Nome:</b> {{ala.nome}}</label><br />
+          <label><b>Responsavel:</b> {{ala.responsavel?.nome}}</label>
+        </div>
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
+            <li>
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="visualizar(ala.id!)">
+                <i class="fas fa-eye"></i>&nbsp;Visualizar
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="editar(ala.id!)">
+                <i class="fas fa-pen"></i>&nbsp;Editar
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(ala)">
+                <i class="fas fa-trash"></i>&nbsp;Excluir
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- <label><b>Descrição do Cargo:</b> {{cargo.descricaoDeFuncao}}</label><br/> -->
+    </div>
+  </div>
 </div>

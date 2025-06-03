@@ -24,6 +24,7 @@ import { IncluirTurnosComponent } from './ModuloAdmim/turnos/incluir-turnos/incl
 import { ExcluirTurnosComponent } from './ModuloAdmim/turnos/excluir-turnos/excluir-turnos.component';
 import { AlasComponent } from './ModuloAdmim/alas/alas.component';
 import { IncluirAlaComponent } from './ModuloAdmim/alas/incluir-ala/incluir-ala.component';
+import { VisualizarAlaComponent } from './ModuloAdmim/alas/visualizar-ala/visualizar-ala.component';
 
 
 export const routes: Routes = [
@@ -205,6 +206,15 @@ export const routes: Routes = [
               tipoPermitido: 'pa',
               funcionalidade: 'ala',
               acesso: 'incluir'
+            }
+          },
+          {
+            path: 'visualizar/:id',
+            component: VisualizarAlaComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'ala',
+              acesso: 'visualizar'
             }
           },
           {

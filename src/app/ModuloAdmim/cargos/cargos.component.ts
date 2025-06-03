@@ -47,8 +47,8 @@ export class CargosComponent implements OnInit {
   }
 
   buscarCargos() {
-    this.ngxUiLoaderService.start();
     if (this.rotaFilhaAtiva) return
+    this.ngxUiLoaderService.start();
 
     this.cargoService.buscarCargos().subscribe({
       next: (cargos: Cargo[]) => {
