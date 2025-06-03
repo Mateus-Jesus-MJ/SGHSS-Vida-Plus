@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-between">
     <h3>Turnos</h3>
     <div class="d-flex justify-content-between">
-      <a class="btn btn-primary btn-icon-split" routerLink="/admin/turnos/incluir">
+      <a *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" routerLink="/admin/turnos/incluir">
         <span class="icon">
           <i class="fa fa-plus"></i>
         </span>
@@ -45,12 +45,12 @@
                     <i class="fas fa-eye"></i>&nbsp;Visualizar
                   </a>
                 </li>
-                <li>
+                <li *ngIf="userPodeIncluir">
                   <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="copiar(turno)">
                     <i class="fas fa-clone"></i> &nbsp;Copiar Turno do mês
                   </a>
                 </li>
-                <li>
+                <li *ngIf="userPodeExcluir">
                   <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(turno)">
                     <i class="fas fa-trash"></i>&nbsp;Excluir
                   </a>
@@ -83,12 +83,12 @@
                 <i class="fas fa-eye"></i>&nbsp;Visualizar
               </a>
             </li>
-            <li>
+            <li *ngIf="userPodeIncluir">
               <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="copiar(turno)">
                 <i class="fas fa-clone"></i> &nbsp;Copiar Turno do mês
               </a>
             </li>
-            <li>
+            <li *ngIf="userPodeExcluir">
               <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(turno)">
                 <i class="fas fa-trash"></i>&nbsp;Excluir
               </a>

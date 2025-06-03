@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { CargosService } from '../../_services/cargos.service';
 import { NgxMaskPipe } from 'ngx-mask';
 import { showAlert } from '../../_util.ts/sweetalert-util';
+import { AuthService } from '../../_services/auth.service';
 
 @Component({
   selector: 'app-cargos',
@@ -17,13 +18,17 @@ import { showAlert } from '../../_util.ts/sweetalert-util';
 })
 export class CargosComponent implements OnInit {
   rotaFilhaAtiva = false;
-  cargos: Cargo[] = []
+  cargos: Cargo[] = [];
+  userPodeIncluir = false;
+  userPodeEditar = false;
+  userPodeExcluir = false;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private ngxUiLoaderService: NgxUiLoaderService,
-    private cargoService: CargosService
+    private cargoService: CargosService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -33,17 +38,41 @@ export class CargosComponent implements OnInit {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
           this.buscarCargos();
+          this.userPermissoes();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
       this.buscarCargos();
+      this.userPermissoes();
     }
   }
 
   private verificarRotaFilhaAtiva(): void {
     this.rotaFilhaAtiva = this.route.children.length > 0;
+  }
+
+  userPermissoes() {
+    this.userPodeIncluir = this.temPermissao('cargos', 'incluir');
+    this.userPodeEditar = this.temPermissao('cargos', 'editar');
+    this.userPodeExcluir = this.temPermissao('cargos', 'excluir');
+  }
+
+  temPermissao(funcionalidade: string, permissao: string): boolean {
+    const user = this.authService.getUsuario();
+
+    const admin = user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === 'admin' &&
+      aut.acesso?.toLowerCase().includes('admin')
+    );
+
+    if (admin) return true
+
+    return !!user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === funcionalidade &&
+      aut.acesso?.toLowerCase().split(',').includes(permissao.toLowerCase())
+    );
   }
 
   buscarCargos() {
@@ -71,6 +100,12 @@ export class CargosComponent implements OnInit {
   }
 
   excluir(cargo: Cargo) {
+
+    if (this.userPodeExcluir) {
+      this.toastr.error("Você não tem permissão para excluir um cargo.", "", { progressBar: true });
+      return;
+    }
+
     showAlert('Tem certeza?', `Deseja excluir o cargo de ${cargo.cargo}?`, 'question', 'danger')
       .then((result) => {
         if (result.isConfirmed) {

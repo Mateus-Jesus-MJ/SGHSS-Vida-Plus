@@ -18,7 +18,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
   }
 
   canActivateChild(route: ActivatedRouteSnapshot): boolean {
-    console.log('AuthGuard chamado para:', route.url.map(x => x.path).join('/'));
+    // console.log('AuthGuard chamado para:', route.url.map(x => x.path).join('/'));
     return this.checkAccess(route);
   }
 
@@ -43,8 +43,8 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
     const acessoEsperado = route.data['acesso'];
     const autorizacoesUser = user?.autorizacoes;
 
-    console.log('Autorizacoes do usuário:', autorizacoesUser);
-    console.log('Rota exige:', funcionalidade, acessoEsperado);
+    //console.log('Autorizacoes do usuário:', autorizacoesUser);
+    //console.log('Rota exige:', funcionalidade, acessoEsperado);
 
     if (funcionalidade && acessoEsperado) {
       const admin = autorizacoesUser?.some(aut =>
@@ -58,8 +58,8 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
           aut.acesso?.toLowerCase().split(',').includes(acessoEsperado.toLowerCase())
         );
 
-        console.log('Admin:', admin);
-        console.log('Autorizado:', autorizado);
+        //console.log('Admin:', admin);
+        //console.log('Autorizado:', autorizado);
 
         if (!autorizado) {
           this.toastr.warning('Você não tem permissão para acessar esta funcionalidade!');

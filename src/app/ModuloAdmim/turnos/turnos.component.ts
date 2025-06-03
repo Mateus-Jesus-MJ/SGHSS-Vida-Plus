@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { TurnosService } from '../../_services/turnos.service';
 import { PaginacaoComponent } from "../_components/paginacao/paginacao.component";
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../_services/auth.service';
 
 @Component({
   selector: 'app-turnos',
@@ -23,13 +24,16 @@ export class TurnosComponent implements OnInit {
   paginaAtual = 1;
   itensPorPagina = 25;
   textoFiltro: string = '';
+  userPodeIncluir = false;
+  userPodeExcluir = false;
 
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private loaderSercice: NgxUiLoaderService,
-    private turnosService: TurnosService
+    private turnosService: TurnosService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -41,17 +45,40 @@ export class TurnosComponent implements OnInit {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
           this.buscarTurnos();
+          this.userPermissoes();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
       this.buscarTurnos();
+      this.userPermissoes();
     }
   }
 
   private verificarRotaFilhaAtiva(): void {
     this.rotaFilhaAtiva = this.route.children.length > 0;
+  }
+
+  userPermissoes() {
+    this.userPodeIncluir = this.temPermissao('turnos', 'incluir');
+    this.userPodeExcluir = this.temPermissao('turnos', 'excluir');
+  }
+
+  temPermissao(funcionalidade: string, permissao: string): boolean {
+    const user = this.authService.getUsuario();
+
+    const admin = user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === 'admin' &&
+      aut.acesso?.toLowerCase().includes('admin')
+    );
+
+    if (admin) return true
+
+    return !!user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === funcionalidade &&
+      aut.acesso?.toLowerCase().split(',').includes(permissao.toLowerCase())
+    );
   }
 
   buscarTurnos() {
@@ -134,7 +161,7 @@ export class TurnosComponent implements OnInit {
 
   calcularMinutos(inicio: string, fim: string): number {
 
-    if(inicio == "" || fim == "") return 0
+    if (inicio == "" || fim == "") return 0
 
     const [h1, m1] = inicio.split(":").map(Number);
     const [h2, m2] = fim.split(":").map(Number);

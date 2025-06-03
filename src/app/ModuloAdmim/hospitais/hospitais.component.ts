@@ -9,6 +9,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { showAlert } from '../../_util.ts/sweetalert-util';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { AuthService } from '../../_services/auth.service';
 
 
 
@@ -22,13 +23,17 @@ import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 export class HospitaisComponent implements OnInit {
   rotaFilhaAtiva = false;
   hospitais!: Hospital[] | null;
+  userPodeIncluir = false;
+  userPodeEditar = false;
+  userPodeExcluir = false;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private hospitalService: HospitalService,
     private toastr: ToastrService,
     private ngxUiLoaderService: NgxUiLoaderService,
-    private maskPipe: NgxMaskPipe
+    private maskPipe: NgxMaskPipe,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -38,19 +43,43 @@ export class HospitaisComponent implements OnInit {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
           this.listaHospitais();
+          this.userPermissoes();
         }
       });
-      this.verificarRotaFilhaAtiva();
+    this.verificarRotaFilhaAtiva();
 
-      if (!this.rotaFilhaAtiva) {
-        this.listaHospitais();
-      }
-    
+    if (!this.rotaFilhaAtiva) {
+      this.listaHospitais();
+      this.userPermissoes();
+    }
+
 
   }
 
   private verificarRotaFilhaAtiva(): void {
     this.rotaFilhaAtiva = this.route.children.length > 0;
+  }
+
+  userPermissoes() {
+    this.userPodeIncluir = this.temPermissao('hospitais', 'incluir');
+    this.userPodeEditar = this.temPermissao('hospitais', 'editar');
+    this.userPodeExcluir = this.temPermissao('hospitais', 'excluir');
+  }
+
+  temPermissao(funcionalidade: string, permissao: string): boolean {
+    const user = this.authService.getUsuario();
+
+    const admin = user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === 'admin' &&
+      aut.acesso?.toLowerCase().includes('admin')
+    );
+
+    if (admin) return true
+
+    return !!user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === funcionalidade &&
+      aut.acesso?.toLowerCase().split(',').includes(permissao.toLowerCase())
+    );
   }
 
   listaHospitais() {
@@ -63,7 +92,7 @@ export class HospitaisComponent implements OnInit {
         this.ngxUiLoaderService.stop();
       },
       error: () => {
-        this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde","",{"progressBar": true})
+        this.toastr.error("Erro inesperado ao buscar hospitais! Tente novamente mais tarde", "", { "progressBar": true })
         this.ngxUiLoaderService.stop();
       }
     });
@@ -77,6 +106,12 @@ export class HospitaisComponent implements OnInit {
   }
 
   excluir(hospital: Hospital) {
+
+    if (this.userPodeExcluir) {
+      this.toastr.error("Você não tem permissão para excluir um cargo.", "", { progressBar: true });
+      return;
+    }
+
     showAlert('Tem certeza?', `Deseja excluir o hspital:<br />
       <b>Razão Social: </b>${hospital.razaoSocial} <br />
       <b>CNPJ: <b/>${this.maskPipe.transform(hospital.cnpj, '00.000.000/0000-00')}?`, 'question', 'danger')

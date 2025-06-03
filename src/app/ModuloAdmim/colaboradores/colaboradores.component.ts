@@ -7,6 +7,7 @@ import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { showAlert } from '../../_util.ts/sweetalert-util';
 import { Colaborador } from '../../_models/colaborador';
+import { AuthService } from '../../_services/auth.service';
 
 @Component({
   selector: 'app-colaboradores',
@@ -17,12 +18,16 @@ import { Colaborador } from '../../_models/colaborador';
 export class ColaboradoresComponent implements OnInit {
   rotaFilhaAtiva = false;
   colaboradores: Colaborador[] | null = [];
+  userPodeIncluir = false;
+  userPodeEditar = false;
+  userPodeExcluir = false;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private loaderSercice: NgxUiLoaderService,
-    private colaboradorService: ColaboradorService
+    private colaboradorService: ColaboradorService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -33,17 +38,41 @@ export class ColaboradoresComponent implements OnInit {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
           this.buscarColaboradores();
+          this.userPermissoes();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
       this.buscarColaboradores();
+      this.userPermissoes();
     }
   }
 
   private verificarRotaFilhaAtiva(): void {
     this.rotaFilhaAtiva = this.route.children.length > 0;
+  }
+
+  userPermissoes() {
+    this.userPodeIncluir = this.temPermissao('colaboradores', 'incluir');
+    this.userPodeEditar = this.temPermissao('colaboradores', 'editar');
+    this.userPodeExcluir = this.temPermissao('colaboradores', 'excluir');
+  }
+
+  temPermissao(funcionalidade: string, permissao: string): boolean {
+    const user = this.authService.getUsuario();
+
+    const admin = user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === 'admin' &&
+      aut.acesso?.toLowerCase().includes('admin')
+    );
+
+    if (admin) return true
+
+    return !!user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === funcionalidade &&
+      aut.acesso?.toLowerCase().split(',').includes(permissao.toLowerCase())
+    );
   }
 
   buscarColaboradores() {
@@ -70,6 +99,12 @@ export class ColaboradoresComponent implements OnInit {
   }
 
   excluir(colaborador: Colaborador) {
+
+    if (this.userPodeExcluir) {
+      this.toastr.error("Você não tem permissão para excluir um cargo.", "", { progressBar: true });
+      return;
+    }
+
     showAlert('Tem certeza?', `Deseja excluir o cargo de ${colaborador.nome}?`, 'question', 'danger')
       .then((result) => {
         if (result.isConfirmed) {

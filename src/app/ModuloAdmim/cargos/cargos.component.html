@@ -3,7 +3,7 @@
   <div class="d-flex justify-content-between">
     <h3>Cargos</h3>
     <div class="d-flex justify-content-between">
-      <a class="btn btn-primary btn-icon-split" routerLink="/admin/cargos/incluir">
+      <a *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" routerLink="/admin/cargos/incluir">
         <span class="icon">
           <i class="fa fa-plus"></i>
         </span>
@@ -39,12 +39,12 @@
                     <i class="fas fa-eye"></i>&nbsp;Visualizar
                   </a>
                 </li>
-                <li>
+                <li *ngIf="userPodeEditar">
                   <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="editar(cargo.id!)">
                     <i class="fas fa-pen"></i>&nbsp;Editar
                   </a>
                 </li>
-                <li>
+                <li *ngIf="userPodeExcluir">
                   <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(cargo)">
                     <i class="fas fa-trash"></i>&nbsp;Excluir
                   </a>
@@ -79,12 +79,12 @@
                 <i class="fas fa-eye"></i>&nbsp;Visualizar
               </a>
             </li>
-            <li>
+            <li *ngIf="userPodeEditar">
               <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="editar(cargo.id!)">
                 <i class="fas fa-pen"></i>&nbsp;Editar
               </a>
             </li>
-            <li>
+            <li *ngIf="userPodeExcluir">
               <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(cargo)">
                 <i class="fas fa-trash"></i>&nbsp;Excluir
               </a>

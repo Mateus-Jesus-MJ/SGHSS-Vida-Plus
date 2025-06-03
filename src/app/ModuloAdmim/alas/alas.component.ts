@@ -6,6 +6,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToastrService } from 'ngx-toastr';
 import { filter } from 'rxjs';
 import { AlasService } from '../../_services/alas.service';
+import { AuthService } from '../../_services/auth.service';
 
 @Component({
   selector: 'app-alas',
@@ -16,13 +17,16 @@ import { AlasService } from '../../_services/alas.service';
 export class AlasComponent implements OnInit {
   rotaFilhaAtiva = false;
   alas: Ala[] = [];
+  userPodeIncluir = false;
+  userPodeEditar = false;
 
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private ngxUiLoaderService: NgxUiLoaderService,
-    private alasService: AlasService
+    private alasService: AlasService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -32,17 +36,40 @@ export class AlasComponent implements OnInit {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
           this.buscarAlas();
+          this.userPermissoes();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
       this.buscarAlas();
+      this.userPermissoes();
     }
+  }
+
+  userPermissoes() {
+    this.userPodeIncluir = this.temPermissao('alas', 'incluir');
+    this.userPodeEditar = this.temPermissao('alas', 'editar');
   }
 
   private verificarRotaFilhaAtiva(): void {
     this.rotaFilhaAtiva = this.route.children.length > 0;
+  }
+
+  temPermissao(funcionalidade: string, permissao: string): boolean {
+    const user = this.authService.getUsuario();
+
+    const admin = user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === 'admin' &&
+      aut.acesso?.toLowerCase().includes('admin')
+    );
+
+    if (admin) return true
+
+    return !!user?.autorizacoes?.some(aut =>
+      aut.funcionalidade === funcionalidade &&
+      aut.acesso?.toLowerCase().split(',').includes(permissao.toLowerCase())
+    );
   }
 
   buscarAlas() {
