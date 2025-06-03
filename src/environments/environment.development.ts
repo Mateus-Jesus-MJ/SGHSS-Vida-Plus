@@ -27,7 +27,7 @@ export const environment = {
           {
             label: 'Alas',
             rota: 'alas',
-            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+            permissoes: ['visualizar', 'incluir', 'editar']
           }
         ]
       }

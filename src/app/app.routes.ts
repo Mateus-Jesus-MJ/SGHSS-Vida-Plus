@@ -195,7 +195,7 @@ export const routes: Routes = [
         component: AlasComponent,
         data: {
           tipoPermitido: 'pa',
-          funcionalidade: 'ala',
+          funcionalidade: 'alas',
           acesso: 'visualizar'
         },
         children: [
@@ -204,7 +204,7 @@ export const routes: Routes = [
             component: IncluirAlaComponent,
             data: {
               tipoPermitido: 'pa',
-              funcionalidade: 'ala',
+              funcionalidade: 'alas',
               acesso: 'incluir'
             }
           },
@@ -213,7 +213,7 @@ export const routes: Routes = [
             component: VisualizarAlaComponent,
             data: {
               tipoPermitido: 'pa',
-              funcionalidade: 'ala',
+              funcionalidade: 'alas',
               acesso: 'visualizar'
             }
           },
@@ -222,19 +222,10 @@ export const routes: Routes = [
             component: EditarUsuarioComponent,
             data: {
               tipoPermitido: 'pa',
-              funcionalidade: 'ala',
+              funcionalidade: 'alas',
               acesso: 'editar'
             }
           },
-          {
-            path: 'excluir',
-            component: ExcluirTurnosComponent,
-            data: {
-              tipoPermitido: 'pa',
-              funcionalidade: 'ala',
-              acesso: 'excluir'
-            }
-          }
         ]
       },
       {
