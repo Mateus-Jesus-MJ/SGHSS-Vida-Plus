@@ -1,28 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { NgxMaskPipe } from 'ngx-mask';
+import { Ala } from '../../../_models/ala';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { AlasService } from '../../../_services/alas.service';
+import { catchError, forkJoin, of, tap } from 'rxjs';
 import { Hospital } from '../../../_models/Hospital';
+import { Colaborador } from '../../../_models/colaborador';
 import { HospitalService } from '../../../_services/hospital.service';
 import { ColaboradorService } from '../../../_services/colaborador.service';
-import { Colaborador } from '../../../_models/colaborador';
-import { catchError, forkJoin, of, tap } from 'rxjs';
-import { Ala } from '../../../_models/ala';
-import { AlasService } from '../../../_services/alas.service';
 
 declare var bootstrap: any;
 
 @Component({
-  selector: 'app-incluir-ala',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, NgxMaskPipe],
-  templateUrl: './incluir-ala.component.html',
-  styleUrl: './incluir-ala.component.scss'
+  selector: 'app-editar-ala',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NgxMaskPipe, RouterModule],
+  templateUrl: './editar-ala.component.html',
+  styleUrl: './editar-ala.component.scss'
 })
-export class IncluirAlaComponent implements OnInit {
+export class EditarAlaComponent implements OnInit {
   form!: FormGroup;
+  ala!: Ala;
   hospitaisSelecionados: Hospital[] = [];
   hospitais: Hospital[] = [];
   colaboradores: Colaborador[] = [];
@@ -34,9 +35,9 @@ export class IncluirAlaComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private loader: NgxUiLoaderService,
+    private alaService: AlasService,
     private hospitalService: HospitalService,
-    private colaboradorService: ColaboradorService,
-    private alasService: AlasService
+    private colaboradorService: ColaboradorService
   ) {
     this.form = new FormGroup({
       nome: new FormControl('', Validators.required),
@@ -45,26 +46,61 @@ export class IncluirAlaComponent implements OnInit {
     });
   }
 
+
   ngOnInit(): void {
     this.loader.start();
 
-    forkJoin({
-      hospitais: this.buscarHospitais(),
-      colaboradores: this.buscarColabodores()
-    }).subscribe({
-      next: ({ hospitais, colaboradores }) => {
-        this.colaboradores = colaboradores;
-        this.hospitais = hospitais;
+    this.routeAcitive.paramMap.subscribe(params => {
+      const id = params.get('id');
+
+      if (id == null || id == "") {
+        this.toastr.error("Ala não encontrada", "", { progressBar: true });
+        this.router.navigateByUrl("admin/alas");
         this.loader.stop();
-      },
-      error: () => {
-        this.toastr.error("Erro ao buscar dados iniciais");
-        this.loader.stop();
+        return
       }
+
+      forkJoin({
+        hospitais: this.buscarHospitais(),
+        colaboradores: this.buscarColabodores(),
+        ala: this.buscarAla(id)
+      }).subscribe({
+        next: ({ hospitais, colaboradores, ala }) => {
+          this.colaboradores = colaboradores;
+          this.hospitais = hospitais;
+          this.ala = ala;
+          this.populateForm(ala);
+          this.loader.stop();
+        },
+        error: () => {
+          this.toastr.error("Erro ao buscar os dados inicais", "", { progressBar: true });
+          this.loader.stop();
+        }
+      })
+      const modalEl = document.getElementById('modalColaboradores');
+      this.modalColaboradoresInstance = new bootstrap.Modal(modalEl);
+    })
+  }
+
+
+  buscarAla(id: string) {
+    return this.alaService.buscarAlaPorId(id).pipe(
+      catchError(err => {
+        this.toastr.error("Erro inesperado ao buscar ala!");
+        return of();
+      })
+    );
+  }
+
+  populateForm(ala: Ala) {
+    this.form.patchValue({
+      nome: ala.nome,
+      responsavel: ala.responsavel?.nome
     });
 
-    const modalEl = document.getElementById('modalColaboradores');
-    this.modalColaboradoresInstance = new bootstrap.Modal(modalEl);
+    this.hospitaisSelecionados = ala.hospitais!
+    this.responsavel = ala.responsavel;
+    this.marcarHospitaisDaAlaNoFormulario(this.hospitaisSelecionados);
   }
 
   buscarColabodores() {
@@ -104,6 +140,31 @@ export class IncluirAlaComponent implements OnInit {
     );
   }
 
+  marcarHospitaisDaAlaNoFormulario(hospitaisSelecionados : Hospital[]): void {
+  const hospitaisForm = this.form.get("hospitais") as FormGroup;
+
+  if (!hospitaisSelecionados || hospitaisSelecionados.length === 0) return;
+
+  const hospitaisDaAla = new Set(hospitaisSelecionados.map(h => h.id));
+
+  for (const hospital of this.hospitais) {
+    const marcado = hospitaisDaAla.has(hospital.id);
+
+    if (!hospitaisForm.contains(hospital.id!)) {
+      hospitaisForm.addControl(hospital.id!, new FormControl(marcado));
+    } else {
+      hospitaisForm.get(hospital.id!)?.setValue(marcado);
+    }
+
+    const hospitalNaAla = hospitaisSelecionados.find(h => h.id === hospital.id);
+  }
+}
+
+
+
+
+
+
   get hospitaisForm(): FormGroup {
     return this.form.get('hospitais') as FormGroup;
   }
@@ -123,17 +184,19 @@ export class IncluirAlaComponent implements OnInit {
     this.loader.start();
     this.hospitaisSelecionados = this.hospitaisSelecionados.filter(e => e.cnpj !== hospital.cnpj && e.id !== hospital.id);
     this.loader.stop();
+
+    this.marcarHospitaisDaAlaNoFormulario(this.hospitaisSelecionados);
   }
 
-   abrirModalColaboradores(origem: 'input' | 'tabela', hospitalId?: string) {
+  abrirModalColaboradores(origem: 'input' | 'tabela', hospitalId?: string) {
     this.modalContext = { origem, hospitalId };
     this.modalColaboradoresInstance.show();
   }
 
- selecionarColaborador(colaborador: any) {
-    if(this.modalContext?.origem === 'input') {
+  selecionarColaborador(colaborador: any) {
+    if (this.modalContext?.origem === 'input') {
       this.form.get('responsavel')?.setValue(colaborador.nome);
-    } else if(this.modalContext?.origem === 'tabela' && this.modalContext.hospitalId) {
+    } else if (this.modalContext?.origem === 'tabela' && this.modalContext.hospitalId) {
       this.atualizarResponsavelHospital(this.modalContext.hospitalId, colaborador.nome);
     }
     this.modalColaboradoresInstance.hide();
@@ -143,7 +206,7 @@ export class IncluirAlaComponent implements OnInit {
     const hospital = this.hospitaisSelecionados.find(h => h.id === hospitalId);
     if (hospital) {
       hospital.idDiretor = nomeResponsavel;
-      this.form.get("responsavel"+ hospital!.id!)?.setValue(nomeResponsavel);
+      this.form.get("responsavel" + hospital!.id!)?.setValue(nomeResponsavel);
     }
   }
 
@@ -156,18 +219,14 @@ export class IncluirAlaComponent implements OnInit {
 
     this.loader.start();
 
-    const ala: Ala = {
-      nome: this.form.get("nome")?.value.toUpperCase(),
-      idResponsavel: this.responsavel?.id,
-      status: true,
-      hospitais: this.hospitaisSelecionados
-    }
+    this.ala.nome = this.form.get("nome")?.value.toUpperCase();
+    this.ala.idResponsavel = this.responsavel?.id;
+    this.ala.hospitais = this.hospitaisSelecionados;
 
-    this.alasService.novaAla(ala).subscribe({
-      next: (res) => {
+    this.alaService.editarAla(this.ala).subscribe({
+       next: (res) => {
         this.toastr.success(res);
-        this.form.reset();
-        this.hospitaisSelecionados = [];
+        this.populateForm(this.ala);
         this.loader.stop();
       },
       error: (error) => {

@@ -62,11 +62,11 @@ export class AlasComponent implements OnInit {
   }
 
   visualizar(id: string) {
-      this.router.navigate(['admin/alas/visualizar', id]);
+    this.router.navigate(['admin/alas/visualizar', id]);
   }
 
   editar(id: string) {
-
+    this.router.navigate(['admin/alas/editar', id]);
   }
 
   excluir(ala: Ala) {

@@ -25,6 +25,7 @@ import { ExcluirTurnosComponent } from './ModuloAdmim/turnos/excluir-turnos/excl
 import { AlasComponent } from './ModuloAdmim/alas/alas.component';
 import { IncluirAlaComponent } from './ModuloAdmim/alas/incluir-ala/incluir-ala.component';
 import { VisualizarAlaComponent } from './ModuloAdmim/alas/visualizar-ala/visualizar-ala.component';
+import { EditarAlaComponent } from './ModuloAdmim/alas/editar-ala/editar-ala.component';
 
 
 export const routes: Routes = [
@@ -219,7 +220,7 @@ export const routes: Routes = [
           },
           {
             path: 'editar/:id',
-            component: EditarUsuarioComponent,
+            component: EditarAlaComponent,
             data: {
               tipoPermitido: 'pa',
               funcionalidade: 'alas',
