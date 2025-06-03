@@ -125,15 +125,16 @@ export class IncluirAlaComponent implements OnInit {
     this.loader.stop();
   }
 
-   abrirModalColaboradores(origem: 'input' | 'tabela', hospitalId?: string) {
+  abrirModalColaboradores(origem: 'input' | 'tabela', hospitalId?: string) {
     this.modalContext = { origem, hospitalId };
     this.modalColaboradoresInstance.show();
   }
 
- selecionarColaborador(colaborador: any) {
-    if(this.modalContext?.origem === 'input') {
+  selecionarColaborador(colaborador: any) {
+    if (this.modalContext?.origem === 'input') {
       this.form.get('responsavel')?.setValue(colaborador.nome);
-    } else if(this.modalContext?.origem === 'tabela' && this.modalContext.hospitalId) {
+      this.responsavel = colaborador;
+    } else if (this.modalContext?.origem === 'tabela' && this.modalContext.hospitalId) {
       this.atualizarResponsavelHospital(this.modalContext.hospitalId, colaborador.nome);
     }
     this.modalColaboradoresInstance.hide();
@@ -143,7 +144,7 @@ export class IncluirAlaComponent implements OnInit {
     const hospital = this.hospitaisSelecionados.find(h => h.id === hospitalId);
     if (hospital) {
       hospital.idDiretor = nomeResponsavel;
-      this.form.get("responsavel"+ hospital!.id!)?.setValue(nomeResponsavel);
+      this.form.get("responsavel" + hospital!.id!)?.setValue(nomeResponsavel);
     }
   }
 
