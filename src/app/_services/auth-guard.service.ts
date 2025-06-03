@@ -18,6 +18,7 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
   }
 
   canActivateChild(route: ActivatedRouteSnapshot): boolean {
+    console.log('AuthGuard chamado para:', route.url.map(x => x.path).join('/'));
     return this.checkAccess(route);
   }
 
@@ -32,56 +33,45 @@ export class AuthGuardService implements CanActivate, CanActivateChild {
       return false;
     }
 
-
-    //Atualizar esse metodo aqui
     if (tipoPermitido && tipoPermitido !== tipoUsuario) {
       this.toastr.warning('Acesso não autorizado!');
-      this.navigateGuiaOriginal(user!.tipoUsuario)
+      this.navigateGuiaOriginal(user!.tipoUsuario);
       return false;
     }
 
-
     const funcionalidade = route.data['funcionalidade'];
     const acessoEsperado = route.data['acesso'];
-
     const autorizacoesUser = user?.autorizacoes;
 
-
+    console.log('Autorizacoes do usuário:', autorizacoesUser);
+    console.log('Rota exige:', funcionalidade, acessoEsperado);
 
     if (funcionalidade && acessoEsperado) {
-
-      const admin = user?.autorizacoes?.some(aut =>
+      const admin = autorizacoesUser?.some(aut =>
         aut.funcionalidade === 'admin' &&
         aut.acesso?.toLowerCase().includes('admin')
       );
 
-      if(!admin){
-
-        const autorizado = user?.autorizacoes?.some(aut =>
+      if (!admin) {
+        const autorizado = autorizacoesUser?.some(aut =>
           aut.funcionalidade === funcionalidade &&
-          aut.acesso?.toLowerCase().includes(acessoEsperado.toLowerCase())
+          aut.acesso?.toLowerCase().split(',').includes(acessoEsperado.toLowerCase())
         );
 
-      console.log(admin);
-      console.log(autorizado);
-
-      console.log("exigido: " + funcionalidade)
-      console.log("exigido: " + acessoEsperado)
-      console.log(user?.autorizacoes);
-
-
-
-
+        console.log('Admin:', admin);
+        console.log('Autorizado:', autorizado);
 
         if (!autorizado) {
           this.toastr.warning('Você não tem permissão para acessar esta funcionalidade!');
-          this.navigateGuiaOriginal(user!.tipoUsuario)
+          this.navigateGuiaOriginal(user!.tipoUsuario);
           return false;
         }
       }
     }
+
     return true;
   }
+
 
   navigateGuiaOriginal(tipoUsuario: string) {
     switch (tipoUsuario) {

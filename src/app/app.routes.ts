@@ -48,6 +48,7 @@ export const routes: Routes = [
       {
         path: 'hospitais',
         component: HospitaisComponent,
+        canActivateChild: [AuthGuardService],
         data: {
           tipoPermitido: 'pa',
           funcionalidade: 'hospitais',
@@ -194,6 +195,7 @@ export const routes: Routes = [
       {
         path: 'alas',
         component: AlasComponent,
+        canActivateChild: [AuthGuardService],
         data: {
           tipoPermitido: 'pa',
           funcionalidade: 'alas',
