@@ -36,7 +36,7 @@ export class IncluirTurnosComponent implements OnInit {
   turnosSemanaRecebidos?: any[];
   hospitais: Hospital[] = [];
   hospital?: Hospital;
-  alas?: Ala[];
+  alas: Ala[] = [];
   diasDaSemana = [
     { nome: 'Domingo' }, { nome: 'Segunda' }, { nome: 'Terça' },
     { nome: 'Quarta' }, { nome: 'Quinta' }, { nome: 'Sexta' }, { nome: 'Sábado' }
@@ -105,18 +105,17 @@ export class IncluirTurnosComponent implements OnInit {
         this.loader.stop();
       }
     })
-
-    if (this.turnosSemanaRecebidos?.length) {
-      this.aplicarTurnoPadrao(this.turnosSemanaRecebidos);
-    }
   }
 
   aplicarTurnoPadrao(turnosSemana: any[]): void {
+
     const turnosFormArray = this.form.get('turnos') as FormArray;
+
+    this.hospital = turnosSemana[0].hospital;
+    this.alas = this.hospital?.alas || [];
 
     turnosSemana.forEach((turno) => {
       const index = turnosFormArray.controls.findIndex(ctrl => ctrl.get('data')?.value === turno.data);
-
       if (index !== -1) {
         const grupo = turnosFormArray.at(index);
         grupo.patchValue({
@@ -131,7 +130,6 @@ export class IncluirTurnosComponent implements OnInit {
       }
     });
   }
-
 
   buscarColaboradores() {
     return this.colaboradorService.buscarColaboradoresComCargo().pipe(
@@ -154,7 +152,7 @@ export class IncluirTurnosComponent implements OnInit {
   selecionarHospital(hospital: Hospital) {
     this.loader.start();
     this.hospital = hospital;
-    this.alas = hospital.alas;
+    this.alas = hospital.alas || [];
     this.form.get("hospital")?.setValue(hospital.nomeFantasia!);
     this.loader.stop();
   }
@@ -294,11 +292,18 @@ export class IncluirTurnosComponent implements OnInit {
       }));
     }
     this.loader.stop();
+
+
+    if (this.turnosSemanaRecebidos?.length) {
+      this.aplicarTurnoPadrao(this.turnosSemanaRecebidos);
+    }
   }
+
+
   getDiaSemana(data: string): string {
-  const date = parseISO(data);
-  return format(date, 'EEEE', { locale: ptBR });
-}
+    const date = parseISO(data);
+    return format(date, 'EEEE', { locale: ptBR });
+  }
 
 
   selecionarColaborador(colaborador: Colaborador) {

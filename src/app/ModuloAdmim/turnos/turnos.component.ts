@@ -19,8 +19,8 @@ import { AuthService } from '../../_services/auth.service';
 export class TurnosComponent implements OnInit {
   rotaFilhaAtiva = false;
   turnos: Turno[] = [];
-  turnosPaginados: Turno[] = []; // página atual
   dadosFiltrados: any[] = [];
+  turnosPaginados: Turno[] = []; // página atual
   paginaAtual = 1;
   itensPorPagina = 25;
   textoFiltro: string = '';
@@ -37,7 +37,6 @@ export class TurnosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
     this.loaderSercice.start();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -82,6 +81,7 @@ export class TurnosComponent implements OnInit {
   }
 
   buscarTurnos() {
+    this.loaderSercice.start();
     this.turnosService.buscarTurnos().subscribe({
       next: (turnos: Turno[]) => {
         this.turnos = turnos;

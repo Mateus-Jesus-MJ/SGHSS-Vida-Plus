@@ -13,6 +13,10 @@
       </a>
     </div>
   </div>
+  <div class="mt-3 d-flex justify-content-end">
+    <input type="text" class="form-control mb-3 float-end" placeholder="Buscar" [(ngModel)]="textoFiltro"
+      style="max-width: 400px;" (ngModelChange)="filtrarLista()" />
+  </div>
   <div class="mt-3 d-none d-none d-md-flex">
     <table class="table border rounded table-striped align-middle">
       <thead>
@@ -27,7 +31,7 @@
         </tr>
       </thead>
       <tbody class="table-group-divider">
-        <tr *ngFor="let colaborador of colaboradores" class="align-items-center">
+        <tr *ngFor="let colaborador of dadosPaginados" class="align-items-center">
           <td>
             <div class="dropdown">
               <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
@@ -75,7 +79,7 @@
     </table>
   </div>
   <div class="mt-3 d-md-none">
-    <div class="card p-3 mb-3" *ngFor="let colaborador of colaboradores">
+    <div class="card p-3 mb-3" *ngFor="let colaborador of dadosPaginados">
       <div class="d-flex justify-content-between mb-1">
         <div>
           <img *ngIf="colaborador.imagem" [src]="colaborador.imagem" alt="Imagem do Hospital"
@@ -117,4 +121,6 @@
       </label>
     </div>
   </div>
+  <app-paginacao class="float-end" [totalItems]="colaboradores.length" [itemsPerPage]="itensPorPagina"
+    [currentPage]="paginaAtual" (pageChange)="onPaginaAlterada($event)"></app-paginacao>
 </div>
