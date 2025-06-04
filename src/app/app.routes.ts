@@ -26,6 +26,8 @@ import { AlasComponent } from './ModuloAdmim/alas/alas.component';
 import { IncluirAlaComponent } from './ModuloAdmim/alas/incluir-ala/incluir-ala.component';
 import { VisualizarAlaComponent } from './ModuloAdmim/alas/visualizar-ala/visualizar-ala.component';
 import { EditarAlaComponent } from './ModuloAdmim/alas/editar-ala/editar-ala.component';
+import { TelaSaudeComponent } from './ModuloSaude/tela-saude/tela-saude.component';
+import { TeleConsultaComponent } from './ModuloSaude/tele-consulta/tele-consulta.component';
 
 
 export const routes: Routes = [
@@ -271,6 +273,31 @@ export const routes: Routes = [
         path: '**', redirectTo: ''
       }
     ],
+  },
+  {
+    path: 'profissional-saude',
+    component: TelaSaudeComponent,
+    canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService],
+    data: {
+      tipoPermitido: 'ps'
+    },
+    children: [
+      {
+        path: 'tele-consulta',
+        component: TeleConsultaComponent,
+        canActivateChild: [AuthGuardService],
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'tele-consulta',
+          acesso: 'visualizar'
+        },
+      },
+       {
+        path: 'meuperfil/:id',
+        component: MeuperfilComponent
+      },
+    ]
   },
   { path: '**', redirectTo: '' }
 ];

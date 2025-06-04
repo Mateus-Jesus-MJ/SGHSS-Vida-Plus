@@ -81,7 +81,7 @@ export class LoginComponent {
     
         switch (response.tipoUsuario) {
           case 'ps':
-            this.navigate('atendimento');
+            this.navigate('profissional-saude');
             break;
           case 'pc':
             this.navigate('paciente');

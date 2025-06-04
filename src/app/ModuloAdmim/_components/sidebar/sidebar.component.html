@@ -2,97 +2,24 @@
   <nav class="sb-sidenav accordion sb-sidenav-primary" id="sidenavAccordion">
     <div class="sb-sidenav-menu">
       <div class="nav mt-3">
-        <!-- <a class="nav-link" href="index">
-                  <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                  Dashboard
-              </a> -->
-        <!-- <div>
-          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#MenuClientes"
-            aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-hospital-alt"></i></div>
-            Unidades
-            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-          </a>
-          <div class="visible collapse" id="MenuClientes" aria-labelledby="headingOne"
-            data-bs-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav">
-              <a [routerLink]="'/admin/hospitais'" class="nav-link">Hospitais</a>
-            </nav>
-          </div>
-        </div>
-        <div>
-          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#meuUsuario"
-            aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-            Meu Usúario
-            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-          </a>
-          <div class="visible collapse" id="meuUsuario" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav">
-              <a (click)="sair()" class="nav-link">Sair&nbsp;<i class="fas fa-sign-out-alt"></i></a>
-            </nav>
-          </div>
-        </div> -->
-        <!-- <div *ngIf="permissoes.Hospital">
-          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menuHospitais"
-            aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-hospital-alt"></i></div>
-            Unidades
-            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-          </a>
-          <div class="visible collapse" id="menuHospitais" aria-labelledby="headingOne"
-            data-bs-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav" *ngIf="permissoes.Hospital">
-              <a [routerLink]="'/admin/hospitais'" class="nav-link">Hospitais</a>
-            </nav>
-          </div>
-        </div>
-        <div *ngIf="permissoes.Cargos">
-          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#meuUsuario"
-            aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="far fa-address-card"></i></div>
-              Gestão Pessoal
-            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-          </a>
-          <div class="visible collapse" id="meuUsuario" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav">
-              <a class="nav-link" [routerLink]="'/admin/cargos'" >Cargos</a>
-            </nav>
-          </div>
-        </div>
-        <div *ngIf="isAdmin">
-          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#menuUsuarios"
-            aria-expanded="false" aria-controls="collapseLayouts">
-            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-            Usuarios
-            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-          </a>
-          <div class="visible collapse" id="menuUsuarios" aria-labelledby="headingOne"
-            data-bs-parent="#sidenavAccordion">
-            <nav class="sb-sidenav-menu-nested nav" *ngIf="isAdmin">
-              <a [routerLink]="'/admin/usuarios'" class="nav-link">Usuarios</a>
-            </nav>
-          </div>
-        </div> -->
-
         <div *ngFor="let menu of menus">
-          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" [attr.data-bs-target]="'#' + menu.grupo.label.replace(' ','')"
-            aria-expanded="false" aria-controls="collapseLayouts">
+          <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+            [attr.data-bs-target]="'#' + menu.grupo.label.replace(' ','')" aria-expanded="false"
+            aria-controls="collapseLayouts">
             <div class="sb-nav-link-icon"><i [attr.class]="menu.grupo.icon"></i></div>
             {{menu.grupo.label}}
             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
           </a>
-          <div class="visible collapse" [attr.id]="menu.grupo.label.replace(' ','')" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+          <div class="visible collapse" [attr.id]="menu.grupo.label.replace(' ','')" aria-labelledby="headingOne"
+            data-bs-parent="#sidenavAccordion">
             <nav class="sb-sidenav-menu-nested nav">
               <!-- <a class="nav-link" [routerLink]="'/admin/cargos'" >Cargos</a> -->
-               <div *ngFor="let filho of menu.grupo.filhos">
+              <div *ngFor="let filho of menu.grupo.filhos">
                 <a class="nav-link" [routerLink]="'/admin/' + filho.rota">{{filho.label}}</a>
-               </div>
+              </div>
             </nav>
           </div>
         </div>
-
-
         <div class="d-md-none">
           <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#meuUsuario"
             aria-expanded="false" aria-controls="collapseLayouts">
