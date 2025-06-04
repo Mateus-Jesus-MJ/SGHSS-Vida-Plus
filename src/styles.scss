@@ -12975,7 +12975,7 @@ body {
 
 //Azul aqui
 .sb-sidenav-primary {
-  background-color: rgb(13,110,253);
+  background-color: rgb(13, 110, 253);
   color: white;
 }
 
@@ -13267,10 +13267,10 @@ body {
 }
 
 
-.div-chat{
+.div-chat {
   max-height: 350px;
   border: 1px solid #ced4da;
-  background-color:#e9ecef;
+  background-color: #e9ecef;
   border-radius: 3px;
 }
 
@@ -13303,25 +13303,27 @@ body {
   color: #808080;
 }
 
-.texto-data{
+.texto-data {
   font-size: 8px;
 }
 
 
 .circle {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: inline-block;
-}
-.circle.red {
-    background-color: red;
-}
-.circle.green {
-    background-color: green;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.bg-defaut{
+.circle.red {
+  background-color: red;
+}
+
+.circle.green {
+  background-color: green;
+}
+
+.bg-defaut {
   background-color: #e2e8f0;
 }
 
@@ -13329,7 +13331,7 @@ body {
   color: white !important;
 }
 
-.text-bold{
+.text-bold {
   font-weight: bold;
 }
 
@@ -13342,15 +13344,15 @@ body {
   max-height: 50vh;
 }
 
-.text-title{
+.text-title {
   font-size: 1.5rem;
 }
 
-.min-h-80{
+.min-h-80 {
   min-height: 80vh;
 }
 
-.text-link{
+.text-link {
   color: var(--bs-primary);
 }
 
@@ -13359,26 +13361,31 @@ label.label-required::after {
   color: red;
 }
 
-input[readonly], select[readonly] {
+input[readonly],
+select[readonly] {
   background-color: #e9ecef;
   cursor: not-allowed;
 }
 
 
-input[readonly]:focus, select[readonly]:focus {
+input[readonly]:focus,
+select[readonly]:focus {
   outline: none;
 }
 
 .swal2-confirm {
-  box-shadow: none !important; /* Remove sombra */
+  box-shadow: none !important;
+  /* Remove sombra */
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem; /* Espaço entre o ícone e o texto */
+  gap: 0.5rem;
+  /* Espaço entre o ícone e o texto */
 }
 
 .swal2-confirm::before {
-  font-size: 1.2rem; /* Ajusta o tamanho do ícone */
+  font-size: 1.2rem;
+  /* Ajusta o tamanho do ícone */
 }
 
 input[list] {
@@ -13386,19 +13393,20 @@ input[list] {
 }
 
 .modal-full {
-    width: 98%;
-    max-width: none;
+  width: 98%;
+  max-width: none;
 }
 
-    .modal-full .modal-content {
-        height: 90vh;
-        border-radius: 0;
-    }
-    .modal-full .modal-body {
-        overflow-y: auto;
-        max-height: 90vh;
-        padding-top: 0;
-    }
+.modal-full .modal-content {
+  height: 90vh;
+  border-radius: 0;
+}
+
+.modal-full .modal-body {
+  overflow-y: auto;
+  max-height: 90vh;
+  padding-top: 0;
+}
 
 .toast-top-right,
 .toast-top-left,
@@ -13408,4 +13416,9 @@ input[list] {
 .toast-bottom-center {
   position: fixed !important;
   z-index: 1050; // ou maior se necessário
+}
+
+/* Remove a seta padrão do botão dropdown */
+.custom-dropdown-toggle::after {
+  display: none !important;
 }

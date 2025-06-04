@@ -10,6 +10,7 @@ import { UserServiceService } from '../../_services/user-service.service';
 import { User } from '../../_models/User';
 import { PacienteService } from '../../_services/paciente.service';
 import { Paciente } from '../../_models/Paciente';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-cadastro',
@@ -37,6 +38,7 @@ export class CadastroComponent implements OnInit {
     private pacienteService: PacienteService,
     private userService: UserServiceService,
     private toastr: ToastrService,
+    private loaderService: NgxUiLoaderService,
     private router: Router) {
     this.cadastroForm = new FormGroup({
       nome: new FormControl('', Validators.required),
@@ -243,6 +245,8 @@ export class CadastroComponent implements OnInit {
       return;
     }
 
+    this.loaderService.start();
+
     const formData = this.cadastroForm.value;
 
     formData.nome = formData.nome.toUpperCase();
@@ -285,14 +289,18 @@ export class CadastroComponent implements OnInit {
         this.userService.novouser(usuario).subscribe({
           next : (res : any) => {
             this.toastr.success(res);
+            this.router.navigateByUrl('');
+            this.loaderService.stop();
           },
           error: (err: any) => {
             this.toastr.error(err);
+            this.loaderService.stop();
           }
         })
       })
       .catch((error) => {
         this.toastr.error("Falha ao criar cadastro!")
+        this.loaderService.stop();
       });
   }
 

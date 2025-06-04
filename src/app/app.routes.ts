@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { AuthGuardService } from './_services/auth-guard.service';
-import { CadastroComponent } from './paciente/cadastro/cadastro.component';
+import { CadastroComponent } from './ModuloPaciente/cadastro/cadastro.component';
 import { TelaAdminComponent } from './ModuloAdmim/tela-admin/tela-admin.component';
 import { HospitaisComponent } from './ModuloAdmim/hospitais/hospitais.component';
 import { IncluirHospitalComponent } from './ModuloAdmim/hospitais/incluir-hospital/incluir-hospital.component';
@@ -28,6 +28,7 @@ import { VisualizarAlaComponent } from './ModuloAdmim/alas/visualizar-ala/visual
 import { EditarAlaComponent } from './ModuloAdmim/alas/editar-ala/editar-ala.component';
 import { TelaSaudeComponent } from './ModuloSaude/tela-saude/tela-saude.component';
 import { TeleConsultaComponent } from './ModuloSaude/tele-consulta/tele-consulta.component';
+import { TelaPacienteComponent } from './ModuloPaciente/tela-paciente/tela-paciente.component';
 
 
 export const routes: Routes = [
@@ -293,7 +294,22 @@ export const routes: Routes = [
           acesso: 'visualizar'
         },
       },
-       {
+      {
+        path: 'meuperfil/:id',
+        component: MeuperfilComponent
+      },
+    ]
+  },
+  {
+    path: 'paciente',
+    component: TelaPacienteComponent,
+    canActivate: [AuthGuardService],
+    canActivateChild: [AuthGuardService],
+    data: {
+      tipoPermitido: 'pc'
+    },
+    children: [
+      {
         path: 'meuperfil/:id',
         component: MeuperfilComponent
       },

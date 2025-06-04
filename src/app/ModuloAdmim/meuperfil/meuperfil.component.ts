@@ -6,6 +6,8 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { User } from '../../_models/User';
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-meuperfil',
@@ -23,7 +25,8 @@ export class MeuperfilComponent implements OnInit {
     private router: Router,
     private userService: UserServiceService,
     private toastr: ToastrService,
-    private ngxUiLoaderService: NgxUiLoaderService
+    private ngxUiLoaderService: NgxUiLoaderService,
+    private location: Location
   ) {
     this.emailForm = new FormGroup({
       email: new FormControl('', [Validators.required]),
@@ -66,13 +69,13 @@ export class MeuperfilComponent implements OnInit {
   senhasIguais() {
 
     const senha = this.senhaForm.get('novaSenha')?.value;
-    const confirmar =this.senhaForm.get('confirmarSenha')?.value;
+    const confirmar = this.senhaForm.get('confirmarSenha')?.value;
 
-    if(confirmar == "" || confirmar== null) return
+    if (confirmar == "" || confirmar == null) return
 
-    if(senha == confirmar){
+    if (senha == confirmar) {
 
-    }else{
+    } else {
       this.senhaForm.get('confirmarSenha')!.setErrors({ divergente: true });
     }
 
@@ -91,7 +94,7 @@ export class MeuperfilComponent implements OnInit {
       senha: this.usuario.senha,
       tipoUsuario: this.usuario.tipoUsuario,
       cargo: this.usuario.cargo || '',
-      autorizacoes: this.usuario.autorizacoes ,
+      autorizacoes: this.usuario.autorizacoes,
       colaborador: this.usuario.colaborador || '',
       paciente: this.usuario.paciente,
       status: this.usuario.status
@@ -118,7 +121,7 @@ export class MeuperfilComponent implements OnInit {
         return;
       }
 
-      if(this.senhaForm.get('senhaAtual')!.value != this.usuario.senha){
+      if (this.senhaForm.get('senhaAtual')!.value != this.usuario.senha) {
         this.toastr.error("A senha atual informada está incorreta");
         return
       }
@@ -137,8 +140,12 @@ export class MeuperfilComponent implements OnInit {
         this.toastr.error(err);
       }
     });
-     this.ngxUiLoaderService.stop();
+    this.ngxUiLoaderService.stop();
   }
+  voltar(): void {
+    this.location.back();
+  }
+
 }
 
 
