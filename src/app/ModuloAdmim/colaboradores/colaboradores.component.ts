@@ -24,7 +24,7 @@ export class ColaboradoresComponent implements OnInit {
   userPodeEditar = false;
   userPodeExcluir = false;
   dadosFiltrados: any[] = [];
-  dadosPaginados: Colaborador[] = []; // página atual
+  dadosPaginados: Colaborador[] = [];
   textoFiltro: string = '';
   paginaAtual = 1;
   itensPorPagina = 25;
