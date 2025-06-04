@@ -4,10 +4,11 @@ import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/ro
 import { AuthService } from '../../_services/auth.service';
 import { filter } from 'rxjs';
 import { BreadcrumbComponent } from "../../ModuloAdmim/_components/breadcrumb/breadcrumb.component";
+import { TopMobileComponent } from "../../_components/top-mobile/top-mobile.component";
 
 @Component({
   selector: 'app-tela-paciente',
-  imports: [RouterModule, CommonModule, BreadcrumbComponent],
+  imports: [RouterModule, CommonModule, BreadcrumbComponent, TopMobileComponent],
   templateUrl: './tela-paciente.component.html',
   styleUrl: './tela-paciente.component.scss'
 })

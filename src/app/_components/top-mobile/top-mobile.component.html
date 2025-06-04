@@ -1,0 +1,23 @@
+<div class="d-md-none w-100 bg-primary pt-2 pb-1 px-3 text-white align-items-center">
+    <div>
+        <ol class="breadcrumb d-inline-flex flex-wrap mt-1 text-white">
+            <li *ngFor="let item of breadcrumbService.breadcrumbs; let last = last; let first = first"
+                class="breadcrumb-item text-capitalize text-white" [class.active]="last"
+                [attr.aria-current]="last ? 'page' : null">
+
+                <ng-container *ngIf="first">
+                    <a [routerLink]="item.url" class="text-white"><i class="fa fa-home me-1"></i>{{item.label}}</a>
+                </ng-container>
+
+                <ng-container *ngIf="!first && !last">
+                    <a [routerLink]="item.url">{{ item.label }}</a>
+                </ng-container>
+
+                <ng-container *ngIf="last && !first">
+                    {{ item.label }}
+                </ng-container>
+            </li>
+        </ol>
+    </div>
+    <!-- <img src="assets/img/logobrancasemfundo.png" style="height: 30px" class="ms-3"/> -->
+</div>

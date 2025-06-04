@@ -12,10 +12,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link text-white active" aria-current="page">Inicio</a>
+                        <a class="nav-link text-white active" routerLink="/paciente" aria-current="page">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">Consultas</a>
+                        <a class="nav-link text-white" routerLink="/paciente/consultas">Consultas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">Exames</a>
@@ -60,9 +60,10 @@
         </div>
     </nav>
 </div>
-<main>
+<app-top-mobile class="d-md-none"></app-top-mobile>
+<main class="d-none d-md-block ">
     <div class="container-fluid px-3 py-4">
-        <app-breadcrumb class="d-none d-md-block"></app-breadcrumb>
+        <app-breadcrumb></app-breadcrumb>
         <div *ngIf="rotaFilhaAtiva" class="mt-3 card p-3 border-0 shadow">
             <router-outlet></router-outlet>
         </div>
@@ -71,7 +72,7 @@
 <div class="d-md-none">
     <nav class="navbar navbar-primary bg-primary border-top fixed-bottom">
         <div class="container-fluid justify-content-around">
-            <button class="nav-link text-white">
+            <button class="nav-link text-white" routerLink="/paciente/consultas">
                 <i class="fas fa-user-md"></i><br /><small>Consultas</small>
             </button>
             <button class="nav-link text-white">
