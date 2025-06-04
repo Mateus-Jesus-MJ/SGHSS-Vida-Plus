@@ -4,7 +4,7 @@
     Incluir Turno
   </h3>
   <div class="d-flex justify-content-between d-none d-none d-md-flex">
-    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/usuarios">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/turnos">
       <span class="icon">
         <i class="fas fa-arrow-left"></i>
       </span>
@@ -42,6 +42,15 @@
         <label>Cargo</label>
       </div>
     </div>
+    <div class="col-xl-4 col-lg-6">
+      <div class="form-floating input-group mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="hospital" readonly
+          [class.is-invalid]="form.get('hospital')?.invalid && form.get('hospital')?.touched" />
+        <label>Hospital</label>
+        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalHospitais"
+          role="button"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-xxl-2 col-xl-3 col-lg-4">
@@ -71,8 +80,7 @@
       </button>
     </div>
     <div class="col-xxl-2 col-xl-3 col-lg-4">
-      <button class="btn btn-warning py-3 px-5 mb-3" (click)="gerarTabela()"
-        role="button">
+      <button class="btn btn-warning py-3 px-5 mb-3" (click)="gerarTabela()" role="button">
         <i class="fas fa-eraser"></i> Limpar turnos
       </button>
     </div>
@@ -102,7 +110,7 @@
           <td><input class="form-control" type="time" formControlName="termino"></td>
           <td><select class="form-select" formControlName="areaDeAtuacao">
               <option desabled></option>
-              <option> Consulta</option>
+              <option *ngFor="let ala of alas" [value]="ala.nome">{{ala.nome}}</option>
             </select>
           </td>
         </tr>
@@ -151,7 +159,7 @@
   <div class="modal-dialog modal-dialog-centered modal-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Selecionar Cargos</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Selecionar Colaborador</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -205,6 +213,66 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalHospitais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Selecionar Hospital</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end">
+          <!-- <div class="form-floating">
+            <input type="text" class="form-control" placeholder="" />
+            <label>Pesquisar</label>
+          </div> -->
+        </div>
+        <div class="mt-3 d-none d-md-flex">
+          <table class="table border rounded table-striped align-middle">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Razão Social</th>
+                <th>Nome Fantasia</th>
+                <th>CNPJ</th>
+                <th>Endereço</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <tr *ngFor="let hospital of hospitais">
+                <td>
+                  <i class="fa fa-check text-success" role="button" (click)="selecionarHospital(hospital)"
+                    data-bs-dismiss="modal"></i>
+                </td>
+                <td>{{hospital.razaoSocial}}</td>
+                <td>{{hospital.nomeFantasia}}</td>
+                <td>{{hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
+                <td>{{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3 d-md-none">
+          <div class="card mb-3" *ngFor="let hospital of hospitais">
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-1">
+                <div>
+                  <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
+                </div>
+                <i class="fa fa-check text-success" role="button" (click)="selecionarHospital(hospital)"
+                  data-bs-dismiss="modal"></i>
+              </div>
+              <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
+              <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}</label>
+              <label><b>Endereço:</b> {{hospital.endereco.bairro}} - {{hospital.endereco.localidade}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Turno Padrão -->
 <div class="modal fade" id="modalReplicarTurno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-full">
@@ -235,7 +303,7 @@
                   <td><input type="time" class="form-control" formControlName="termino" /></td>
                   <td><select class="form-select" formControlName="areaDeAtuacao">
                       <option desabled></option>
-                      <option> Consulta</option>
+                      <option *ngFor="let ala of alas" [value]="ala.nome">{{ala.nome}}</option>
                     </select>
                   </td>
                 </tr>
@@ -268,7 +336,7 @@
                 <label class="form-label">Área de Trabalho</label>
                 <select class="form-select" formControlName="areaDeAtuacao">
                   <option desabled></option>
-                  <option> Consulta</option>
+                  <option *ngFor="let ala of alas" [value]="ala.nome">{{ala.nome}}</option>
                 </select>
               </div>
             </div>
@@ -307,14 +375,16 @@
             <div class="col-xxl-2 col-xl-3 col-lg-4">
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" placeholder="36:00" formControlName="cargaHoraria" mask="00:00"
-                  [allowNegativeNumbers]="true" [showMaskTyped]="true" placeHolderCharacter="-" [dropSpecialCharacters]="false"/>
+                  [allowNegativeNumbers]="true" [showMaskTyped]="true" placeHolderCharacter="-"
+                  [dropSpecialCharacters]="false" />
                 <label>Carga Horária</label>
               </div>
             </div>
             <div class="col-xxl-2 col-xl-3 col-lg-4">
               <div class="form-floating mb-3">
                 <input type="text" class="form-control" placeholder="" formControlName="horasDesanso" mask="00:00"
-                  [allowNegativeNumbers]="true" [showMaskTyped]="true" placeHolderCharacter="-" [dropSpecialCharacters]="false"/>
+                  [allowNegativeNumbers]="true" [showMaskTyped]="true" placeHolderCharacter="-"
+                  [dropSpecialCharacters]="false" />
                 <label>Tempo de Descanso</label>
               </div>
             </div>
@@ -322,7 +392,7 @@
               <div class="form-floating mb-3">
                 <select class="form-select" formControlName="areaDeAtuacao">
                   <option desabled></option>
-                  <option> Consulta</option>
+                  <option *ngFor="let ala of alas" [value]="ala.nome">{{ala.nome}}</option>
                 </select>
                 <label>Tempo de Descanso</label>
               </div>

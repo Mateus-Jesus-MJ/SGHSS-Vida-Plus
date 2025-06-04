@@ -29,6 +29,7 @@
           <th>Intervalo</th>
           <th>Termino</th>
           <th>Hospital</th>
+          <th>Ala</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
@@ -64,7 +65,8 @@
           <td>{{ turno.horarioInicio}}</td>
           <td>{{ turno.horarioInicioIntervalo}} - {{turno.horarioTerminoIntervalo}}</td>
           <td>{{turno.horarioTermino}}</td>
-          <td></td>
+          <td>{{turno.hospital?.nomeFantasia}}</td>
+          <td>{{turno.areaDeAtuacao}}</td>
         </tr>
       </tbody>
     </table>
@@ -102,7 +104,8 @@
       <label><b>Inicio:</b> {{turno.horarioInicio}}</label>
       <label><b>Intervalo:</b> {{turno.horarioInicioIntervalo}} - {{turno.horarioTerminoIntervalo}}</label>
       <label><b>Termino:</b>{{turno.horarioTermino}}</label>
-      <label><b>Hospital:</b></label>
+      <label><b>Hospital:</b> {{turno.hospital?.nomeFantasia}}</label>
+      <label><b>Ala:</b> {{turno.areaDeAtuacao}}</label>
     </div>
   </div>
   <app-paginacao class="float-end" [totalItems]="turnos.length" [itemsPerPage]="itensPorPagina"

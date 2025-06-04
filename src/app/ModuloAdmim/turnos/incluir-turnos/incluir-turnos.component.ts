@@ -10,13 +10,18 @@ import { ColaboradorService } from '../../../_services/colaborador.service';
 import { ToastrService } from 'ngx-toastr';
 import { Turno } from '../../../_models/Turno';
 import { TurnosService } from '../../../_services/turnos.service';
+import { parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { Ala } from '../../../_models/ala';
+import { Hospital } from '../../../_models/Hospital';
+import { HospitalService } from '../../../_services/hospital.service';
+import { catchError, forkJoin, of } from 'rxjs';
 
 
 @Component({
   selector: 'app-incluir-turnos',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxMaskPipe, NgxMaskDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxMaskPipe, NgxMaskDirective, RouterModule],
   templateUrl: './incluir-turnos.component.html',
   styleUrl: './incluir-turnos.component.scss'
 })
@@ -29,6 +34,9 @@ export class IncluirTurnosComponent implements OnInit {
   turnosIncluir: Turno[] = [];
   meses = environment.meses;
   turnosSemanaRecebidos?: any[];
+  hospitais: Hospital[] = [];
+  hospital?: Hospital;
+  alas?: Ala[];
   diasDaSemana = [
     { nome: 'Domingo' }, { nome: 'Segunda' }, { nome: 'Terça' },
     { nome: 'Quarta' }, { nome: 'Quinta' }, { nome: 'Sexta' }, { nome: 'Sábado' }
@@ -40,12 +48,14 @@ export class IncluirTurnosComponent implements OnInit {
     private loader: NgxUiLoaderService,
     private colaboradorService: ColaboradorService,
     private turnosService: TurnosService,
+    private hospitalService: HospitalService,
     private router: Router,
     private toastr: ToastrService,
   ) {
     this.form = this.fb.group({
       colaborador: new FormControl('', [Validators.required]),
       cargo: new FormControl('', [Validators.required]),
+      hospital: new FormControl('', [Validators.required]),
       mes: [new Date().getMonth()],
       ano: [new Date().getFullYear()],
 
@@ -79,8 +89,22 @@ export class IncluirTurnosComponent implements OnInit {
 
   ngOnInit(): void {
     this.loader.start();
-    this.buscarColaboradores()
-    this.gerarTabela();
+
+
+    forkJoin({
+      hospitais: this.buscarHospitais(),
+      colaboradores: this.buscarColaboradores()
+    }).subscribe({
+      next: ({ hospitais, colaboradores }) => {
+        this.colaboradores = colaboradores;
+        this.hospitais = hospitais;
+        this.gerarTabela();
+      },
+      error: () => {
+        this.toastr.error("Erro ao buscar dados iniciais");
+        this.loader.stop();
+      }
+    })
 
     if (this.turnosSemanaRecebidos?.length) {
       this.aplicarTurnoPadrao(this.turnosSemanaRecebidos);
@@ -110,16 +134,29 @@ export class IncluirTurnosComponent implements OnInit {
 
 
   buscarColaboradores() {
-    this.colaboradorService.buscarColaboradoresComCargo().subscribe({
-      next: (colaboradores: Colaborador[]) => {
-        this.colaboradores = colaboradores;
-      },
-      error: () => {
-        this.toastr.error("Erro inesperado ao buscar colaboradores! Tente novamente mais tarde", "", { "progressBar": true })
-      }
-    });
+    return this.colaboradorService.buscarColaboradoresComCargo().pipe(
+      catchError(err => {
+        this.toastr.error("Erro inesperado ao buscar colaboradores!");
+        return of([]);
+      })
+    );
+  }
 
+  buscarHospitais() {
+    return this.hospitalService.buscarHospitais().pipe(
+      catchError(err => {
+        this.toastr.error("Erro ao buscar hospitais");
+        return of([]);
+      })
+    );
+  }
 
+  selecionarHospital(hospital: Hospital) {
+    this.loader.start();
+    this.hospital = hospital;
+    this.alas = hospital.alas;
+    this.form.get("hospital")?.setValue(hospital.nomeFantasia!);
+    this.loader.stop();
   }
 
   get turnos(): FormArray {
@@ -167,7 +204,7 @@ export class IncluirTurnosComponent implements OnInit {
     };
 
     const cargaTotalMin = parseTimeStr(cargaHorariaStr);
-    let  descansoMin = parseTimeStr(descansoStr);
+    let descansoMin = parseTimeStr(descansoStr);
     const ano = Number(this.form.get("ano")!.value);
     const mes = Number(this.form.get("mes")!.value) + 1; // de 1 a 12
     const dia = Number(dataInicialStr);              // número do dia
@@ -196,7 +233,7 @@ export class IncluirTurnosComponent implements OnInit {
 
         const minutosDisponiveis = Math.max(0, Math.floor((+maxFimDoDia - +inicioTurno) / 60000));
 
-        if(minutosDisponiveis < restanteMin){
+        if (minutosDisponiveis < restanteMin) {
           restanteMin -= 1;
         }
 
@@ -259,9 +296,9 @@ export class IncluirTurnosComponent implements OnInit {
     this.loader.stop();
   }
   getDiaSemana(data: string): string {
-    const date = new Date(data);
-    return format(date, 'EEEE', { locale: ptBR });
-  }
+  const date = parseISO(data);
+  return format(date, 'EEEE', { locale: ptBR });
+}
 
 
   selecionarColaborador(colaborador: Colaborador) {
@@ -286,7 +323,8 @@ export class IncluirTurnosComponent implements OnInit {
       if ((turno.inicio && turno.inicio.trim() !== '') && (turno.termino && turno.termino.trim() !== '') && turno.areaDeAtuacao != "") {
         const turnoIncluir: Turno = {
           idColaborador: this.colaborador!.id!,
-          idHospital: 'Hospital1',
+          idHospital: this.hospital!.id!,
+          hospital: this.hospital,
           data: turno.data,
           horarioInicio: turno.inicio,
           horarioInicioIntervalo: turno.inicioIntervalo,

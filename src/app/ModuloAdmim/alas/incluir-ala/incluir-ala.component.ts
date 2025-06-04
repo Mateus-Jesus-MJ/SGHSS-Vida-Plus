@@ -94,10 +94,6 @@ export class IncluirAlaComponent implements OnInit {
             hospital.id!,
             new FormControl(false)
           );
-          hospitaisForm.addControl(
-            'responsavel' + hospital.id!,
-            new FormControl('')
-          );
         }
         this.hospitais = hospitais;
       })

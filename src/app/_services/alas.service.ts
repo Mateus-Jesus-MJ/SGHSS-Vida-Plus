@@ -116,14 +116,14 @@ export class AlasService {
         delete alaClone.hospitais;
 
         addDoc(cargoCollection, alaClone).then((docRef) => {
-          const alaId = docRef.id;
+        const alaCompleta = { id: docRef.id, ...alaClone };
           const updatePromises = (ala.hospitais || []).map(hospital => {
             const hospitalId = typeof hospital === 'string' ? hospital : hospital?.id;
             if (!hospitalId) return Promise.resolve();
 
             const hospitalRef = doc(this.firestore, `hospitais/${hospitalId}`);
             return updateDoc(hospitalRef, {
-              alas: arrayUnion(alaId)
+            alas: arrayUnion(alaCompleta)
             });
           });
 
@@ -144,29 +144,100 @@ export class AlasService {
     });
   }
 
+  // editarAla(ala: Ala): Observable<any> {
+  //   // Cria a referência do documento corretamente
+  //   const alaRef = doc(this.firestore, `${this.tabelaAlas}/${ala.id}`); // sem tipar aqui para evitar conflitos
+
+  //   // Clona e limpa os dados para evitar campos não serializáveis
+  //   const alaClone: any = structuredClone(ala);
+  //   delete alaClone.hospitais;
+  //   delete alaClone.responsavel;
+
+  //   Object.keys(alaClone).forEach(key => {
+  //     if (alaClone[key] === undefined) {
+  //       delete alaClone[key];
+  //     }
+  //   });
+
+  //   return new Observable(observer => {
+  //     // Atualiza a Ala no Firestore
+  //     updateDoc(alaRef, alaClone).then(() => {
+  //       const alaId = ala.id;
+
+  //       const hospitaisQuery = query(
+  //         collection(this.firestore, 'hospitais'),
+  //         where('alas', 'array-contains', alaId)
+  //       );
+
+  //       getDocs(hospitaisQuery).then(snapshot => {
+  //         const hospitaisAtuais = snapshot.docs.map(doc => ({
+  //           id: doc.id,
+  //           ...doc.data()
+  //         })) as Hospital[];
+
+  //         const hospitaisNovos = (ala.hospitais || []).map(h => typeof h === 'string' ? h : h.id);
+  //         const hospitaisNovosSet = new Set(hospitaisNovos);
+
+  //         const updatePromises: Promise<any>[] = [];
+
+  //         // Remover ala de hospitais antigos
+  //         for (const hospital of hospitaisAtuais) {
+  //           if (!hospitaisNovosSet.has(hospital.id)) {
+  //             const hospitalRef = doc(this.firestore, `hospitais/${hospital.id}`);
+  //             updatePromises.push(updateDoc(hospitalRef, {
+  //               alas: arrayRemove(alaId)
+  //             }));
+  //           }
+  //         }
+
+  //         // Adicionar ala aos hospitais novos
+  //         for (const hospitalId of hospitaisNovos) {
+  //           const hospitalRef = doc(this.firestore, `hospitais/${hospitalId}`);
+  //           updatePromises.push(updateDoc(hospitalRef, {
+  //             alas: arrayUnion(alaId)
+  //           }));
+  //         }
+
+  //         Promise.all(updatePromises).then(() => {
+  //           observer.next("Ala atualizada e hospitais sincronizados com sucesso!");
+  //           observer.complete();
+  //         }).catch(error => {
+  //           observer.error(`Erro ao atualizar hospitais. Motivo: ${error}`);
+  //         });
+
+  //       }).catch(error => {
+  //         observer.error(`Erro ao consultar hospitais relacionados. Motivo: ${error}`);
+  //       });
+
+  //     }).catch(error => {
+  //       observer.error(`Erro ao atualizar ala. Motivo: ${error}`);
+  //     });
+  //   });
+  // }
+
   editarAla(ala: Ala): Observable<any> {
-    // Cria a referência do documento corretamente
-    const alaRef = doc(this.firestore, `${this.tabelaAlas}/${ala.id}`); // sem tipar aqui para evitar conflitos
+  const alaRef = doc(this.firestore, `${this.tabelaAlas}/${ala.id}`);
+  const alaId = ala.id!;
 
-    // Clona e limpa os dados para evitar campos não serializáveis
-    const alaClone: any = structuredClone(ala);
-    delete alaClone.hospitais;
-    delete alaClone.responsavel;
+  // Prepara ala atualizada para salvar
+  const alaClone: any = structuredClone(ala);
+  delete alaClone.hospitais;
+  delete alaClone.responsavel;
+  Object.keys(alaClone).forEach(key => {
+    if (alaClone[key] === undefined) {
+      delete alaClone[key];
+    }
+  });
 
-    Object.keys(alaClone).forEach(key => {
-      if (alaClone[key] === undefined) {
-        delete alaClone[key];
-      }
-    });
+  return new Observable(observer => {
+    // Primeiro, busca a versão anterior da ala
+    getDoc(alaRef).then(prevSnap => {
+      const alaAnterior = prevSnap.exists() ? { id: prevSnap.id, ...prevSnap.data() } : null;
 
-    return new Observable(observer => {
-      // Atualiza a Ala no Firestore
       updateDoc(alaRef, alaClone).then(() => {
-        const alaId = ala.id;
-
         const hospitaisQuery = query(
           collection(this.firestore, 'hospitais'),
-          where('alas', 'array-contains', alaId)
+          where('alas', 'array-contains', alaAnterior)
         );
 
         getDocs(hospitaisQuery).then(snapshot => {
@@ -178,23 +249,24 @@ export class AlasService {
           const hospitaisNovos = (ala.hospitais || []).map(h => typeof h === 'string' ? h : h.id);
           const hospitaisNovosSet = new Set(hospitaisNovos);
 
+          const novaAlaCompleta = { id: alaId, ...alaClone };
           const updatePromises: Promise<any>[] = [];
 
-          // Remover ala de hospitais antigos
+          // Remove a ala antiga dos hospitais que não estão mais vinculados
           for (const hospital of hospitaisAtuais) {
             if (!hospitaisNovosSet.has(hospital.id)) {
               const hospitalRef = doc(this.firestore, `hospitais/${hospital.id}`);
               updatePromises.push(updateDoc(hospitalRef, {
-                alas: arrayRemove(alaId)
+                alas: arrayRemove(alaAnterior)
               }));
             }
           }
 
-          // Adicionar ala aos hospitais novos
+          // Adiciona a ala atualizada aos hospitais novos
           for (const hospitalId of hospitaisNovos) {
             const hospitalRef = doc(this.firestore, `hospitais/${hospitalId}`);
             updatePromises.push(updateDoc(hospitalRef, {
-              alas: arrayUnion(alaId)
+              alas: arrayUnion(novaAlaCompleta)
             }));
           }
 
@@ -212,8 +284,13 @@ export class AlasService {
       }).catch(error => {
         observer.error(`Erro ao atualizar ala. Motivo: ${error}`);
       });
+
+    }).catch(error => {
+      observer.error(`Erro ao carregar ala anterior. Motivo: ${error}`);
     });
-  }
+  });
+}
+
 
 
 }
