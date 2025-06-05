@@ -1,1 +1,103 @@
-<p>consultas works!</p>
+<router-outlet></router-outlet>
+<div *ngIf="!rotaFilhaAtiva">
+    <div class="d-flex justify-content-between">
+        <h3>Consultas</h3>
+        <div class="d-flex justify-content-between">
+            <a class="btn btn-primary btn-icon-split" routerLink="/paciente/consultas/incluir">
+                <span class="icon">
+                    <i class="fa fa-plus"></i>
+                </span>
+                <span class="text px-4">
+                    Incluir
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="mt-3 d-flex justify-content-end">
+        <input type="text" class="form-control mb-3 float-end" placeholder="Buscar" [(ngModel)]="textoFiltro"
+            style="max-width: 400px;" (ngModelChange)="filtrarLista()" />
+    </div>
+    <div class="mt-3 d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <tr *ngIf="dadosPaginados.length == 0">
+                    <td colspan="2">Nenhuma consulta Encontrada</td>
+                </tr>
+                <tr *ngFor="let consulta of dadosPaginados" class="align-items-center">
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
+                                <!-- <li>
+                                    <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                                        (click)="visualizar(consulta.id!)">
+                                        <i class="fas fa-eye"></i>&nbsp;Visualizar
+                                    </a>
+                                </li>
+                                <li *ngIf="userPodeEditar">
+                                    <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                                        (click)="editar(consulta.id!)">
+                                        <i class="fas fa-pen"></i>&nbsp;Editar
+                                    </a>
+                                </li>
+                                <li *ngIf="userPodeExcluir">
+                                    <a class="dropdown-item mb-1" style="cursor: pointer;"
+                                        (click)="excluir(consulta)">
+                                        <i class="fas fa-trash"></i>&nbsp;Excluir
+                                    </a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </td>
+                    <td>{{ consulta.data | date:'dd/MM/yyyy' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3">
+            Nenhuma consulta encontrada
+        </div>
+        <div class="card p-3 mb-3" *ngFor="let consulta of dadosPaginados">
+            <div class="d-flex justify-content-between mb-1">
+                <label><b>Data:</b> {{consulta.data | date:'dd/MM/yyyy' }}</label>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
+                        <!-- <li>
+                            <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                                (click)="visualizar(consulta.id!)">
+                                <i class="fas fa-eye"></i>&nbsp;Visualizar
+                            </a>
+                        </li>
+                        <li *ngIf="userPodeEditar">
+                            <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                                (click)="editar(consulta.id!)">
+                                <i class="fas fa-pen"></i>&nbsp;Editar
+                            </a>
+                        </li>
+                        <li *ngIf="userPodeExcluir">
+                            <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(consulta)">
+                                <i class="fas fa-trash"></i>&nbsp;Excluir
+                            </a>
+                        </li> -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-paginacao class="float-end" [totalItems]="todosDados.length" [itemsPerPage]="itensPorPagina"
+        [currentPage]="paginaAtual" (pageChange)="onPaginaAlterada($event)"></app-paginacao>
+</div>

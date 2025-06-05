@@ -29,6 +29,7 @@ import { EditarAlaComponent } from './ModuloAdmim/alas/editar-ala/editar-ala.com
 import { TelaSaudeComponent } from './ModuloSaude/tela-saude/tela-saude.component';
 import { TeleConsultaComponent } from './ModuloSaude/tele-consulta/tele-consulta.component';
 import { TelaPacienteComponent } from './ModuloPaciente/tela-paciente/tela-paciente.component';
+import { ConsultasComponent } from './ModuloPaciente/consultas/consultas.component';
 
 
 export const routes: Routes = [
@@ -309,6 +310,14 @@ export const routes: Routes = [
       tipoPermitido: 'pc'
     },
     children: [
+      {
+        path: 'consultas',
+        component: ConsultasComponent,
+        canActivateChild: [AuthGuardService],
+        children: [
+          
+        ]
+      },
       {
         path: 'meuperfil/:id',
         component: MeuperfilComponent
