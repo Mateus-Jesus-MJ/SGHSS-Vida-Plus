@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
+import { NgControl } from '@angular/forms';
 import 'select2';
 
 declare var $: any;
@@ -7,16 +8,21 @@ declare var $: any;
   selector: '[appSelect2]',
   standalone: true
 })
-export class Select2Directive implements OnInit, OnDestroy {
+export class Select2Directive implements OnInit{
   @Input('appSelect2') options: any;
 
-  constructor(private el: ElementRef) { }
+  constructor(private el: ElementRef, private control: NgControl) {}
 
-  ngOnInit() {
-    ($(this.el.nativeElement) as any).select2(this.options);
-  }
+  ngOnInit(): void {
+    const selectElement = $(this.el.nativeElement);
+    selectElement.select2(this.options);
 
-  ngOnDestroy() {
-    ($(this.el.nativeElement) as any).select2('destroy');
+    // Atualiza o FormControl quando o select2 muda
+    selectElement.on('change', () => {
+      const value = selectElement.val();
+      this.control.control?.setValue(value);
+      this.control.control?.markAsDirty();
+      this.control.control?.markAsTouched();
+    });
   }
 }

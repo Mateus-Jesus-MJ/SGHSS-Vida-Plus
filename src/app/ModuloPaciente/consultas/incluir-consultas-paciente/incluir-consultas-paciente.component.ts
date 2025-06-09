@@ -61,19 +61,17 @@ export class IncluirConsultasPacienteComponent implements OnInit {
   }
 
   next() {
-    this.loader.start();
     this.submitted = true;
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
 
-
+    this.loader.start();
     switch (this.step) {
       case 1:
         this.buscarmedicos(this.form.get("especialidade")?.value);
         break;
     }
-
     // if (this.step === 2 && !this.form.medico) return;
     // if (this.step === 3 && !this.form.data) return;
     // if (this.step === 4 && !this.form.horario) return;
@@ -106,7 +104,6 @@ export class IncluirConsultasPacienteComponent implements OnInit {
   }
 
   buscarmedicos(especialidade: string) {
-
     this.colaboradorService.BuscarMedicoPorEspecialidade(especialidade).subscribe({
       next: (medicos: Colaborador[]) => {
         this.medicos = medicos;
