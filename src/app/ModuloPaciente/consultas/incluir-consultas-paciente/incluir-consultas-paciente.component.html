@@ -87,12 +87,11 @@
 
       <div *ngIf="step === 2">
         <h5 class="mb-3">2 - Médico</h5>
-        <!-- <select class="form-select" [(ngModel)]="form.medico" [ngClass]="{'is-invalid': submitted && !form.medico}">
-          <option value="">Selecione médico</option>
-          <option>Dr. João</option>
-          <option>Dra. Ana</option>
-          <option>Dr. Pedro</option>
-        </select> -->
+        <select class="form-select" >
+          <option disabled>Selecione médico</option>
+          <option *ngFor="let medico of medicos" [value]="medico.nome">
+            {{medico.nome}}</option>
+        </select>
       </div>
 
       <!-- <div *ngIf="step === 3">
