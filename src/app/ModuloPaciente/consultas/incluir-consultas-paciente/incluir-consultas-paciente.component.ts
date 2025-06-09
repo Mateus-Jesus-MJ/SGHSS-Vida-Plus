@@ -7,11 +7,12 @@ import { ColaboradorService } from '../../../_services/colaborador.service';
 import { ToastrService } from 'ngx-toastr';
 import { Especialidade } from '../../../_models/cargo';
 import { Colaborador } from '../../../_models/colaborador';
+import { Select2Directive } from '../../../_components/select2/select2.directive';
 
 @Component({
   selector: 'app-incluir-consultas-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, Select2Directive],
   templateUrl: './incluir-consultas-paciente.component.html',
   styleUrls: ['./incluir-consultas-paciente.component.scss']
 })
