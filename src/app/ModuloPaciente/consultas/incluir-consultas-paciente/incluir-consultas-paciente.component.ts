@@ -34,6 +34,7 @@ export class IncluirConsultasPacienteComponent implements OnInit {
   ) {
     this.form = new FormGroup({
       especialidade: new FormControl('', Validators.required),
+      medico: new FormControl('', Validators.required),
     })
   }
 
@@ -63,13 +64,17 @@ export class IncluirConsultasPacienteComponent implements OnInit {
   next() {
     this.submitted = true;
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
 
-
-    this.loader.start();
     switch (this.step) {
       case 1:
+        if(this.form.get("especialidade")?.value == "") return
+
         this.buscarmedicos(this.form.get("especialidade")?.value);
+        break;
+
+      case 2:
+        if(this.form.get("medico")?.value == "") return
+
         break;
     }
     // if (this.step === 2 && !this.form.medico) return;
@@ -104,6 +109,7 @@ export class IncluirConsultasPacienteComponent implements OnInit {
   }
 
   buscarmedicos(especialidade: string) {
+    this.loader.start();
     this.colaboradorService.BuscarMedicoPorEspecialidade(especialidade).subscribe({
       next: (medicos: Colaborador[]) => {
         this.medicos = medicos;

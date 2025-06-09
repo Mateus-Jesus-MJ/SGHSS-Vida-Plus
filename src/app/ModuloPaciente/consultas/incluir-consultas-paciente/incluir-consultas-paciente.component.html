@@ -87,7 +87,8 @@
 
       <div *ngIf="step === 2">
         <h5 class="mb-3">2 - Médico</h5>
-        <select class="form-select" >
+        <select class="form-select" [appSelect2]="{ width: '100%' }" formControlName="medico"
+        [class.is-invalid]="form.get('medico')?.invalid && submitted">
           <option disabled>Selecione médico</option>
           <option *ngFor="let medico of medicos" [value]="medico.nome">
             {{medico.nome}}</option>
