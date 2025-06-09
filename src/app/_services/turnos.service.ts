@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, Firestore, getDocs, orderBy, query, Timestamp, where } from '@angular/fire/firestore';
 import { catchError, forkJoin, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { Turno } from '../_models/Turno';
 import { ColaboradorService } from './colaborador.service';
@@ -37,7 +37,7 @@ export class TurnosService {
       }),
       map((turnosComColaborador: Turno[]) =>
         // turnosComColaborador.sort((a, b) => a.data.localeCompare(b.data)) // crescente
-      turnosComColaborador.sort((a, b) => b.data.localeCompare(a.data)) // decrescente
+        turnosComColaborador.sort((a, b) => b.data.localeCompare(a.data)) // decrescente
       )
     )
   }
@@ -123,6 +123,22 @@ export class TurnosService {
         }
       }),
       catchError(error => of(error.message || 'Erro desconhecido ao excluir os turnos.'))
+    );
+  }
+
+  buscarTurnoPorColaboradorEMenorData(idColaborador: string, data: Date): Observable<Turno[]> {
+    const dataISO = data.toISOString().slice(0, 10);
+    const q = query(
+      this.turnosCollection,
+      where('idColaborador', '==', idColaborador),
+      where('data', '>=', dataISO)
+    );
+
+    return from(getDocs(q)).pipe(
+      map(snapshot => snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Turno)))
     );
   }
 }

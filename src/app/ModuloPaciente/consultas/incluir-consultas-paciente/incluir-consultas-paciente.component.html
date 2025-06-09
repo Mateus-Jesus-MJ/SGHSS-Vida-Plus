@@ -17,13 +17,12 @@
         Voltar
       </span>
     </a>
-    <button class="btn btn-primary btn-icon-split" (click)="step < 5 ? next() : submit()">
+    <button class="btn btn-primary btn-icon-split" *ngIf="step > 4" (click)="submit()">
       <span class="icon">
-        <i [ngClass]="step < 5 ? 'fas fa-arrow-right' : 'fa fa-check'"></i>
+        <i class="fa fa-check"></i>
       </span>
       <span class="text px-4">
-        <label *ngIf="step < 5">Próximo</label>
-        <label *ngIf="step === 5">Gravar</label>
+        Gravar
       </span>
     </button>
   </div>
@@ -76,38 +75,102 @@
 
     <div class="card-body p-4">
       <div *ngIf="step === 1">
-        <h5 class="mb-3">1 - Especialidade</h5>
-        <select class="form-select" formControlName="especialidade"
-        [class.is-invalid]="form.get('especialidade')?.invalid && submitted" [appSelect2]="{ width: '100%' }">
+        <h5 class="mb-3">1 - Selecione a Especialidade</h5>
+
+        <div class="d-flex flex-wrap justify-content-start gap-3">
+          <div class="card" *ngFor="let especialidade of especialidades" style="min-width: 200px;" role="button"
+            (click)="selecionarEspecialidade(especialidade)">
+            <div class="card-body text-center">
+              <i class="fas fa-calendar-alt fa-5x"></i>
+            </div>
+            <div class="card-footer text-center">
+              {{especialidade.especialidade}}
+            </div>
+          </div>
+        </div>
+
+        <!-- <select class="form-select" formControlName="especialidade"
+          [class.is-invalid]="form.get('especialidade')?.invalid && submitted" [appSelect2]="{ width: '100%' }">
           <option value="" disabled>Selecione especialidade</option>
           <option *ngFor="let especialidade of especialidades" [value]="especialidade.especialidade">
             {{especialidade.especialidade}}</option>
-        </select>
+        </select> -->
       </div>
 
       <div *ngIf="step === 2">
-        <h5 class="mb-3">2 - Médico</h5>
-        <select class="form-select" [appSelect2]="{ width: '100%' }" formControlName="medico"
-        [class.is-invalid]="form.get('medico')?.invalid && submitted">
-          <option disabled>Selecione médico</option>
-          <option *ngFor="let medico of medicos" [value]="medico.nome">
-            {{medico.nome}}</option>
-        </select>
+        <h5 class="mb-3">2 - Selecione o Médico</h5>
+
+        <div class="d-flex flex-wrap justify-content-start gap-3">
+          <div class="card border-secondary" *ngFor="let medico of medicos" role="button"
+            (click)="selecionarMedico(medico)" style="min-width: 300px; min-height: 250px;">
+            <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-relative">
+              <ng-container *ngIf="medico.imagem; else semImagem">
+                <img [src]="medico.imagem" alt="Imagem do médico" class="img-fluid w-100 flex-grow-1"
+                  style="object-fit: cover;" />
+              </ng-container>
+              <ng-template #semImagem>
+                <div class="d-flex justify-content-center align-items-center flex-grow-1" style="width: 100%;">
+                  <i class="fa fa-user fa-5x text-secondary"></i>
+                </div>
+              </ng-template>
+              <div class="card-footer bg-light w-100 text-center">
+                <label class="text-dark mb-0">{{ medico.nome }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- <div *ngIf="step === 3">
-        <h5 class="mb-3">3 - Data</h5>
-        <input type="date" class="form-control" [(ngModel)]="form.data"
-          [ngClass]="{'is-invalid': submitted && !form.data}">
+      <div *ngIf="step === 3">
+        <h5 class="mb-3">3 - Selecione Data</h5>
+
+        <div class="d-flex flex-wrap justify-content-start gap-3">
+          <div class="card" *ngFor="let data of datas" style="min-width: 200px;" role="button"
+            (click)="selecionarData(data)">
+            <div class="card-body text-center">
+              <i class="far fa-calendar-alt fa-5x"></i>
+            </div>
+            <div class="card-footer text-center">
+              {{data.data | date: 'dd/MM/yyyy'}}
+            </div>
+          </div>
+        </div>
+        <!-- <select class="form-select" formControlName="data" [appSelect2]="{ width: '100%' }">
+          <option disabled>Selecione a data</option>
+          <option *ngFor="let turno of datas" [value]="turno.data">{{turno.data | date: 'dd/MM/yyyy'}}</option>
+        </select> -->
       </div>
 
+      <!-- <div *ngIf="step === 4">
+        <h5 class="mb-3">4 -Selecione o Horário</h5>
+        <div class="d-flex flex-wrap justify-content-start gap-3">
+          <div class="card" *ngFor="let horario of horarios; let i = index" style="min-width: 200px;" role="button" (click)="selecionarHorario(horario)">
+            <div class="card-body text-center">
+              <i class="fal fa-clock fa-rotate-by" [ngStyle]="{ '--fa-rotate-angle': (i * 20) + 'deg' }"></i>
+            </div>
+            <div class="card-footer text-center">
+              {{horario}}
+            </div>
+          </div>
+        </div>
+      </div> -->
       <div *ngIf="step === 4">
-        <h5 class="mb-3">4 - Horário</h5>
-        <input type="time" class="form-control" [(ngModel)]="form.horario"
-          [ngClass]="{'is-invalid': submitted && !form.horario}">
+        <h5 class="mb-3">4 - Selecione o Horário</h5>
+        <div class="d-flex flex-wrap justify-content-start gap-3">
+          <div class="card" *ngFor="let horario of horarios" style="min-width: 200px;" role="button"
+            (click)="selecionarHorario(horario)">
+            <div class="card-body text-center">
+              <i class="far fa-clock fa-5x" [ngStyle]="{ transform: 'rotate(' + calcularRotacao(horario) + 'deg)' }"></i>
+            </div>
+            <div class="card-footer text-center">
+              {{ horario }}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div *ngIf="step === 5">
+
+      <!--<div *ngIf="step === 5">
         <h5 class="mb-3">5 - Confirmar Dados</h5>
         <ul class="list-group">
           <li class="list-group-item"><strong>Especialidade:</strong> {{ form.especialidade }}</li>

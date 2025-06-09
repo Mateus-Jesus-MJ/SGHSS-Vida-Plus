@@ -142,45 +142,6 @@ export class ColaboradorService {
     );
   }
 
-  // buscarEspecialidadesDosMedicos(): Observable<Especialidade[]> {
-  //   const cargosCollection = collection(this.firestore, 'cargos') as CollectionReference<Cargo>;
-
-  //   const cargoQuery = query(cargosCollection, where('nome', '==', 'Médico'));
-
-  //   return from(getDocs(cargoQuery)).pipe(
-  //     switchMap(snapshot => {
-  //       if (snapshot.empty) {
-  //         return throwError(() => 'Cargo "Médico" não encontrado.');
-  //       }
-
-  //       const cargoId = snapshot.docs[0].id;
-
-  //       const colaboradoresQuery = query(
-  //         this.colaboradoresCollection,
-  //         where('cargoId', '==', cargoId)
-  //       ) as CollectionReference<Colaborador>;
-
-  //       return from(getDocs(colaboradoresQuery)).pipe(
-  //         map(colabSnap => {
-  //           const especialidadesMap = new Map<Especialidade>();
-
-  //           colabSnap.docs.forEach(doc => {
-  //             const colaborador = doc.data();
-  //             if (colaborador.especialidade && !especialidadesMap.has(colaborador.especialidade)) {
-  //               especialidadesMap.set(colaborador.especialidade, {
-  //                 especialidade: colaborador.especialidade,
-  //                 cargoId: colaborador.cargoId
-  //               });
-  //             }
-  //           });
-
-  //           return Array.from(especialidadesMap.values());
-  //         })
-  //       );
-  //     })
-  //   );
-  // }
-
   BuscarEspecialidadesPorCargoMedico(): Observable<Especialidade[]> {
     const cargosRef = collection(this.firestore, 'cargos');
     const qCargoMedico = query(cargosRef, where('cargo', '==', 'MÉDICO'));
@@ -207,13 +168,17 @@ export class ColaboradorService {
 
             colaboradoresSnapshot.forEach(doc => {
               const data = doc.data() as any;
-              const especialidadesDoColaborador: string[] = Array.isArray(data.especialidades) ? data.especialidades : [];
+              const especialidadesDoColaborador: any[] = Array.isArray(data.especialidades) ? data.especialidades : [];
 
+              especialidadesDoColaborador.forEach(item => {
+                const nome = typeof item === 'string' ? item : item?.especialidade;
 
-              especialidadesDoColaborador.forEach(especialidade => {
-                if (!especialidadesSet.has(especialidade)) {
-                  especialidadesSet.add(especialidade);
-                  especialidadesArray.push({ especialidade, cargoId: cargoMedicoId });
+                if (nome && !especialidadesSet.has(nome)) {
+                  especialidadesSet.add(nome);
+                  especialidadesArray.push({
+                    especialidade: nome,
+                    cargoId: cargoMedicoId
+                  });
                 }
               });
             });
@@ -225,43 +190,39 @@ export class ColaboradorService {
     );
   }
 
-
   BuscarMedicoPorEspecialidade(especialidadeBuscada: string): Observable<Colaborador[]> {
-    const cargosRef = collection(this.firestore, 'cargos');
-    const qCargoMedico = query(cargosRef, where('cargo', '==', 'MÉDICO'));
+  const cargosRef = collection(this.firestore, 'cargos');
+  const qCargoMedico = query(cargosRef, where('cargo', '==', 'MÉDICO'));
 
-    return from(getDocs(qCargoMedico)).pipe(
-      switchMap(cargosSnapshot => {
-        if (cargosSnapshot.empty) {
-          return of([]);
-        }
+  return from(getDocs(qCargoMedico)).pipe(
+    switchMap(cargosSnapshot => {
+      if (cargosSnapshot.empty) {
+        return of([]);
+      }
+      const cargoMedicoId = cargosSnapshot.docs[0].id;
+      const colaboradoresRef = collection(this.firestore, 'colaboradores');
+      const qColaboradores = query(colaboradoresRef, where('cargoId', '==', cargoMedicoId));
 
-        const cargoMedicoId = cargosSnapshot.docs[0].id;
+      return from(getDocs(qColaboradores)).pipe(
+        map(snapshot => {
+          if (snapshot.empty) {
+            return [];
+          }
+          const colaboradores: Colaborador[] = [];
+          snapshot.forEach(doc => {
+            colaboradores.push({ id: doc.id, ...(doc.data() as any) });
+          });
 
-        const colaboradoresRef = collection(this.firestore, 'colaboradores');
-        const qColaboradores = query(
-          colaboradoresRef,
-          where('cargoId', '==', cargoMedicoId),
-          where('especialidades', 'array-contains', especialidadeBuscada)
-        );
+          // Filtra aqui no código a especialidade desejada dentro do array de objetos
+          return colaboradores.filter(c =>
+            Array.isArray(c.especialidades) &&
+            c.especialidades.some((e: any) => e.especialidade === especialidadeBuscada)
+          );
+        })
+      );
+    })
+  );
+}
 
-        return from(getDocs(qColaboradores)).pipe(
-          map(colaboradoresSnapshot => {
-            if (colaboradoresSnapshot.empty) {
-              return [];
-            }
-
-            const colaboradores: Colaborador[] = [];
-
-            colaboradoresSnapshot.forEach(doc => {
-              colaboradores.push({ id: doc.id, ...(doc.data() as any) });
-            });
-
-            return colaboradores;
-          })
-        );
-      })
-    );
-  }
 }
 

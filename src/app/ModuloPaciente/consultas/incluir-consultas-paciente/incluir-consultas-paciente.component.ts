@@ -7,12 +7,14 @@ import { ColaboradorService } from '../../../_services/colaborador.service';
 import { ToastrService } from 'ngx-toastr';
 import { Especialidade } from '../../../_models/cargo';
 import { Colaborador } from '../../../_models/colaborador';
-import { Select2Directive } from '../../../_components/select2/select2.directive';
+import { TurnosService } from '../../../_services/turnos.service';
+import { Turno } from '../../../_models/Turno';
+import { ConsultasService } from '../../../_services/consultas.service';
 
 @Component({
   selector: 'app-incluir-consultas-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, Select2Directive],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   templateUrl: './incluir-consultas-paciente.component.html',
   styleUrls: ['./incluir-consultas-paciente.component.scss']
 })
@@ -22,29 +24,27 @@ export class IncluirConsultasPacienteComponent implements OnInit {
   submitted = false;
   progress = 0;
   especialidades: Especialidade[] = [];
+  especialidadeSelecionada?: Especialidade;
   medicos: Colaborador[] = [];
-  datas: string[] = [];
-
-
+  medicoSelecionado?: Colaborador;
+  datas: Turno[] = [];
+  dataSelecionada?: Turno;
+  horarios: string[] = [];
+  horarioSelecionado?: string;
 
   constructor(
     private loader: NgxUiLoaderService,
     private toastr: ToastrService,
     private colaboradorService: ColaboradorService,
+    private turnosService: TurnosService,
+    private consultasService: ConsultasService
   ) {
     this.form = new FormGroup({
       especialidade: new FormControl('', Validators.required),
       medico: new FormControl('', Validators.required),
+      data: new FormControl('', Validators.required),
     })
   }
-
-
-  // form = {
-  //   especialidade: '',
-  //   medico: '',
-  //   data: '',
-  //   horario: ''
-  // };
 
   ngOnInit(): void {
     this.loader.start();
@@ -67,14 +67,22 @@ export class IncluirConsultasPacienteComponent implements OnInit {
 
     switch (this.step) {
       case 1:
-        if(this.form.get("especialidade")?.value == "") return
-
-        this.buscarmedicos(this.form.get("especialidade")?.value);
+        if (this.especialidadeSelecionada == null) return
+        this.buscarmedicos(this.especialidadeSelecionada.especialidade);
         break;
 
       case 2:
-        if(this.form.get("medico")?.value == "") return
+        if (this.medicoSelecionado == null) return
+        this.buscarTurnosMedico();
+        break;
 
+      case 3:
+        if (this.dataSelecionada == null) return;
+        this.buscarHorariosConsulta();
+        break;
+
+      case 4:
+        if (this.horarioSelecionado == null) return;
         break;
     }
     // if (this.step === 2 && !this.form.medico) return;
@@ -108,6 +116,11 @@ export class IncluirConsultasPacienteComponent implements OnInit {
     this.progress = ((this.step - 1) / 4) * 100;
   }
 
+  selecionarEspecialidade(especialidade: Especialidade) {
+    this.especialidadeSelecionada = especialidade;
+    this.next();
+  }
+
   buscarmedicos(especialidade: string) {
     this.loader.start();
     this.colaboradorService.BuscarMedicoPorEspecialidade(especialidade).subscribe({
@@ -120,6 +133,59 @@ export class IncluirConsultasPacienteComponent implements OnInit {
         this.loader.stop();
       }
     })
+  }
+
+  selecionarMedico(medico: Colaborador) {
+    this.medicoSelecionado = medico;
+    this.next();
+  }
+
+  buscarTurnosMedico() {
+    this.loader.start();
+    this.turnosService.buscarTurnoPorColaboradorEMenorData(this.medicoSelecionado?.id!, new Date()).subscribe({
+      next: (turnos: Turno[]) => {
+        this.datas = turnos.filter(t => (t.areaDeAtuacao.toUpperCase() == "TELECONSULTA"));
+        this.loader.stop();
+      },
+      error: () => {
+        this.toastr.error("Erro ao buscar datas!");
+        this.loader.stop();
+      }
+    })
+  }
+
+  selecionarData(data: Turno) {
+    this.dataSelecionada = data;
+    this.next();
+  }
+
+  buscarHorariosConsulta() {
+    this.loader.start();
+    this.consultasService.buscarHorariosDisponiveisMedicoData(this.medicoSelecionado?.id!, this.dataSelecionada!).subscribe({
+      next: (datas: string[]) => {
+        this.horarios = datas;
+        this.loader.stop();
+      },
+      error: () => {
+        this.toastr.error("Erro ao buscar horarios!");
+        this.loader.stop();
+      }
+    });
+  }
+
+  calcularRotacao(horario: string): number {
+    const [horaStr, minutoStr] = horario.split(':');
+    const hora = parseInt(horaStr, 10) % 12; // para manter no ciclo de 12h
+    const minuto = parseInt(minutoStr, 10);
+
+    // 30 graus por hora + 0.5 grau por minuto
+    return (hora * 30) + (minuto * 0.5);
+  }
+
+
+  selecionarHorario(horario: string) {
+    this.horarioSelecionado = horario;
+    this.next();
   }
 
   submit() {
