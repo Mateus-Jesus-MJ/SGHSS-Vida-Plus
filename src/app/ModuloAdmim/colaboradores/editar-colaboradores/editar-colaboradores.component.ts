@@ -145,7 +145,7 @@ export class EditarColaboradoresComponent implements OnInit {
     });
     this.imagemCortada = colaborador.imagem!;
     this.cargoSelecionado = colaborador.cargo;
-    this.especialidades = colaborador.especialidade!;
+    this.especialidades = colaborador.especialidades!;
     this.formacoesColaborador = colaborador.formacoes!;
     this.cursosColaborador = colaborador.cursos!;
     this.treinamentosColaborador = colaborador.treinamentos!;
@@ -806,7 +806,7 @@ export class EditarColaboradoresComponent implements OnInit {
       formacoes: this.formacoesColaborador,
       cursos: this.cursosColaborador,
       treinamentos: this.treinamentosColaborador,
-      especialidade: this.especialidades
+      especialidades: this.especialidades
     }
 
     this.colaboradorService.editar(colaborador).subscribe({

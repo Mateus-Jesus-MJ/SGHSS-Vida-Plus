@@ -30,6 +30,7 @@ import { TelaSaudeComponent } from './ModuloSaude/tela-saude/tela-saude.componen
 import { TeleConsultaComponent } from './ModuloSaude/tele-consulta/tele-consulta.component';
 import { TelaPacienteComponent } from './ModuloPaciente/tela-paciente/tela-paciente.component';
 import { ConsultasComponent } from './ModuloPaciente/consultas/consultas.component';
+import { IncluirConsultasPacienteComponent } from './ModuloPaciente/consultas/incluir-consultas-paciente/incluir-consultas-paciente.component';
 
 
 export const routes: Routes = [
@@ -315,7 +316,10 @@ export const routes: Routes = [
         component: ConsultasComponent,
         canActivateChild: [AuthGuardService],
         children: [
-          
+          {
+            path: 'incluir',
+            component: IncluirConsultasPacienteComponent
+          }
         ]
       },
       {

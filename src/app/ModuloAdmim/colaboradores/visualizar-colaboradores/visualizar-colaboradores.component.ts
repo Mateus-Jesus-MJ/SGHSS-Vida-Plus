@@ -117,7 +117,7 @@ form!: FormGroup;
     });
     this.imagemCortada = colaborador.imagem!;
     this.cargoSelecionado = colaborador.cargo;
-    this.especialidades = colaborador.especialidade!;
+    this.especialidades = colaborador.especialidades!;
     this.formacoesColaborador = colaborador.formacoes!;
     this.cursosColaborador = colaborador.cursos!;
     this.treinamentosColaborador = colaborador.treinamentos!;

@@ -748,7 +748,7 @@ export class IncluirColaboradoresComponent {
       formacoes: this.formacoesColaborador,
       cursos: this.cursosColaborador,
       treinamentos: this.treinamentosColaborador,
-      especialidade: this.especialidades
+      especialidades: this.especialidades
     }
 
 

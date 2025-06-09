@@ -1,0 +1,121 @@
+<div class="d-flex justify-content-between">
+  <h3>Nova consulta</h3>
+  <div class="d-flex justify-content-between">
+    <a *ngIf="step === 1" class="btn btn-secondary btn-icon-split me-3" routerLink="/paciente/consultas/">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <a *ngIf="step > 1" class="btn btn-secondary btn-icon-split me-3" (click)="prev()">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="step < 5 ? next() : submit()">
+      <span class="icon">
+        <i [ngClass]="step < 5 ? 'fas fa-arrow-right' : 'fa fa-check'"></i>
+      </span>
+      <span class="text px-4">
+        <label *ngIf="step < 5">Próximo</label>
+        <label *ngIf="step === 5">Gravar</label>
+      </span>
+    </button>
+  </div>
+</div>
+
+<form [formGroup]="form">
+  <div class="mt-4">
+    <div class="progress rounded-pill" style="height: 12px;">
+      <div class="progress-bar bg-primary" role="progressbar" [style.width.%]="progress" aria-valuemin="0"
+        aria-valuemax="100"></div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-2 px-2">
+      <div class="text-center" style="flex: 1; cursor: pointer;" (click)="goToStep(1)">
+        <div [class.bg-primary]="step >= 1" [class.bg-secondary]="step < 1"
+          class="rounded-circle text-white mx-auto mb-1" style="width: 28px; height: 28px; line-height: 28px;">
+          1
+        </div>
+        <small class="d-block" [class.text-primary]="step >= 1" [class.text-muted]="step < 1">Especialidade</small>
+      </div>
+      <div class="text-center" style="flex: 1; cursor: pointer;" (click)="step > 1 && goToStep(2)">
+        <div [class.bg-primary]="step >= 2" [class.bg-secondary]="step < 2"
+          class="rounded-circle text-white mx-auto mb-1" style="width: 28px; height: 28px; line-height: 28px;">
+          2
+        </div>
+        <small class="d-block" [class.text-primary]="step >= 2" [class.text-muted]="step < 2">Médico</small>
+      </div>
+      <div class="text-center" style="flex: 1; cursor: pointer;" (click)="step > 2 && goToStep(3)">
+        <div [class.bg-primary]="step >= 3" [class.bg-secondary]="step < 3"
+          class="rounded-circle text-white mx-auto mb-1" style="width: 28px; height: 28px; line-height: 28px;">
+          3
+        </div>
+        <small class="d-block" [class.text-primary]="step >= 3" [class.text-muted]="step < 3">Data</small>
+      </div>
+      <div class="text-center" style="flex: 1; cursor: pointer;" (click)="step > 3 && goToStep(4)">
+        <div [class.bg-primary]="step >= 4" [class.bg-secondary]="step < 4"
+          class="rounded-circle text-white mx-auto mb-1" style="width: 28px; height: 28px; line-height: 28px;">
+          4
+        </div>
+        <small class="d-block" [class.text-primary]="step >= 4" [class.text-muted]="step < 4">Horário</small>
+      </div>
+      <div class="text-center" style="flex: 1; cursor: pointer;" (click)="step > 4 && goToStep(5)">
+        <div [class.bg-primary]="step === 5" [class.bg-secondary]="step < 5"
+          class="rounded-circle text-white mx-auto mb-1" style="width: 28px; height: 28px; line-height: 28px;">
+          5
+        </div>
+        <small class="d-block" [class.text-primary]="step === 5" [class.text-muted]="step < 5">Confirmar</small>
+      </div>
+    </div>
+
+    <div class="card-body p-4">
+      <div *ngIf="step === 1">
+        <h5 class="mb-3">1 - Especialidade</h5>
+        <select class="form-select" formControlName="especialidade"
+        [class.is-invalid]="form.get('especialidade')?.invalid && submitted">
+          <option value="" disabled>Selecione especialidade</option>
+          <option *ngFor="let especialidade of especialidades" [value]="especialidade.especialidade">
+            {{especialidade.especialidade}}</option>
+        </select>
+      </div>
+
+      <div *ngIf="step === 2">
+        <h5 class="mb-3">2 - Médico</h5>
+        <!-- <select class="form-select" [(ngModel)]="form.medico" [ngClass]="{'is-invalid': submitted && !form.medico}">
+          <option value="">Selecione médico</option>
+          <option>Dr. João</option>
+          <option>Dra. Ana</option>
+          <option>Dr. Pedro</option>
+        </select> -->
+      </div>
+
+      <!-- <div *ngIf="step === 3">
+        <h5 class="mb-3">3 - Data</h5>
+        <input type="date" class="form-control" [(ngModel)]="form.data"
+          [ngClass]="{'is-invalid': submitted && !form.data}">
+      </div>
+
+      <div *ngIf="step === 4">
+        <h5 class="mb-3">4 - Horário</h5>
+        <input type="time" class="form-control" [(ngModel)]="form.horario"
+          [ngClass]="{'is-invalid': submitted && !form.horario}">
+      </div>
+
+      <div *ngIf="step === 5">
+        <h5 class="mb-3">5 - Confirmar Dados</h5>
+        <ul class="list-group">
+          <li class="list-group-item"><strong>Especialidade:</strong> {{ form.especialidade }}</li>
+          <li class="list-group-item"><strong>Médico:</strong> {{ form.medico }}</li>
+          <li class="list-group-item"><strong>Data:</strong> {{ form.data | date:'dd/MM/yyyy' }}</li>
+          <li class="list-group-item"><strong>Horário:</strong> {{ form.horario }}</li>
+        </ul>
+      </div> -->
+    </div>
+  </div>
+</form>

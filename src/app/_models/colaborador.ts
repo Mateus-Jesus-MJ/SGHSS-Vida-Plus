@@ -25,7 +25,7 @@ export interface Colaborador {
   treinamentos?: TreinamentoColaborador[];
   formacoes?: FormacaoColaborador[];
   cursos?: CursoColaborador[];
-  especialidade?: Especialidade[];
+  especialidades?: Especialidade[];
 }
 
 export interface AvaliacaoColaborador {
