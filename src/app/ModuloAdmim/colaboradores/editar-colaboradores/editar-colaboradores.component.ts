@@ -145,10 +145,10 @@ export class EditarColaboradoresComponent implements OnInit {
     });
     this.imagemCortada = colaborador.imagem!;
     this.cargoSelecionado = colaborador.cargo;
-    this.especialidades = colaborador.especialidades!;
-    this.formacoesColaborador = colaborador.formacoes!;
-    this.cursosColaborador = colaborador.cursos!;
-    this.treinamentosColaborador = colaborador.treinamentos!;
+    this.especialidades = colaborador.especialidades! || [];
+    this.formacoesColaborador = colaborador.formacoes! || [];
+    this.cursosColaborador = colaborador.cursos! || [];
+    this.treinamentosColaborador = colaborador.treinamentos! || [];
   }
 
   navigate(rota: string) {
@@ -400,7 +400,7 @@ export class EditarColaboradoresComponent implements OnInit {
 
         const especialidade = result.value;
 
-        if (!this.especialidades.some(e => e.especialidade.toUpperCase() === especialidade)) {
+        if (!this.especialidades?.some(e => e.especialidade.toUpperCase() === especialidade)) {
           const nova: Especialidade = { especialidade: especialidade };
           this.especialidades.push(nova);
         } else {
