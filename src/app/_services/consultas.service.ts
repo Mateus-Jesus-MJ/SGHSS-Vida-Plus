@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { collection, CollectionReference, Firestore, getDocs, query, where } from '@angular/fire/firestore';
-import { catchError, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
+import { addDoc, collection, CollectionReference, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { catchError, Cons, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 import { Consulta } from '../_models/consulta';
 import { HospitalService } from './hospital.service';
 import { Turno } from '../_models/Turno';
@@ -93,6 +93,35 @@ export class ConsultasService {
         return horariosDisponiveis;
       })
     );
+  }
+
+  novaConsulta(consulta: Consulta) : Observable<any>{
+    const qConsultaMarcada = query(this.consultaCollection, 
+      where('idMedico','==',consulta.idMedico),
+      where('data','==',consulta.data),
+      where('hora','==',consulta.hora),
+    );
+
+    return new Observable(observer => {
+      Promise.all([
+        getDocs(qConsultaMarcada)
+      ]).then(([snapshot]) => {
+        if (!snapshot.empty) {
+          observer.error("Erro ao cadastrar consulta. Motivo: Já existe uma consulta marcada para essa data e horário.");
+          observer.complete();
+        }
+
+        addDoc(this.consultaCollection, structuredClone(consulta)).then(() => {
+          observer.next("Consulta marcada com sucesso!");
+          observer.complete();
+        }).catch(error => {
+          observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
+        });
+      }).catch(error => {
+        observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
+      });
+    })
+
   }
 }
 

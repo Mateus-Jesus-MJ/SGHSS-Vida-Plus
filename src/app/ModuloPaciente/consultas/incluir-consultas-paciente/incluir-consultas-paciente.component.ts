@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ColaboradorService } from '../../../_services/colaborador.service';
 import { ToastrService } from 'ngx-toastr';
@@ -10,11 +10,15 @@ import { Colaborador } from '../../../_models/colaborador';
 import { TurnosService } from '../../../_services/turnos.service';
 import { Turno } from '../../../_models/Turno';
 import { ConsultasService } from '../../../_services/consultas.service';
+import { Paciente } from '../../../_models/Paciente';
+import { PacienteService } from '../../../_services/paciente.service';
+import { NgxMaskPipe } from 'ngx-mask';
+import { Consulta } from '../../../_models/consulta';
 
 @Component({
   selector: 'app-incluir-consultas-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, NgxMaskPipe],
   templateUrl: './incluir-consultas-paciente.component.html',
   styleUrls: ['./incluir-consultas-paciente.component.scss']
 })
@@ -31,13 +35,17 @@ export class IncluirConsultasPacienteComponent implements OnInit {
   dataSelecionada?: Turno;
   horarios: string[] = [];
   horarioSelecionado?: string;
+  paciente!: Paciente;
 
   constructor(
     private loader: NgxUiLoaderService,
     private toastr: ToastrService,
     private colaboradorService: ColaboradorService,
     private turnosService: TurnosService,
-    private consultasService: ConsultasService
+    private consultasService: ConsultasService,
+    private pacienteService: PacienteService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.form = new FormGroup({
       especialidade: new FormControl('', Validators.required),
@@ -53,6 +61,14 @@ export class IncluirConsultasPacienteComponent implements OnInit {
       next: (especialidades: Especialidade[]) => {
         this.especialidades = especialidades;
         this.loader.stop();
+        this.pacienteService.buscarPacienteLogado().subscribe({
+          next: (paciente: Paciente) => {
+            this.paciente = paciente
+          },
+          error: (error) => {
+            this.toastr.error(error);
+          }
+        })
       },
       error: () => {
         this.toastr.error("Erro ao buscar especialidades");
@@ -85,9 +101,6 @@ export class IncluirConsultasPacienteComponent implements OnInit {
         if (this.horarioSelecionado == null) return;
         break;
     }
-    // if (this.step === 2 && !this.form.medico) return;
-    // if (this.step === 3 && !this.form.data) return;
-    // if (this.step === 4 && !this.form.horario) return;
 
     if (this.step < 5) {
       this.step++;
@@ -188,11 +201,64 @@ export class IncluirConsultasPacienteComponent implements OnInit {
     this.next();
   }
 
-  submit() {
-    this.submitted = true;
-    // if (!this.form.horario) return;
+  calcularIdade(dataNascimento: string | Date): string {
+    const nascimento = new Date(dataNascimento);
+    const hoje = new Date();
 
-    alert('Formulário enviado com sucesso!');
-    // Aqui pode enviar para API, limpar formulário, etc.
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+
+    const mesAtual = hoje.getMonth();
+    const diaAtual = hoje.getDate();
+    const mesNascimento = nascimento.getMonth();
+    const diaNascimento = nascimento.getDate();
+
+    if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual < diaNascimento)) {
+      idade--;
+    }
+
+    let idadeFormatada;
+    if (idade > 1) {
+      idadeFormatada = idade + " Anos";
+    } else {
+      idadeFormatada = idade + " Ano";
+    }
+
+    return idadeFormatada;
+  }
+
+  submit() {
+    if (this.especialidadeSelecionada == null ||
+      this.medicoSelecionado == null || 
+      this.dataSelecionada == null ||
+      this.horarioSelecionado == null
+    ){
+      this.toastr.error("Erro ao inserir nova consulta. Motivo: Nem todos os campos foram preenchidos, volte para o inicio e tente novamente!","",{progressBar: true});
+      return
+    }
+
+    this.loader.start();
+
+    const consulta : Consulta = {
+      data : this.dataSelecionada.data,
+      hora: this.horarioSelecionado,
+      idPaciente: this.paciente.id!,
+      paciente: this.paciente,
+      medico: this.medicoSelecionado,
+      idMedico: this.medicoSelecionado.id!,
+      idHospital: '8bSz5V9xeWXfjhsvHMCt'
+    }
+
+    this.consultasService.novaConsulta(consulta).subscribe({
+       next: (res: any) => {
+        this.router.navigateByUrl('/paciente/consultas');
+        this.toastr.success(res);
+        this.loader.stop();
+      },
+      error: (err: any) => {
+        this.toastr.error(err.message);
+        this.loader.stop();
+      }
+    })
+    
   }
 }

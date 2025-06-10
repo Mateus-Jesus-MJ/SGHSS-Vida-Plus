@@ -149,6 +149,7 @@ export class EditarColaboradoresComponent implements OnInit {
     this.formacoesColaborador = colaborador.formacoes! || [];
     this.cursosColaborador = colaborador.cursos! || [];
     this.treinamentosColaborador = colaborador.treinamentos! || [];
+    this.validaCPF();
   }
 
   navigate(rota: string) {
@@ -753,6 +754,7 @@ export class EditarColaboradoresComponent implements OnInit {
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.toastr.error("Verifique todos os campos");
       return;
     }
     this.loader.start();

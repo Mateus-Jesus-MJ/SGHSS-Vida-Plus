@@ -77,28 +77,29 @@
       <div *ngIf="step === 1">
         <h5 class="mb-3">1 - Selecione a Especialidade</h5>
 
+        <div class="text-center w-100" *ngIf="especialidades.length == 0">
+          Nenhuma Especialidade Encontrada
+        </div>
+
         <div class="d-flex flex-wrap justify-content-start gap-3">
           <div class="card" *ngFor="let especialidade of especialidades" style="min-width: 200px;" role="button"
             (click)="selecionarEspecialidade(especialidade)">
             <div class="card-body text-center">
-              <i class="fas fa-calendar-alt fa-5x"></i>
+              <i class="fas fa-stethoscope fa-5x"></i>
             </div>
             <div class="card-footer text-center">
-              {{especialidade.especialidade}}
+              <b>{{especialidade.especialidade}}</b>
             </div>
           </div>
         </div>
-
-        <!-- <select class="form-select" formControlName="especialidade"
-          [class.is-invalid]="form.get('especialidade')?.invalid && submitted" [appSelect2]="{ width: '100%' }">
-          <option value="" disabled>Selecione especialidade</option>
-          <option *ngFor="let especialidade of especialidades" [value]="especialidade.especialidade">
-            {{especialidade.especialidade}}</option>
-        </select> -->
       </div>
 
       <div *ngIf="step === 2">
         <h5 class="mb-3">2 - Selecione o Médico</h5>
+
+        <div class="text-center w-100" *ngIf="medicos.length == 0">
+          Nenhum Médico Disponivel
+        </div>
 
         <div class="d-flex flex-wrap justify-content-start gap-3">
           <div class="card border-secondary" *ngFor="let medico of medicos" role="button"
@@ -114,7 +115,9 @@
                 </div>
               </ng-template>
               <div class="card-footer bg-light w-100 text-center">
-                <label class="text-dark mb-0">{{ medico.nome }}</label>
+                <label class="text-dark mb-0">
+                  <b>{{ medico.nome }}</b>
+                </label>
               </div>
             </div>
           </div>
@@ -124,6 +127,10 @@
       <div *ngIf="step === 3">
         <h5 class="mb-3">3 - Selecione Data</h5>
 
+        <div class="text-center w-100" *ngIf="datas.length == 0">
+          Não há datas disponiveis
+        </div>
+
         <div class="d-flex flex-wrap justify-content-start gap-3">
           <div class="card" *ngFor="let data of datas" style="min-width: 200px;" role="button"
             (click)="selecionarData(data)">
@@ -131,54 +138,77 @@
               <i class="far fa-calendar-alt fa-5x"></i>
             </div>
             <div class="card-footer text-center">
-              {{data.data | date: 'dd/MM/yyyy'}}
+              <b> {{data.data | date: 'dd/MM/yyyy'}}</b>
             </div>
           </div>
         </div>
-        <!-- <select class="form-select" formControlName="data" [appSelect2]="{ width: '100%' }">
-          <option disabled>Selecione a data</option>
-          <option *ngFor="let turno of datas" [value]="turno.data">{{turno.data | date: 'dd/MM/yyyy'}}</option>
-        </select> -->
       </div>
-
-      <!-- <div *ngIf="step === 4">
-        <h5 class="mb-3">4 -Selecione o Horário</h5>
-        <div class="d-flex flex-wrap justify-content-start gap-3">
-          <div class="card" *ngFor="let horario of horarios; let i = index" style="min-width: 200px;" role="button" (click)="selecionarHorario(horario)">
-            <div class="card-body text-center">
-              <i class="fal fa-clock fa-rotate-by" [ngStyle]="{ '--fa-rotate-angle': (i * 20) + 'deg' }"></i>
-            </div>
-            <div class="card-footer text-center">
-              {{horario}}
-            </div>
-          </div>
-        </div>
-      </div> -->
       <div *ngIf="step === 4">
         <h5 class="mb-3">4 - Selecione o Horário</h5>
+        <div class="text-center w-100" *ngIf="horarios.length == 0">
+          Não há horários disponiveis
+        </div>
         <div class="d-flex flex-wrap justify-content-start gap-3">
           <div class="card" *ngFor="let horario of horarios" style="min-width: 200px;" role="button"
             (click)="selecionarHorario(horario)">
             <div class="card-body text-center">
-              <i class="far fa-clock fa-5x" [ngStyle]="{ transform: 'rotate(' + calcularRotacao(horario) + 'deg)' }"></i>
+              <i class="far fa-clock fa-5x"
+                [ngStyle]="{ transform: 'rotate(' + calcularRotacao(horario) + 'deg)' }"></i>
             </div>
             <div class="card-footer text-center">
-              {{ horario }}
+              <b>{{ horario }}</b>
             </div>
           </div>
         </div>
       </div>
 
 
-      <!--<div *ngIf="step === 5">
+      <div *ngIf="step === 5">
         <h5 class="mb-3">5 - Confirmar Dados</h5>
-        <ul class="list-group">
-          <li class="list-group-item"><strong>Especialidade:</strong> {{ form.especialidade }}</li>
-          <li class="list-group-item"><strong>Médico:</strong> {{ form.medico }}</li>
-          <li class="list-group-item"><strong>Data:</strong> {{ form.data | date:'dd/MM/yyyy' }}</li>
-          <li class="list-group-item"><strong>Horário:</strong> {{ form.horario }}</li>
-        </ul>
-      </div> -->
+        <div class="card">
+          <div class="card-header">
+            <h5>Ficha da consulta</h5>
+          </div>
+          <div class="card-body">
+            <b style="font-size: 20px;">Dados do Paciente</b>
+            <div class="row mt-1 ms-3 mb-3">
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Paciente:</strong> {{paciente.nome}}<br />
+              </div>
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Documento:</strong> {{paciente.cpf | mask: '000.000.000-00'}}<br />
+              </div>
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Idade:</strong> {{calcularIdade(paciente.dataNascimento)}}<br />
+              </div>
+            </div>
+            <b style="font-size: 20px;">Dados do Médico</b>
+            <div class="row mt-1 ms-3 mb-3">
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Médico:</strong> {{ medicoSelecionado?.nome }}<br />
+              </div>
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Especialidade:</strong> {{ especialidadeSelecionada?.especialidade }}<br />
+              </div>
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>CRM:</strong> {{medicoSelecionado!.crm!}}<br />
+              </div>
+            </div>
+            <b style="font-size: 20px;">Dados do consulta</b>
+            <div class="row mt-1 ms-3">
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Data:</strong> {{ dataSelecionada?.data| date:'dd/MM/yyyy' }}<br />
+              </div>
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Horário:</strong> {{ horarioSelecionado }}<br />
+              </div>
+              <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+                <strong>Hospital:</strong> Online
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </form>

@@ -15,6 +15,7 @@ export interface Colaborador {
   contato: Contato;
   cargoId: string;
   cargo?: Cargo;
+  crm?: string;
   salario: string;
   usuarioId?: string;
   usuario?: User,
