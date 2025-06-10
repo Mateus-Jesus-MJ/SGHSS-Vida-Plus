@@ -4,6 +4,7 @@ import { catchError, Cons, forkJoin, from, map, Observable, of, switchMap } from
 import { Consulta } from '../_models/consulta';
 import { HospitalService } from './hospital.service';
 import { Turno } from '../_models/Turno';
+import { Paciente } from '../_models/Paciente';
 
 @Injectable({
   providedIn: 'root'
@@ -95,11 +96,24 @@ export class ConsultasService {
     );
   }
 
-  novaConsulta(consulta: Consulta) : Observable<any>{
-    const qConsultaMarcada = query(this.consultaCollection, 
-      where('idMedico','==',consulta.idMedico),
-      where('data','==',consulta.data),
-      where('hora','==',consulta.hora),
+  buscarConsultaPorPaciente(paciente: Paciente): Observable<Consulta[]> {
+    const qConsultasPaciente = query(this.consultaCollection,
+      where('idPaciente', '==', paciente.id)
+    )
+
+    return from(getDocs(qConsultasPaciente)).pipe(
+      map(snapshot =>
+        snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))));
+  }
+
+  novaConsulta(consulta: Consulta): Observable<any> {
+    const qConsultaMarcada = query(this.consultaCollection,
+      where('idMedico', '==', consulta.idMedico),
+      where('data', '==', consulta.data),
+      where('hora', '==', consulta.hora),
     );
 
     return new Observable(observer => {
@@ -121,7 +135,6 @@ export class ConsultasService {
         observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
       });
     })
-
   }
 }
 
