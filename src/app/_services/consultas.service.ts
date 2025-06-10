@@ -5,6 +5,7 @@ import { Consulta } from '../_models/consulta';
 import { HospitalService } from './hospital.service';
 import { Turno } from '../_models/Turno';
 import { Paciente } from '../_models/Paciente';
+import { ZoomService } from './zoom.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class ConsultasService {
   private firestore = inject(Firestore);
   private consultaCollection = collection(this.firestore, 'consultas') as CollectionReference<Consulta>;
   private hospitalService = inject(HospitalService);
+  private zoomService = inject(ZoomService);
 
   buscarConsultasDoMedicoPorData(idMedico: string, data: string): Observable<Consulta[]> {
 
@@ -109,6 +111,36 @@ export class ConsultasService {
         }))));
   }
 
+  // novaConsulta(consulta: Consulta): Observable<any> {
+  //   const qConsultaMarcada = query(this.consultaCollection,
+  //     where('idMedico', '==', consulta.idMedico),
+  //     where('data', '==', consulta.data),
+  //     where('hora', '==', consulta.hora),
+  //   );
+
+  //   return new Observable(observer => {
+  //     Promise.all([
+  //       getDocs(qConsultaMarcada)
+  //     ]).then(([snapshot]) => {
+  //       if (!snapshot.empty) {
+  //         observer.error("Erro ao cadastrar consulta. Motivo: Já existe uma consulta marcada para essa data e horário.");
+  //         observer.complete();
+  //       }
+
+  //       addDoc(this.consultaCollection, structuredClone(consulta)).then(() => {
+  //         observer.next("Consulta marcada com sucesso!");
+
+
+
+  //         observer.complete();
+  //       }).catch(error => {
+  //         observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
+  //       });
+  //     }).catch(error => {
+  //       observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
+  //     });
+  //   })
+  // }
   novaConsulta(consulta: Consulta): Observable<any> {
     const qConsultaMarcada = query(this.consultaCollection,
       where('idMedico', '==', consulta.idMedico),
@@ -117,24 +149,35 @@ export class ConsultasService {
     );
 
     return new Observable(observer => {
-      Promise.all([
-        getDocs(qConsultaMarcada)
-      ]).then(([snapshot]) => {
+      getDocs(qConsultaMarcada).then(snapshot => {
         if (!snapshot.empty) {
           observer.error("Erro ao cadastrar consulta. Motivo: Já existe uma consulta marcada para essa data e horário.");
           observer.complete();
+          return;
         }
 
-        addDoc(this.consultaCollection, structuredClone(consulta)).then(() => {
-          observer.next("Consulta marcada com sucesso!");
-          observer.complete();
-        }).catch(error => {
-          observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
+        // ⚠️ Chamada para o ZoomService
+        this.zoomService.createMeeting(consulta).subscribe({
+          next: (res) => {
+            // Adiciona o link da reunião à consulta
+            consulta.link = res.join_url;
+
+            // Salva no Firestore
+            addDoc(this.consultaCollection, structuredClone(consulta)).then(() => {
+              observer.next("Consulta marcada com sucesso e reunião criada!");
+              observer.complete();
+            }).catch(error => {
+              observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
+            });
+          },
+          error: (errorZoom) => {
+            observer.error(`Erro ao criar reunião no Zoom. Motivo: ${errorZoom.error?.message || errorZoom.message || errorZoom}`);
+          }
         });
       }).catch(error => {
-        observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
+        observer.error(`Erro ao verificar consultas existentes. Motivo: ${error}`);
       });
-    })
+    });
   }
 }
 

@@ -228,7 +228,7 @@ export class IncluirConsultasPacienteComponent implements OnInit {
 
   submit() {
     if (this.especialidadeSelecionada == null ||
-      this.medicoSelecionado == null || 
+      this.medicoSelecionado == null ||
       this.dataSelecionada == null ||
       this.horarioSelecionado == null
     ){
@@ -255,10 +255,10 @@ export class IncluirConsultasPacienteComponent implements OnInit {
         this.loader.stop();
       },
       error: (err: any) => {
-        this.toastr.error(err.message);
+        this.toastr.error(err);
         this.loader.stop();
       }
     })
-    
+
   }
 }

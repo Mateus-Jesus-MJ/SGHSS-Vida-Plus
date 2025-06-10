@@ -13,6 +13,10 @@ export const environment = {
     appId: "1:901401357138:web:0c46f5072e4981c4f9688b"
   },
 
+  // apiZoom : 'http://localhost:3000/',
+
+  apiZoom : 'https://servicezoomapi.vercel.app/api/',
+
   MenuAdmin: [
     {
       grupo: {
