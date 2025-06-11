@@ -30,7 +30,7 @@
       </thead>
       <tbody class="table-group-divider">
         <tr *ngIf="dadosPaginados.length == 0">
-          <td colspan="2">Nenhuma consulta Encontrada</td>
+          <td colspan="5">Nenhuma consulta Encontrada</td>
         </tr>
         <tr *ngFor="let consulta of dadosPaginados" class="align-items-center">
           <td>
@@ -41,23 +41,28 @@
               </button>
               <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
                 <!-- <li>
-                                    <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                                        (click)="visualizar(consulta.id!)">
-                                        <i class="fas fa-eye"></i>&nbsp;Visualizar
-                                    </a>
-                                </li>
-                                <li *ngIf="userPodeEditar">
-                                    <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                                        (click)="editar(consulta.id!)">
-                                        <i class="fas fa-pen"></i>&nbsp;Editar
-                                    </a>
-                                </li>
-                                <li *ngIf="userPodeExcluir">
-                                    <a class="dropdown-item mb-1" style="cursor: pointer;"
-                                        (click)="excluir(consulta)">
-                                        <i class="fas fa-trash"></i>&nbsp;Excluir
-                                    </a>
-                                </li> -->
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                    (click)="visualizar(consulta.id!)">
+                    <i class="fas fa-eye"></i>&nbsp;Visualizar
+                  </a>
+                </li> -->
+                <li>
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                    [href]="consulta.link + '&uname=' + paciente.nome" target="_blank">
+                    <i class="fas fa-tv"></i>&nbsp;Entrar na consulta
+                  </a>
+                </li>
+                <!-- <li *ngIf="">
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                    (click)="editar(consulta.id!)">
+                    <i class="fas fa-pen"></i>&nbsp;Editar
+                  </a>
+                </li>
+                <li *ngIf="userPodeExcluir">
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(consulta)">
+                    <i class="fas fa-trash"></i>&nbsp;Excluir
+                  </a>
+                </li> -->
               </ul>
             </div>
           </td>
@@ -80,7 +85,7 @@
     <div class="card p-3 mb-3" *ngFor="let consulta of dadosPaginados">
       <div class="d-flex justify-content-between mb-1">
         <div>
-          <label><b>Data:</b> {{consulta.data | date:'dd/MM/yyyy' }}</label><br/>
+          <label><b>Data:</b> {{consulta.data | date:'dd/MM/yyyy' }}</label><br />
           <label><b>Horário:</b> {{consulta.hora }}</label>
         </div>
         <div class="dropdown">
@@ -89,6 +94,12 @@
             <i class="fas fa-ellipsis-v"></i>
           </button>
           <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
+            <li>
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                [href]="consulta.link + '&uname=' + paciente.nome" target="_blank">
+                <i class="fas fa-tv"></i>&nbsp;Entrar na consulta
+              </a>
+            </li>
             <!-- <li>
                             <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
                                 (click)="visualizar(consulta.id!)">

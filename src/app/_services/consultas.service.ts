@@ -59,7 +59,7 @@ export class ConsultasService {
 
   buscarHorariosDisponiveisMedicoData(medicoId: string, turno: Turno): Observable<string[]> {
     return this.buscarConsultasDoMedicoPorData(medicoId, turno.data).pipe(
-      catchError(() => of([])), // Se a coleção ainda não existir ou falhar, trata como sem consultas
+      catchError(() => of([])),
       map((consultas: Consulta[]) => {
         const horariosConsultados = consultas.map(c => c.hora);
 
@@ -85,15 +85,25 @@ export class ConsultasService {
 
         const todosHorarios = gerarHorariosIntervalados(turno.horarioInicio, turno.horarioTermino);
 
-        const horariosSemIntervalo = todosHorarios.filter(horario => {
-          if (!turno.horarioInicioIntervalo || !turno.horarioTerminoIntervalo) return true;
+      
+      const horariosSemIntervalo = todosHorarios.filter(horario => {
+        if (!turno.horarioInicioIntervalo || !turno.horarioTerminoIntervalo) return true;
+        return horario < turno.horarioInicioIntervalo || horario >= turno.horarioTerminoIntervalo;
+      });
 
-          return horario < turno.horarioInicioIntervalo || horario >= turno.horarioTerminoIntervalo;
-        });
+      
+      let horariosDisponiveis = horariosSemIntervalo.filter(h => !horariosConsultados.includes(h));
 
-        const horariosDisponiveis = horariosSemIntervalo.filter(h => !horariosConsultados.includes(h));
+      
+      const hoje = new Date().toISOString().split('T')[0];
+      if (turno.data === hoje) {
+        const agora = new Date();
+        const horaAtual = agora.toTimeString().substring(0, 5); // 'HH:mm'
 
-        return horariosDisponiveis;
+        horariosDisponiveis = horariosDisponiveis.filter(h => h > horaAtual);
+      }
+
+      return horariosDisponiveis;
       })
     );
   }
@@ -111,36 +121,7 @@ export class ConsultasService {
         }))));
   }
 
-  // novaConsulta(consulta: Consulta): Observable<any> {
-  //   const qConsultaMarcada = query(this.consultaCollection,
-  //     where('idMedico', '==', consulta.idMedico),
-  //     where('data', '==', consulta.data),
-  //     where('hora', '==', consulta.hora),
-  //   );
-
-  //   return new Observable(observer => {
-  //     Promise.all([
-  //       getDocs(qConsultaMarcada)
-  //     ]).then(([snapshot]) => {
-  //       if (!snapshot.empty) {
-  //         observer.error("Erro ao cadastrar consulta. Motivo: Já existe uma consulta marcada para essa data e horário.");
-  //         observer.complete();
-  //       }
-
-  //       addDoc(this.consultaCollection, structuredClone(consulta)).then(() => {
-  //         observer.next("Consulta marcada com sucesso!");
-
-
-
-  //         observer.complete();
-  //       }).catch(error => {
-  //         observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
-  //       });
-  //     }).catch(error => {
-  //       observer.error(`Erro ao cadastrar consulta. Motivo: ${error}`);
-  //     });
-  //   })
-  // }
+  
   novaConsulta(consulta: Consulta): Observable<any> {
     const qConsultaMarcada = query(this.consultaCollection,
       where('idMedico', '==', consulta.idMedico),
@@ -156,13 +137,13 @@ export class ConsultasService {
           return;
         }
 
-        // ⚠️ Chamada para o ZoomService
-        this.zoomService.createMeeting(consulta).subscribe({
+        
+        this.zoomService.createMeetingConsulta(consulta).subscribe({
           next: (res) => {
-            // Adiciona o link da reunião à consulta
+            
             consulta.link = res.join_url;
 
-            // Salva no Firestore
+            
             addDoc(this.consultaCollection, structuredClone(consulta)).then(() => {
               observer.next("Consulta marcada com sucesso e reunião criada!");
               observer.complete();

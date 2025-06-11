@@ -818,7 +818,7 @@ export class EditarColaboradoresComponent implements OnInit {
         this.loader.stop();
       },
       error: (err: any) => {
-        this.toastr.error(err.message);
+        this.toastr.error(err);
         this.loader.stop();
       }
     });
