@@ -1,0 +1,63 @@
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/colaboradores"><i class="fa fa-arrow-left"></i></a>
+    Atendimento Consulta
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/colaboradores">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()"
+      aria-label="Gravar Colaborador">
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Gravar
+      </span>
+    </button>
+  </div>
+</div>
+<hr />
+<form class="m-3" [formGroup]="form">
+  <div class="my-3 d-none d-md-flex">
+    <nav class="w-100">
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-geral"
+          type="button" role="tab" aria-controls="nav-geral" aria-selected="true">Dados da Consulta</button>
+        <button class="nav-link" id="nav-cargo-tab" data-bs-toggle="tab" data-bs-target="#nav-cargo" type="button"
+          role="tab" aria-controls="nav-cargo" aria-selected="false">Receita</button>
+        <button class="nav-link" id="nav-formacao-tab" data-bs-toggle="tab" data-bs-target="#nav-formacao" type="button"
+          role="tab" aria-controls="nav-formacao" aria-selected="false">Prontuario Paciente</button>
+        <button class="nav-link" id="nav-cursos-tab" data-bs-toggle="tab" data-bs-target="#nav-cursos" type="button"
+          role="tab" aria-controls="nav-cursos" aria-selected="false">Cursos</button>
+        <button class="nav-link" id="nav-treinamentos-tab" data-bs-toggle="tab" data-bs-target="#nav-treinamentos"
+          type="button" role="tab" aria-controls="nav-treinamentos" aria-selected="false">Treinamentos</button>
+        <!-- <button class="nav-link" id="nav-avaliacoes-tab" data-bs-toggle="tab" data-bs-target="#nav-avaliacoes"
+          type="button" role="tab" aria-controls="nav-avaliacoes" aria-selected="false">Avaliações</button> -->
+      </div>
+    </nav>
+  </div>
+  <div class="my-3 d-md-none">
+    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      <button class="nav-link active" id="v-pills-geral-tab" data-bs-toggle="pill" data-bs-target="#nav-geral"
+        type="button" role="tab" aria-controls="v-pills-geral" aria-selected="true">Geral</button>
+      <button class="nav-link" id="v-pills-cargo-tab" data-bs-toggle="pill" data-bs-target="#nav-cargo" type="button"
+        role="tab" aria-controls="v-pills-cargo" aria-selected="false">Cargo</button>
+      <button class="nav-link" id="v-pills-formacao-tab" data-bs-toggle="pill" data-bs-target="#nav-formacao"
+        type="button" role="tab" aria-controls="v-pills-formacao" aria-selected="false">Formações</button>
+      <button class="nav-link" id="v-pills-cursos-tab" data-bs-toggle="pill" data-bs-target="#nav-cursos" type="button"
+        role="tab" aria-controls="v-pills-cursos" aria-selected="false">Cursos</button>
+      <button class="nav-link" id="v-pills-treinamentos-tab" data-bs-toggle="pill" data-bs-target="#nav-treinamentos"
+        type="button" role="tab" aria-controls="v-pills-treinamentos" aria-selected="false">Treinamentos</button>
+      <!-- <button class="nav-link" id="v-pills-avaliacoes-tab" data-bs-toggle="pill" data-bs-target="#nav-avaliacoes"
+        type="button" role="tab" aria-controls="v-pills-avaliacoes" aria-selected="false">Avaliações</button> -->
+    </div>
+  </div>
+
+</form>

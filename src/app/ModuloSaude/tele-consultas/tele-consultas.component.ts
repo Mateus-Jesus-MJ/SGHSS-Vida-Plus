@@ -210,7 +210,7 @@ export class TeleConsultasComponent {
 
   atender(consulta: Consulta) {
     this.router.navigate(['atendimento/teleconsultas/atendimento', consulta.id]).then(() => {
-      window.open(consulta.link + "&uname=" + consulta.medico?.nome, '_blank');
+      //window.open(consulta.link + "&uname=" + consulta.medico?.nome, '_blank');
     });
   }
 

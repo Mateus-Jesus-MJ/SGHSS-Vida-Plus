@@ -46,7 +46,7 @@
                     <i class="fas fa-eye"></i>&nbsp;Visualizar Consulta
                   </a>
                 </li>
-                <li *ngIf="podeEntrar(consulta) && consulta.status == 'MARCADO'">
+                <li *ngIf="!podeEntrar(consulta) && consulta.status == 'MARCADO'">
                   <button class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
                     (click)="atender(consulta)">
                     <i class="fas fa-tv"></i>&nbsp;Entrar na Consulta
