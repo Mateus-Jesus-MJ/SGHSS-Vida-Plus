@@ -20,9 +20,9 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-consultas',
   imports: [RouterModule, CommonModule, ReactiveFormsModule, FormsModule, PaginacaoComponent, NgxMaskPipe],
+  providers: [DatePipe],
   templateUrl: './consultas.component.html',
-  styleUrl: './consultas.component.scss',
-  providers: [DatePipe]
+  styleUrl: './consultas.component.scss'
 })
 export class ConsultasComponent implements OnInit {
   todosDados: Consulta[] = [];
