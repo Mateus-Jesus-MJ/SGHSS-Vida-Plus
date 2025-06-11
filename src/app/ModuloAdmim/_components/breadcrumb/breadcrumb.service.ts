@@ -11,7 +11,7 @@ export class BreadcrumbService {
   // Mapeamento das rotas específicas para 'home'
   private routeNames: { [key: string]: string } = {
     'admin': 'Administração',      // Admin como Home
-    'atendimento': 'Atendimento', // Atendimento como Home
+    //'atendimento': 'Atendimento', // Atendimento como Home
     'paciente': 'Paciente'     // Paciente como Home
   };
 
@@ -27,6 +27,7 @@ export class BreadcrumbService {
     const segments = this.router.url.split('/').filter(segment => segment !== '');
 
     segments.forEach((segment, index) => {
+
       if (this.isDynamicParam(segment)) {
         return;
       }
@@ -41,11 +42,24 @@ export class BreadcrumbService {
         url
       });
     });
+
   }
 
 
+  // private isDynamicParam(segment: string): boolean {
+  //     return /^\d+$/.test(segment) || /^[a-f0-9-]{36}$/.test(segment);
+  // }
+
   private isDynamicParam(segment: string): boolean {
-    return !!segment.match(/^[a-zA-Z0-9_-]{10,}$/);
+    const isNumber = /^\d+$/.test(segment);
+
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(segment);
+
+    const isMongoId = /^[0-9a-f]{24}$/i.test(segment);
+
+    const isFirestoreId = /^[a-zA-Z0-9_-]{20,24}$/.test(segment);
+
+    return isNumber || isUUID || isMongoId || isFirestoreId;
   }
 
   private formatSegment(segment: string): string {

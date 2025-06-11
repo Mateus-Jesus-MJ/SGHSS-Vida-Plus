@@ -64,7 +64,7 @@ export class IncluirUsuarioComponent implements OnInit {
 
       this.adicionarPermissoes();
     } else if (tipoUsuario == "ps") {
-      this.gruposPermissoes = environment.grupoPermissoesAtendimento;
+      this.gruposPermissoes = environment.MenuAtendimento;
       this.adicionarPermissoes();
     } else {
       this.isGrupoPermissoesEmpty = false;

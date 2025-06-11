@@ -10,5 +10,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './top-mobile.component.scss'
 })
 export class TopMobileComponent {
-breadcrumbService = inject(BreadcrumbService);
+  breadcrumbService = inject(BreadcrumbService);
 }

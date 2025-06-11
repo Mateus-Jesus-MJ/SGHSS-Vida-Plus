@@ -37,10 +37,6 @@ nomeUsuario!: string | null;
     this.router.navigateByUrl('./');
   }
 
-  toggleSidebar() {
-    document.body.classList.toggle('sb-sidenav-toggled');
-    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled').toString());
-  }
 
   meuPerfil(id: string) {
     this.router.navigate(['/paciente/meuperfil', id]);

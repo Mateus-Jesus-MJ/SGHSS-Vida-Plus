@@ -15,7 +15,7 @@ export const environment = {
 
   // apiZoom : 'http://localhost:3000/',
 
-  apiZoom : 'https://servicezoomapi.vercel.app/api/',
+  apiZoom: 'https://servicezoomapi.vercel.app/api/',
 
   MenuAdmin: [
     {
@@ -26,7 +26,7 @@ export const environment = {
           {
             label: 'Hospitais',
             rota: 'hospitais',
-            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+            permissoes: ['visualizar', 'incluir', 'editar', 'excluir']
           },
           {
             label: 'Alas',
@@ -44,17 +44,17 @@ export const environment = {
           {
             label: 'Colaboradores',
             rota: 'colaboradores',
-            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+            permissoes: ['visualizar', 'incluir', 'editar', 'excluir']
           },
           {
             label: 'Cargos',
             rota: 'cargos',
-            permissoes: ['visualizar', 'incluir', 'editar','excluir']
+            permissoes: ['visualizar', 'incluir', 'editar', 'excluir']
           },
           {
             label: 'Turnos',
             rota: 'turnos',
-            permissoes: ['visualizar', 'incluir','excluir']
+            permissoes: ['visualizar', 'incluir', 'excluir']
           }
         ]
       }
@@ -74,18 +74,29 @@ export const environment = {
     }
   ],
 
-  grupoPermissoesAtendimento: [
-    {funcionalidade: 'consultas', permissoes: ['visualizar','incluir','atender','editar','remover']}
+  MenuAtendimento: [
+    {
+      grupo: {
+        label: 'Tele Consulta',
+        filhos: [
+          {
+            label: 'Tele Consulta',
+            rota: 'teleconsultas',
+            permissoes: ['visualizar', 'atender', 'remover']
+          },
+        ]
+      }
+    },
   ],
 
-  niveisDeEscolaridade:[
-    {value: 'NENHUMA',label: 'Nenhuma'},
-    {value: 'ENSINO FUNDAMENTAL',label: 'Ensino Fundamental'},
-    {value: 'ENSINO MÉDIO', label: 'Ensino Médio'},
-    {value: 'GRADUAÇÃO', label: 'Graduação'},
-    {value: 'PÓS GRADUAÇÃO', label: 'Pós Graduação'},
-    {value: 'MESTRADO', label: 'Mestrado'},
-    {value: 'DOUTORADO', label: 'Doutorado'}
+  niveisDeEscolaridade: [
+    { value: 'NENHUMA', label: 'Nenhuma' },
+    { value: 'ENSINO FUNDAMENTAL', label: 'Ensino Fundamental' },
+    { value: 'ENSINO MÉDIO', label: 'Ensino Médio' },
+    { value: 'GRADUAÇÃO', label: 'Graduação' },
+    { value: 'PÓS GRADUAÇÃO', label: 'Pós Graduação' },
+    { value: 'MESTRADO', label: 'Mestrado' },
+    { value: 'DOUTORADO', label: 'Doutorado' }
   ],
 
   estados: [

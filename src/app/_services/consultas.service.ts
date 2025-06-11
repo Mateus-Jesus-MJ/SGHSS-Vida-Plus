@@ -16,13 +16,14 @@ export class ConsultasService {
   private hospitalService = inject(HospitalService);
   private zoomService = inject(ZoomService);
 
-  buscarConsultasDoMedicoPorData(idMedico: string, data: string): Observable<Consulta[]> {
+  buscarConsultasDoMedicoPorData(idMedico: string, data?: string): Observable<Consulta[]> {
+    const filtros: any[] = [where('idMedico', '==', idMedico)];
 
-    const q = query(
-      this.consultaCollection,
-      where('idMedico', '==', idMedico),
-      where('data', '==', data)
-    );
+    if (data) {
+      filtros.push(where('data', '==', data));
+    }
+
+    const q = query(this.consultaCollection, ...filtros);
 
     return from(getDocs(q)).pipe(
       map((snapshot: { docs: any[]; }) =>

@@ -84,7 +84,7 @@ export class EditarUsuarioComponent implements OnInit {
         break;
       case 'ps':
         this.editarform.get('tipoUsuarioLabel')?.setValue('Profissional de Saúde');
-        this.gruposPermissoes = environment.grupoPermissoesAtendimento;
+        this.gruposPermissoes = environment.MenuAtendimento;
         this.isGrupoPermissoesEmpty = true;
         break;
       case 'pc':

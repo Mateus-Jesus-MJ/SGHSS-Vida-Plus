@@ -23,6 +23,7 @@ export class AuthService {
     sessionStorage.setItem('nome', user.nome);
     sessionStorage.setItem('autorizacoes', JSON.stringify(user.autorizacoes));
     sessionStorage.setItem('id', user.id!)
+    sessionStorage.setItem('idColaborador', user.colaborador || '')
   }
 
   // Faz logout
@@ -57,7 +58,8 @@ export class AuthService {
       senha: '',
       email: '',
       autorizacoes: autorizacoes,
-      status: true
+      status: true,
+      colaborador: sessionStorage.getItem('idColaborador') || ''
     };
 
     return usuario;

@@ -69,19 +69,19 @@ export class LoginComponent {
           this.toastService.error(response.message || "Usuário, senha ou tipo de usuário incorreto", "", { progressBar: true });
           return;
         }
-    
+
         const user = this.authService.getUsuario();
         if (!user) {
           this.toastService.error("Erro ao recuperar usuário logado", "", { progressBar: true });
-    
+
           return;
         }
-    
+
         this.toastService.info("Seja bem vindo ao SGHSS Vida Plus!", "", { progressBar: true });
-    
+
         switch (response.tipoUsuario) {
           case 'ps':
-            this.navigate('profissional-saude');
+            this.navigate('atendimento');
             break;
           case 'pc':
             this.navigate('paciente');
@@ -91,7 +91,7 @@ export class LoginComponent {
             break;
           default:
             this.toastService.error("Tipo de usuário desconhecido, tente novamente mais tarde!", "", { progressBar: true });
-    
+
             break;
         }
       },

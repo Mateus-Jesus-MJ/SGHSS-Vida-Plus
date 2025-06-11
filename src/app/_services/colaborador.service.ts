@@ -7,6 +7,7 @@ import { Cargo, Especialidade } from '../_models/cargo';
 import { Firestore } from '@angular/fire/firestore';
 import { snapshotEqual } from 'firebase/firestore/lite';
 import { ZoomService } from './zoom.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class ColaboradorService {
   private colaboradoresCollection = collection(this.firestore, 'colaboradores');
   private cargoService = inject(CargosService);
   private zoomService = inject(ZoomService);
+  private authService = inject(AuthService);
 
   buscarColaboradoresComCargo(): Observable<Colaborador[]> {
     const q = query(
@@ -59,6 +61,7 @@ export class ColaboradorService {
         const data = snapshot.data() as Colaborador;
         const colaboradorComId: Colaborador = { id: snapshot.id, ...data };
 
+
         const cargoRef = doc(this.firestore, `cargos/${data.cargoId}`);
 
         return from(getDoc(cargoRef)).pipe(
@@ -71,6 +74,16 @@ export class ColaboradorService {
       })
     );
   }
+
+  buscarColaboradorLogado(): Observable<Colaborador | null> {
+  const user = this.authService.getUsuario();
+
+  if (!user?.colaborador) {
+    return throwError(() => new Error('Usuário não está autenticado ou não tem colaborador associado.'));
+  }
+
+  return this.buscarPorId(user.colaborador);
+}
 
   incluir(colaborador: Colaborador): Observable<any> {
     const qcolaboradorComMesmoCPF = query(this.colaboradoresCollection, where('cpf', '==', colaborador.cpf));
@@ -103,41 +116,6 @@ export class ColaboradorService {
     });
   }
 
-
-
-  // editar(colaborador: Colaborador): Observable<any> {
-  //   const qcolaboradorComMesmoCPF = query(this.colaboradoresCollection, where('cpf', '==', colaborador.cpf));
-
-  //   return new Observable(observer => {
-  //     Promise.all([
-  //       getDocs(qcolaboradorComMesmoCPF)
-  //     ]).then(([snapshot]) => {
-  //       const outroColaboradorMesmoCpf = snapshot.docs.find(doc => doc.id !== colaborador.id)
-
-  //       if (outroColaboradorMesmoCpf) {
-  //         observer.error("Erro ao editar colaborador. Motivo: Já existe um colaborador com  esse CPF");
-  //         return;
-  //       }
-
-  //       const colaboradorDocRef = doc(this.firestore, "colaboradores", colaborador.id!);
-  //       const { id, ...dadosParaAtualizar } = colaborador;
-
-  //       from(updateDoc(colaboradorDocRef, structuredClone(dadosParaAtualizar)))
-  //         .subscribe({
-  //           next: () => {
-  //             observer.next("Colaborador editado com sucesso!");
-  //             observer.complete();
-  //           },
-  //           error: (error) => {
-  //             observer.error(`Erro ao editar colaborador. Motivo: ${error}`);
-  //             observer.complete();
-  //           }
-  //         })
-  //     }).catch(error => {
-  //       observer.error(`Erro ao editar colaborador. Motivo: ${error}`);
-  //     });
-  //   });
-  // }
   editar(colaborador: Colaborador): Observable<any> {
   const qcolaboradorComMesmoCPF = query(this.colaboradoresCollection, where('cpf', '==', colaborador.cpf));
 

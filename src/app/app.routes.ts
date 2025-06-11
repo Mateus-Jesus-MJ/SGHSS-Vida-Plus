@@ -27,10 +27,11 @@ import { IncluirAlaComponent } from './ModuloAdmim/alas/incluir-ala/incluir-ala.
 import { VisualizarAlaComponent } from './ModuloAdmim/alas/visualizar-ala/visualizar-ala.component';
 import { EditarAlaComponent } from './ModuloAdmim/alas/editar-ala/editar-ala.component';
 import { TelaSaudeComponent } from './ModuloSaude/tela-saude/tela-saude.component';
-import { TeleConsultaComponent } from './ModuloSaude/tele-consulta/tele-consulta.component';
 import { TelaPacienteComponent } from './ModuloPaciente/tela-paciente/tela-paciente.component';
 import { ConsultasComponent } from './ModuloPaciente/consultas/consultas.component';
 import { IncluirConsultasPacienteComponent } from './ModuloPaciente/consultas/incluir-consultas-paciente/incluir-consultas-paciente.component';
+import { TeleConsultasComponent } from './ModuloSaude/tele-consultas/tele-consultas.component';
+import { AtendimentoComponent } from './ModuloSaude/tele-consultas/atendimento/atendimento.component';
 
 
 export const routes: Routes = [
@@ -278,7 +279,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'profissional-saude',
+    path: 'atendimento',
     component: TelaSaudeComponent,
     canActivate: [AuthGuardService],
     canActivateChild: [AuthGuardService],
@@ -287,14 +288,25 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'tele-consulta',
-        component: TeleConsultaComponent,
+        path: 'teleconsultas',
+        component: TeleConsultasComponent,
         canActivateChild: [AuthGuardService],
         data: {
-          tipoPermitido: 'pa',
-          funcionalidade: 'tele-consulta',
+          tipoPermitido: 'ps',
+          funcionalidade: 'teleconsulta',
           acesso: 'visualizar'
         },
+        children: [
+          {
+            path: 'atendimento/:id',
+            component: AtendimentoComponent,
+            data: {
+              tipoPermitido: 'ps',
+              funcionalidade: 'teleconsulta',
+              acesso: 'atender'
+            }
+          }
+        ]
       },
       {
         path: 'meuperfil/:id',

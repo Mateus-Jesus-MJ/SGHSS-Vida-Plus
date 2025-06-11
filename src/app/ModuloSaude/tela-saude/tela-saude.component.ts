@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../_services/auth.service';
-import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
-import { BreadcrumbComponent } from "../../ModuloAdmim/_components/breadcrumb/breadcrumb.component";
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../_services/auth.service';
 import { filter } from 'rxjs';
+import { BreadcrumbComponent } from "../../ModuloAdmim/_components/breadcrumb/breadcrumb.component";
+import { TopMobileComponent } from "../../_components/top-mobile/top-mobile.component";
 
 @Component({
   selector: 'app-tela-saude',
-  imports: [BreadcrumbComponent, RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, BreadcrumbComponent, TopMobileComponent],
   templateUrl: './tela-saude.component.html',
   styleUrl: './tela-saude.component.scss'
 })
@@ -36,12 +37,8 @@ nomeUsuario!: string | null;
     this.router.navigateByUrl('./');
   }
 
-  toggleSidebar() {
-    document.body.classList.toggle('sb-sidenav-toggled');
-    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled').toString());
-  }
 
   meuPerfil(id: string) {
-    this.router.navigate(['/profissional-saude/meuperfil', id]);
+    this.router.navigate(['/atendimento/meuperfil', id]);
   }
 }
