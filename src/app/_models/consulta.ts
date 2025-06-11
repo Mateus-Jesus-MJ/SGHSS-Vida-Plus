@@ -13,4 +13,5 @@ export interface Consulta {
     medico?: Colaborador;
     idHospital: string;
     hospital?: Hospital
+    status: string;
 }

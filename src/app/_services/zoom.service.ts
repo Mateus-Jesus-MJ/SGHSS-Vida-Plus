@@ -31,17 +31,15 @@ export class ZoomService {
       hostEmail: 'me'
     };
 
-    console.log(meetingData);
-
     // Chama seu backend (que já tem o client secret e faz a chamada Zoom)
     return this.http.post(`${this.zoomUrl}create-meeting`, meetingData);
   }
 
   createZoomUser(colaborador: Colaborador): Observable<any> {
 
-    
+
     return of({ success: true });
-    
+
     const email = colaborador.contato.email;
 
     if (email == "") {

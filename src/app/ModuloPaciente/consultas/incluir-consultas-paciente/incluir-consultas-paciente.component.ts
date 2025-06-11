@@ -245,7 +245,8 @@ export class IncluirConsultasPacienteComponent implements OnInit {
       paciente: this.paciente,
       medico: this.medicoSelecionado,
       idMedico: this.medicoSelecionado.id!,
-      idHospital: '8bSz5V9xeWXfjhsvHMCt'
+      idHospital: '8bSz5V9xeWXfjhsvHMCt',
+      status: "MARCADO"
     }
 
     this.consultasService.novaConsulta(consulta).subscribe({

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, CollectionReference, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDocs, query, where } from '@angular/fire/firestore';
 import { catchError, Cons, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 import { Consulta } from '../_models/consulta';
 import { HospitalService } from './hospital.service';
@@ -85,25 +85,25 @@ export class ConsultasService {
 
         const todosHorarios = gerarHorariosIntervalados(turno.horarioInicio, turno.horarioTermino);
 
-      
-      const horariosSemIntervalo = todosHorarios.filter(horario => {
-        if (!turno.horarioInicioIntervalo || !turno.horarioTerminoIntervalo) return true;
-        return horario < turno.horarioInicioIntervalo || horario >= turno.horarioTerminoIntervalo;
-      });
 
-      
-      let horariosDisponiveis = horariosSemIntervalo.filter(h => !horariosConsultados.includes(h));
+        const horariosSemIntervalo = todosHorarios.filter(horario => {
+          if (!turno.horarioInicioIntervalo || !turno.horarioTerminoIntervalo) return true;
+          return horario < turno.horarioInicioIntervalo || horario >= turno.horarioTerminoIntervalo;
+        });
 
-      
-      const hoje = new Date().toISOString().split('T')[0];
-      if (turno.data === hoje) {
-        const agora = new Date();
-        const horaAtual = agora.toTimeString().substring(0, 5); // 'HH:mm'
 
-        horariosDisponiveis = horariosDisponiveis.filter(h => h > horaAtual);
-      }
+        let horariosDisponiveis = horariosSemIntervalo.filter(h => !horariosConsultados.includes(h));
 
-      return horariosDisponiveis;
+
+        const hoje = new Date().toISOString().split('T')[0];
+        if (turno.data === hoje) {
+          const agora = new Date();
+          const horaAtual = agora.toTimeString().substring(0, 5); // 'HH:mm'
+
+          horariosDisponiveis = horariosDisponiveis.filter(h => h > horaAtual);
+        }
+
+        return horariosDisponiveis;
       })
     );
   }
@@ -121,7 +121,7 @@ export class ConsultasService {
         }))));
   }
 
-  
+
   novaConsulta(consulta: Consulta): Observable<any> {
     const qConsultaMarcada = query(this.consultaCollection,
       where('idMedico', '==', consulta.idMedico),
@@ -137,13 +137,13 @@ export class ConsultasService {
           return;
         }
 
-        
+
         this.zoomService.createMeetingConsulta(consulta).subscribe({
           next: (res) => {
-            
+
             consulta.link = res.join_url;
 
-            
+
             addDoc(this.consultaCollection, structuredClone(consulta)).then(() => {
               observer.next("Consulta marcada com sucesso e reunião criada!");
               observer.complete();
@@ -159,6 +159,17 @@ export class ConsultasService {
         observer.error(`Erro ao verificar consultas existentes. Motivo: ${error}`);
       });
     });
+  }
+
+  excluirConsulta(consulta: Consulta) {
+    const consultaRef = doc(this.firestore, `consultas/${consulta.id}`);
+
+    return from(deleteDoc(consultaRef)).pipe(
+      map(() => 'consulta desmarcada com sucesso!'),
+      catchError(error => {
+        return of(`Erro ao desmarcada o consulta. Motivo: ${error}`)
+      })
+    );
   }
 }
 
