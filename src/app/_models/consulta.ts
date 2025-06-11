@@ -14,4 +14,12 @@ export interface Consulta {
     idHospital: string;
     hospital?: Hospital
     status: string;
+    receita?: medicamentosReceita[];
+}
+
+export interface medicamentosReceita{
+    id?:string;
+    medicamento: string;
+    quantidade: string;
+    periodo: string;
 }

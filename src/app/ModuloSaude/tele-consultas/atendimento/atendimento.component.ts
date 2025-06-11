@@ -1,20 +1,146 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Consulta } from '../../../_models/consulta';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ToastrService } from 'ngx-toastr';
+import { ConsultasService } from '../../../_services/consultas.service';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-atendimento',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, NgxMaskPipe],
   templateUrl: './atendimento.component.html',
   styleUrl: './atendimento.component.scss'
 })
-export class AtendimentoComponent {
+export class AtendimentoComponent implements OnInit {
   form!: FormGroup;
+  consulta!: Consulta;
+  agora = Date();
 
 
-   constructor(){
-    this.form = new FormGroup({});
-   }
+  constructor(
+    private router: Router,
+    private routeAcitive: ActivatedRoute,
+    private loader: NgxUiLoaderService,
+    private toastr: ToastrService,
+    private consultaService: ConsultasService
+  ) {
+    this.form = new FormGroup({
+      status: new FormControl('MARCADO', Validators.required),
+      medicamentoAdicionar: new FormControl('', Validators.required),
+      medicamentoQuantidade: new FormControl('', Validators.required),
+      medicamentoPeriodo: new FormControl('', Validators.required),
+    });
+  }
+
+  ngOnInit(): void {
+    this.loader.start();
+    this.routeAcitive.paramMap.subscribe(params => {
+      const id = params.get('id')!;
+
+      if (id == null || id == "") {
+        this.toastr.error("Consulta não encontrada");
+        this.router.navigateByUrl('atendimento/teleconsultas');
+        this.loader.stop();
+        return
+      }
+      this.buscarConsulta(id)
+    });
+  }
+
+  buscarConsulta(id: string) {
+    this.consultaService.buscarConsultaPorId(id).subscribe({
+      next: (consulta: Consulta | null) => {
+        if (consulta != null) {
+          this.consulta = consulta;
+          this.loader.stop();
+        }
+      },
+      error: (error) => {
+        this.toastr.error(error);
+        this.loader.stop();
+      }
+    })
+  }
+
+  calcularIdade(dataNascimento: string | Date): string {
+    const nascimento = new Date(dataNascimento);
+    const hoje = new Date();
+
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+
+    const mesAtual = hoje.getMonth();
+    const diaAtual = hoje.getDate();
+    const mesNascimento = nascimento.getMonth();
+    const diaNascimento = nascimento.getDate();
+
+    if (mesAtual < mesNascimento || (mesAtual === mesNascimento && diaAtual < diaNascimento)) {
+      idade--;
+    }
+
+    let idadeFormatada;
+    if (idade > 1) {
+      idadeFormatada = idade + " Anos";
+    } else {
+      idadeFormatada = idade + " Ano";
+    }
+
+    return idadeFormatada;
+  }
+
+  adicionarMedicamento() {
+    if (!this.consulta.receita) {
+      this.consulta.receita = [];
+    }
+
+    const medicamento = this.form.get("medicamentoAdicionar")?.value.toUpperCase();
+    const quantidade = this.form.get("medicamentoQuantidade")?.value.toUpperCase();
+    const periodo = this.form.get("medicamentoPeriodo")?.value.toUpperCase();
+
+    if(!medicamento && !quantidade && !periodo){
+      this.toastr.error("É necessário informar o medicamento, quantidade e período.","", {progressBar: true});
+      return;
+    }
+
+    this.consulta.receita?.push({
+      medicamento,
+      quantidade,
+      periodo
+    });
+
+    this.form.patchValue({
+      medicamentoAdicionar: '',
+      medicamentoQuantidade: '',
+      medicamentoPeriodo: ''
+    })
+
+    // this.consulta.receita?.push({
+    //   medicamento: "DIPIRONA 1g",
+    //   Quantidade: '10 CP',
+    //   periodo: "DE 8 EM 8 HORAS"
+    // });
+
+    // this.consulta.receita?.push({
+    //   medicamento: "DIPIRONA 1g",
+    //   Quantidade: '10 CP',
+    //   periodo: "DE 8 EM 8 HORAS"
+    // });
+
+    // this.consulta.receita?.push({
+    //   medicamento: "CIMEGRIPE",
+    //   Quantidade: '1 CX',
+    //   periodo: "DE 8 EM 8 HORAS"
+    // });
+
+    // this.consulta.receita?.push({
+    //   medicamento: "DEXAMETAZONA",
+    //   Quantidade: '14 CP',
+    //   periodo: "DE 12 EM 12 HORAS"
+    // });
+  }
+
 
   submit() { }
 

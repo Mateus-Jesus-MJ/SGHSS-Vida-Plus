@@ -12,8 +12,7 @@
         Voltar
       </span>
     </a>
-    <button class="btn btn-primary btn-icon-split" (click)="submit()"
-      aria-label="Gravar Colaborador">
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" aria-label="Gravar Colaborador">
       <span class="icon">
         <i class="fa fa-check"></i>
       </span>
@@ -24,22 +23,18 @@
   </div>
 </div>
 <hr />
-<form class="m-3" [formGroup]="form">
+<form class="m-3" [formGroup]="form" *ngIf="consulta != null">
   <div class="my-3 d-none d-md-flex">
     <nav class="w-100">
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link active" id="nav-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-geral"
           type="button" role="tab" aria-controls="nav-geral" aria-selected="true">Dados da Consulta</button>
-        <button class="nav-link" id="nav-cargo-tab" data-bs-toggle="tab" data-bs-target="#nav-cargo" type="button"
-          role="tab" aria-controls="nav-cargo" aria-selected="false">Receita</button>
-        <button class="nav-link" id="nav-formacao-tab" data-bs-toggle="tab" data-bs-target="#nav-formacao" type="button"
-          role="tab" aria-controls="nav-formacao" aria-selected="false">Prontuario Paciente</button>
-        <button class="nav-link" id="nav-cursos-tab" data-bs-toggle="tab" data-bs-target="#nav-cursos" type="button"
-          role="tab" aria-controls="nav-cursos" aria-selected="false">Cursos</button>
-        <button class="nav-link" id="nav-treinamentos-tab" data-bs-toggle="tab" data-bs-target="#nav-treinamentos"
-          type="button" role="tab" aria-controls="nav-treinamentos" aria-selected="false">Treinamentos</button>
-        <!-- <button class="nav-link" id="nav-avaliacoes-tab" data-bs-toggle="tab" data-bs-target="#nav-avaliacoes"
-          type="button" role="tab" aria-controls="nav-avaliacoes" aria-selected="false">Avaliações</button> -->
+        <button class="nav-link" id="nav-prontuario-tab" data-bs-toggle="tab" data-bs-target="#nav-prontuario"
+          type="button" role="tab" aria-controls="nav-prontuario" aria-selected="false">Prontuario Paciente</button>
+        <button class="nav-link" id="nav-receita-tab" data-bs-toggle="tab" data-bs-target="#nav-receita" type="button"
+          role="tab" aria-controls="nav-solicitacoes" aria-selected="false">Receita</button>
+        <button class="nav-link" id="nav-solicitacoes-tab" data-bs-toggle="tab" data-bs-target="#nav-solicitacoes"
+          type="button" role="tab" aria-controls="nav-receita" aria-selected="false">Solicitações</button>
       </div>
     </nav>
   </div>
@@ -47,17 +42,122 @@
     <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
       <button class="nav-link active" id="v-pills-geral-tab" data-bs-toggle="pill" data-bs-target="#nav-geral"
         type="button" role="tab" aria-controls="v-pills-geral" aria-selected="true">Geral</button>
-      <button class="nav-link" id="v-pills-cargo-tab" data-bs-toggle="pill" data-bs-target="#nav-cargo" type="button"
-        role="tab" aria-controls="v-pills-cargo" aria-selected="false">Cargo</button>
-      <button class="nav-link" id="v-pills-formacao-tab" data-bs-toggle="pill" data-bs-target="#nav-formacao"
-        type="button" role="tab" aria-controls="v-pills-formacao" aria-selected="false">Formações</button>
-      <button class="nav-link" id="v-pills-cursos-tab" data-bs-toggle="pill" data-bs-target="#nav-cursos" type="button"
-        role="tab" aria-controls="v-pills-cursos" aria-selected="false">Cursos</button>
-      <button class="nav-link" id="v-pills-treinamentos-tab" data-bs-toggle="pill" data-bs-target="#nav-treinamentos"
-        type="button" role="tab" aria-controls="v-pills-treinamentos" aria-selected="false">Treinamentos</button>
-      <!-- <button class="nav-link" id="v-pills-avaliacoes-tab" data-bs-toggle="pill" data-bs-target="#nav-avaliacoes"
-        type="button" role="tab" aria-controls="v-pills-avaliacoes" aria-selected="false">Avaliações</button> -->
+      <button class="nav-link" id="v-pills-prontuario-tab" data-bs-toggle="pill" data-bs-target="#nav-prontuario"
+        type="button" role="tab" aria-controls="v-pills-prontuario" aria-selected="false">Prontuario Paciente</button>
+      <button class="nav-link" id="v-pills-receita-tab" data-bs-toggle="pill" data-bs-target="#nav-receita"
+        type="button" role="tab" aria-controls="v-pills-receita" aria-selected="false">Receita</button>
+      <button class="nav-link" id="v-pills-solicitacoes-tab" data-bs-toggle="pill" data-bs-target="#nav-solicitacoes"
+        type="button" role="tab" aria-controls="v-pills-solicitacoes" aria-selected="false">Solicitações</button>
     </div>
   </div>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade" id="nav-geral" role="tabpanel" aria-labelledby="nav-geral-tab" tabindex="0">
+      <div class="col-xxl-3 col-xl-4 col-lg-5 d-flex align-items-center gap-2 mb-3">
+        <b><label for="status">Status&nbsp;da&nbsp;Consulta</label></b>
+        <select formControlName="status" id="status" class="form-select">
+          <option value="MARCADO" selected>MARCADO</option>
+          <option value="ENCERRADO">ENCERRADO</option>
+        </select>
+      </div>
+      <div class="row mt-3">
+        <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+          <strong>Paciente:</strong> {{consulta.paciente!.nome}}<br />
+        </div>
+        <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+          <strong>Documento:</strong> {{consulta.paciente!.cpf | mask: '000.000.000-00'}}<br />
+        </div>
+        <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+          <strong>Idade:</strong> {{calcularIdade(consulta.paciente!.dataNascimento)}}<br />
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+          <strong>Data:</strong> {{ consulta.data | date:'dd/MM/yyyy' }}<br />
+        </div>
+        <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+          <strong>Horário:</strong> {{ consulta.hora }}<br />
+        </div>
+        <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+          <strong>Hospital:</strong> Online
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-prontuario" role="tabpanel" aria-labelledby="nav-prontuario-tab" tabindex="0">
+    </div>
+    <div class="tab-pane fade show active" id="nav-receita" role="tabpanel" aria-labelledby="nav-receita-tab"
+      tabindex="0">
+      <div class="row">
+        <div class="col mt-3">
+          <div class="d-flex justify-content-between">
+            <h5>Adicionar Medicamento</h5>
+            <button class="btn btn-primary btn-icon-split" (click)="adicionarMedicamento()" aria-label="Gravar Colaborador">
+              <span class="icon">
+                <i class="fa fa-plus"></i>
+              </span>
+              <span class="text px-4">
+                Adicionar
+              </span>
+            </button>
+          </div>
+          <div class="form-floating mt-3">
+            <input type="text" class="form-control" formControlName="medicamentoAdicionar" placeholder=""/>
+            <label>Medicamento</label>
+          </div>
+          <div class="form-floating mt-3">
+            <input type="text" class="form-control" formControlName="medicamentoQuantidade" placeholder=""/>
+            <label>Quantidade</label>
+          </div>
+          <div class="form-floating mt-3">
+            <input type="text" class="form-control" formControlName="medicamentoPeriodo" placeholder=""/>
+            <label>Periodo</label>
+          </div>
+        </div>
+        <div class="col-xxl-7 mt-3">
+          <div class="card">
+            <div class="card-body">
+              <div>
+                <img src="assets/img/LogoAzulSemFundo.png" style="height: 100px;"/>&nbsp;<b class="large">SGHSS VIDA PLUS TELE MEDICINA</b>
+              </div>
+              <div class="mt-3 text-center">
+                <h3>Receita do Paciente</h3>
+              </div>
+              <div class="row mt-5">
+                <div class="col text-start">
+                  <b>Paciente:</b> {{consulta.paciente!.nome}}<br />
+                </div>
+                <div class="col text-start">
+                  <b>Idade:</b> {{calcularIdade(consulta.paciente!.dataNascimento)}}
+                </div>
+              </div>
+              <div class="mt-3">
+                <hr />
+                <h5 style="margin-top: -10px;">
+                  Medicamentos:
+                </h5>
+                <div class="mt-3" *ngFor="let medicamento of consulta.receita">
+                    <b>Medicamento:</b> {{medicamento.medicamento}}<br/>
+                    <b>Quantidade:</b> {{medicamento.quantidade}}<br />
+                    <b>PERÍODO:</b> TOMAR {{medicamento.periodo}}
+                </div>
+              </div>
+              <div class="px-5 text-center" style="margin-top: 100px;">
+                <div class="container px-5">
+                  <hr/>
+                  {{consulta.medico?.nome}}<br/>
+                  CRM {{consulta.medico?.crm}}
+                </div>
+              </div>
+              <div class="text-end mt-5">
+                <span class="small">Emissão: {{agora | date: 'dd/MM/YYYY hh:mm:ss'}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="nav-solicitacoes" role="tabpanel" aria-labelledby="nav-solicitacoes-tab"
+      tabindex="0">
 
+    </div>
+  </div>
 </form>

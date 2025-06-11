@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDocs, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDoc, getDocs, query, where } from '@angular/fire/firestore';
 import { catchError, Cons, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 import { Consulta } from '../_models/consulta';
 import { HospitalService } from './hospital.service';
@@ -15,6 +15,24 @@ export class ConsultasService {
   private consultaCollection = collection(this.firestore, 'consultas') as CollectionReference<Consulta>;
   private hospitalService = inject(HospitalService);
   private zoomService = inject(ZoomService);
+
+  buscarConsultaPorId(id: string): Observable<Consulta | null> {
+    const consultaRef = doc(this.firestore, `consultas/${id}`);
+
+    return from(getDoc(consultaRef)).pipe(
+      map(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.data() as Consulta;
+          return { id: snapshot.id, ...data }
+        } else {
+          return null;
+        }
+      }),
+      catchError(error => {
+        return of(null)
+      })
+    );
+  }
 
   buscarConsultasDoMedicoPorData(idMedico: string, data?: string): Observable<Consulta[]> {
     const filtros: any[] = [where('idMedico', '==', idMedico)];
