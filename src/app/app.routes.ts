@@ -32,6 +32,8 @@ import { ConsultasComponent } from './ModuloPaciente/consultas/consultas.compone
 import { IncluirConsultasPacienteComponent } from './ModuloPaciente/consultas/incluir-consultas-paciente/incluir-consultas-paciente.component';
 import { TeleConsultasComponent } from './ModuloSaude/tele-consultas/tele-consultas.component';
 import { AtendimentoComponent } from './ModuloSaude/tele-consultas/atendimento/atendimento.component';
+import { ProcedimentosComponent } from './ModuloAdmim/procedimentos/procedimentos.component';
+import { InlcuirProcedimentosComponent } from './ModuloAdmim/procedimentos/inlcuir-procedimentos/inlcuir-procedimentos.component';
 
 
 export const routes: Routes = [
@@ -88,6 +90,84 @@ export const routes: Routes = [
               acesso: 'editar'
             }
           }
+        ]
+      },
+      {
+        path: 'alas',
+        component: AlasComponent,
+        canActivateChild: [AuthGuardService],
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'alas',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirAlaComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'alas',
+              acesso: 'incluir'
+            }
+          },
+          {
+            path: 'visualizar/:id',
+            component: VisualizarAlaComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'alas',
+              acesso: 'visualizar'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarAlaComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'alas',
+              acesso: 'editar'
+            }
+          },
+        ]
+      },
+      {
+        path: 'procedimentos',
+        component: ProcedimentosComponent,
+        canActivateChild: [AuthGuardService],
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'procedimentos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: InlcuirProcedimentosComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'alas',
+              acesso: 'incluir'
+            }
+          },
+          {
+            path: 'visualizar/:id',
+            component: VisualizarAlaComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'alas',
+              acesso: 'visualizar'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarAlaComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'alas',
+              acesso: 'editar'
+            }
+          },
         ]
       },
       {
@@ -196,45 +276,6 @@ export const routes: Routes = [
               acesso: 'excluir'
             }
           }
-        ]
-      },
-      {
-        path: 'alas',
-        component: AlasComponent,
-        canActivateChild: [AuthGuardService],
-        data: {
-          tipoPermitido: 'pa',
-          funcionalidade: 'alas',
-          acesso: 'visualizar'
-        },
-        children: [
-          {
-            path: 'incluir',
-            component: IncluirAlaComponent,
-            data: {
-              tipoPermitido: 'pa',
-              funcionalidade: 'alas',
-              acesso: 'incluir'
-            }
-          },
-          {
-            path: 'visualizar/:id',
-            component: VisualizarAlaComponent,
-            data: {
-              tipoPermitido: 'pa',
-              funcionalidade: 'alas',
-              acesso: 'visualizar'
-            }
-          },
-          {
-            path: 'editar/:id',
-            component: EditarAlaComponent,
-            data: {
-              tipoPermitido: 'pa',
-              funcionalidade: 'alas',
-              acesso: 'editar'
-            }
-          },
         ]
       },
       {

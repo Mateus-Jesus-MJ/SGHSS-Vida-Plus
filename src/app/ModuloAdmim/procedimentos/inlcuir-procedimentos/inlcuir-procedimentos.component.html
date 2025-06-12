@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/colaboradores"><i class="fa fa-arrow-left"></i></a>
+    Incluir Procedimento
+  </h3>
+  <div class="d-flex justify-content-between d-none d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/colaboradores">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">
+        Voltar
+      </span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="form.invalid"
+      aria-label="Gravar Colaborador">
+      <span class="icon">
+        <i class="fa fa-check"></i>
+      </span>
+      <span class="text px-4">
+        Gravar
+      </span>
+    </button>
+  </div>
+</div>
+<hr />
+<form [formGroup]="form">
+  <div class="row">
+    <div class="col-xl-4 col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="nome"
+          [class.is-invalid]="form.get('nome')?.invalid && form.get('nome')?.touched" />
+        <label>Nome</label>
+      </div>
+    </div>
+  </div>
+  <div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th colspan="5" class="text-center">Funcionamento</th>
+        </tr>
+        <tr>
+          <th class="text-center">Dia da Semana</th>
+          <th class="text-center">Horário de Inicio</th>
+          <th class="text-center">Inicio Intervalo</th>
+          <th class="text-center">Término Intervalo</th>
+          <th class="text-center">Horário de Término</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="funcionamento">
+        <tr *ngFor="let grupo of funcionamento.controls; let i = index" [formGroupName]="i">
+          <td><input class="form-control" type="text" formControlName="diaDaSemana" readonly></td>
+          <td><input class="form-control" type="time" formControlName="inicio"></td>
+          <td><input class="form-control" type="time" formControlName="inicioIntervalo"></td>
+          <td><input class="form-control" type="time" formControlName="terminoIntervalo"></td>
+          <td><input class="form-control" type="time" formControlName="termino"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>
