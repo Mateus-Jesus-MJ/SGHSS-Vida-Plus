@@ -55,6 +55,7 @@ export class AtendimentoComponent implements OnInit {
       next: (consulta: Consulta | null) => {
         if (consulta != null) {
           this.consulta = consulta;
+          this.adicionarSolicitacaoProcedimento();
           this.loader.stop();
         }
       },
@@ -115,30 +116,24 @@ export class AtendimentoComponent implements OnInit {
       medicamentoQuantidade: '',
       medicamentoPeriodo: ''
     })
+  }
 
-    // this.consulta.receita?.push({
-    //   medicamento: "DIPIRONA 1g",
-    //   Quantidade: '10 CP',
-    //   periodo: "DE 8 EM 8 HORAS"
-    // });
+  adicionarSolicitacaoProcedimento(){
+    if(!this.consulta.solicitacoes){
+      this.consulta.solicitacoes = [];
+    }
 
-    // this.consulta.receita?.push({
-    //   medicamento: "DIPIRONA 1g",
-    //   Quantidade: '10 CP',
-    //   periodo: "DE 8 EM 8 HORAS"
-    // });
+    this.consulta.solicitacoes?.push({
+      procedimento: 'RAIO X'
+    })
 
-    // this.consulta.receita?.push({
-    //   medicamento: "CIMEGRIPE",
-    //   Quantidade: '1 CX',
-    //   periodo: "DE 8 EM 8 HORAS"
-    // });
+    this.consulta.solicitacoes?.push({
+      procedimento: 'ENDOSCOPIA'
+    })
 
-    // this.consulta.receita?.push({
-    //   medicamento: "DEXAMETAZONA",
-    //   Quantidade: '14 CP',
-    //   periodo: "DE 12 EM 12 HORAS"
-    // });
+    this.consulta.solicitacoes?.push({
+      procedimento: 'RESSONANCIA MAGENETICA COM CONTRASTE'
+    })
   }
 
 
