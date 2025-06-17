@@ -8,9 +8,14 @@ export interface Medicamento {
   viaAdministracao: string;
   apresentacao: string;
   fabricante: string;
-  status: 'Ativo' | 'Inativo';
+  status: 'ATIVO' | 'INATIVO';
   registroAnvisa: string;
   controlado: boolean;
-  tarja: 'Isento' | 'Tarja Vermelha' | 'Tarja Preta';
+  tarja: 'ISENTO' | 'TARJA VERMELHA' | 'TARJA PRETA';
   observacoes?: string;
+  usuarioCriacao? : string;
+  momentoCriacao?: string;
+  usuarioEdicao? : string;
+  momentoEdicao?: string;
+
 }

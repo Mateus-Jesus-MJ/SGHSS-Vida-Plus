@@ -20,14 +20,16 @@
   <div class="row">
     <div class="col-xxl-2 col-lg-4">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="ean" placeholder="" formControlName="ean" maxlength="13">
+        <input type="text" formControlName="ean" class="form-control"
+          [class.is-invalid]="form.get('ean')?.invalid && (form.get('ean')?.touched || form.get('ean')?.dirty)" />
         <label for="ean" class="label-required">EAN</label>
       </div>
     </div>
     <div class="col-xxl-5 col-lg-8">
       <div class="form-floating mb-3">
         <input type="text" class="form-control text-uppercase" id="nomeComercial" placeholder=""
-          formControlName="nomeComercial">
+          formControlName="nomeComercial"
+          [class.is-invalid]="form.get('nomeComercial')?.invalid && (form.get('nomeComercial')?.touched || form.get('nomeComercial')?.dirty)" />
         <label for="nomeComercial" class="label-required">Nome Comercial</label>
       </div>
     </div>
@@ -35,13 +37,15 @@
     <div class="col-xxl-5 col-lg-8">
       <div class="form-floating mb-3">
         <input type="text" class="form-control text-uppercase" id="nomeGenerico" formControlName="nomeGenerico"
-          placeholder="">
+          placeholder=""
+          [class.is-invalid]="form.get('nomeGenerico')?.invalid && (form.get('nomeGenerico')?.touched || form.get('nomeGenerico')?.dirty)" />
         <label for="nomeGenerico" class="label-required">Nome Genérico</label>
       </div>
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <select class="form-select text-uppercase" formControlName="formaFarmaceutica">
+        <select class="form-select text-uppercase" formControlName="formaFarmaceutica"
+          [class.is-invalid]="form.get('formaFarmaceutica')?.invalid && (form.get('formaFarmaceutica')?.touched || form.get('formaFarmaceutica')?.dirty)">
           <option *ngFor="let forma of formasFarmaceuticas" [value]="forma">{{ forma }}</option>
         </select>
         <label for="formaFarmaceutica" class="label-required">Forma Farmacêutica</label>
@@ -49,13 +53,15 @@
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="dosagem" placeholder="" formControlName="dosagem">
+        <input type="text" class="form-control" id="dosagem" placeholder="" formControlName="dosagem"
+          [class.is-invalid]="form.get('dosagem')?.invalid && (form.get('dosagem')?.touched || form.get('dosagem')?.dirty)" />
         <label for="dosagem" class="label-required">Dosagem</label>
       </div>
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <select class="form-select text-uppercase" formControlName="viaAdministracao">
+        <select class="form-select text-uppercase" formControlName="viaAdministracao"
+          [class.is-invalid]="form.get('viaAdministracao')?.invalid && (form.get('viaAdministracao')?.touched || form.get('viaAdministracao')?.dirty)">
           <option *ngFor="let via of viasAdministracao" [value]="via">{{ via }}</option>
         </select>
         <label for="viaAdministracao" class="label-required">Via de Administração</label>
@@ -63,30 +69,32 @@
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="apresentacao" formControlName="apresentacao" placeholder="">
+        <input type="text" class="form-control" id="apresentacao" formControlName="apresentacao" placeholder=""
+          [class.is-invalid]="form.get('apresentacao')?.invalid && (form.get('apresentacao')?.touched || form.get('apresentacao')?.dirty)" />
         <label for="apresentacao" class="label-required">Apresentação / Agrupamento</label>
       </div>
     </div>
 
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" id="fabricante" formControlName="fabricante" placeholder="">
+        <input type="text" class="form-control" id="fabricante" formControlName="fabricante" placeholder=""
+          [class.is-invalid]="form.get('fabricante')?.invalid && (form.get('fabricante')?.touched || form.get('fabricante')?.dirty)" />
         <label for="fabricante" class="label-required">Fabricante</label>
       </div>
     </div>
 
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <input type="text" class="form-control" formControlName="registroAnvisa" placeholder="">
+        <input type="text" class="form-control" formControlName="registroAnvisa" placeholder=""
+          [class.is-invalid]="form.get('registroAnvisa')?.invalid && (form.get('registroAnvisa')?.touched || form.get('registroAnvisa')?.dirty)" />
         <label for="registroAnvisa" class="label-required">Registro ANVISA</label>
       </div>
     </div>
 
-
-
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <select class="form-select text-uppercase" formControlName="tarja">
+        <select class="form-select text-uppercase" formControlName="tarja"
+          [class.is-invalid]="form.get('tarja')?.invalid && (form.get('tarja')?.touched || form.get('tarja')?.dirty)">
           <option value="ISENTO">Isento</option>
           <option value="TARJA VERMELHA">TARJA VERMELHA</option>
           <option value="TARJA PRETA">TARJA PRETA</option>
@@ -96,7 +104,8 @@
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <select class="form-select text-uppercase" formControlName="controlado">
+        <select class="form-select text-uppercase" formControlName="controlado"
+          [class.is-invalid]="form.get('controlado')?.invalid && (form.get('controlado')?.touched || form.get('controlado')?.dirty)">
           <option value="SIM">SIM</option>
           <option value="NÃO">NÃO</option>
         </select>
@@ -105,7 +114,8 @@
     </div>
     <div class="col-lg-4">
       <div class="form-floating mb-3">
-        <select class="form-select text-uppercase" formControlName="status">
+        <select class="form-select text-uppercase" formControlName="status"
+          [class.is-invalid]="form.get('status')?.invalid && (form.get('status')?.touched || form.get('status')?.dirty)">
           <option value="ATIVO">ATIVO</option>
           <option value="INATIVO">INATIVO</option>
         </select>
@@ -117,11 +127,10 @@
       <div class="form-floating mb-3 border rounded">
         <label for="descricaoDeFuncao">Observações</label>
         <textarea class="form-control border-0 text-uppercase" id="observacoes" formControlName="observacoes"
-        placeholder="Observações" style="height: 150px; resize: none; padding-top: 45px;"></textarea>
+          placeholder="Observações" style="height: 150px; resize: none; padding-top: 45px;"></textarea>
       </div>
     </div>
   </div>
-
 
   <div class="d-md-none d-flex justify-content-center">
     <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="form.invalid">

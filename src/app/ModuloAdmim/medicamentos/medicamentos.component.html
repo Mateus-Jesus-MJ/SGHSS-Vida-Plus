@@ -1,2 +1,121 @@
-<p>medicamentos works!</p>
 <router-outlet></router-outlet>
+<div *ngIf="!rotaFilhaAtiva">
+  <div class="d-flex justify-content-between">
+    <h3>itemicamentos</h3>
+    <div class="d-flex justify-content-between">
+      <a *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" routerLink="/admin/medicamentos/incluir">
+        <span class="icon">
+          <i class="fa fa-plus"></i>
+        </span>
+        <span class="text px-4">
+          Incluir
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="mt-3 d-flex justify-content-end">
+    <input type="text" class="form-control mb-3 float-end" placeholder="Buscar" [(ngModel)]="textoFiltro"
+      style="max-width: 400px;" (ngModelChange)="filtrarLista()" />
+  </div>
+  <div class="mt-3 d-none d-none d-md-flex">
+    <table class="table border rounded table-striped align-middle">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Imagem</th>
+          <th>EAN</th>
+          <th>Nome Comercial</th>
+          <th>Nome Genérico</th>
+          <th>Forma</th>
+          <th>Dosagem</th>
+          <th>Via</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr *ngFor="let item of dadosPaginados" class="align-items-center" [ngClass]="{'bg-secondary': item.status === 'INATIVO'}">
+          <td>
+            <div class="dropdown">
+              <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
+                <li>
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
+                    (click)="visualizar(item.id!)">
+                    <i class="fas fa-eye"></i>&nbsp;Visualizar
+                  </a>
+                </li>
+                <li *ngIf="userPodeEditar">
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="editar(item.id!)">
+                    <i class="fas fa-pen"></i>&nbsp;Editar
+                  </a>
+                </li>
+                <li *ngIf="userPodeExcluir">
+                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(item)">
+                    <i class="fas fa-trash"></i>&nbsp;Excluir
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </td>
+          <td>
+            <!-- <img *ngIf="colaborador.imagem" [src]="colaborador.imagem" alt="Imagem do Hospital"
+              style="height: 100px; aspect-ratio: 1/1;" /> -->
+          </td>
+          <td>{{ item.ean }}</td>
+          <td>{{ item.nomeComercial }}</td>
+          <td>{{ item.nomeGenerico }}</td>
+          <td>{{ item.formaFarmaceutica }}</td>
+          <td>{{ item.dosagem }}</td>
+          <td>{{ item.viaAdministracao }}</td>
+          <td>{{ item.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-3 d-md-none">
+    <div class="card p-3 mb-3" *ngFor="let item of dadosPaginados">
+      <div class="d-flex justify-content-between mb-1">
+        <div>
+          <!-- <img *ngIf="colaborador.imagem" [src]="colaborador.imagem" alt="Imagem do Hospital"
+            style="height: 100px; aspect-ratio: 1/1;" /> -->
+        </div>
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+          </button>
+          <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
+            <li>
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="visualizar(item.id!)">
+                <i class="fas fa-eye"></i>&nbsp;Visualizar
+              </a>
+            </li>
+            <li *ngIf="userPodeEditar">
+              <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar" (click)="editar(item.id!)">
+                <i class="fas fa-pen"></i>&nbsp;Editar
+              </a>
+            </li>
+            <li *ngIf="userPodeExcluir">
+              <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(item)">
+                <i class="fas fa-trash"></i>&nbsp;Excluir
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- <label><b>Nome:</b> {{colaborador.nome}}</label>
+      <label><b>Cargo:</b> {{colaborador.cargo?.cargo}}</label>
+      <label><b>Data de nascimento:</b> {{colaborador.dataNascimento}}</label>
+      <label><b>Contato: </b>
+        {{colaborador.contato.telefone1}}
+        {{colaborador.contato.telefone2}}
+        {{colaborador.contato.email}}
+      </label> -->
+    </div>
+  </div>
+  <app-paginacao class="float-end" [totalItems]="dados.length" [itemsPerPage]="itensPorPagina"
+    [currentPage]="paginaAtual" (pageChange)="onPaginaAlterada($event)"></app-paginacao>
+</div>
