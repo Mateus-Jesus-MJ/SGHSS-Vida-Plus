@@ -1,7 +1,7 @@
 <router-outlet></router-outlet>
 <div *ngIf="!rotaFilhaAtiva">
   <div class="d-flex justify-content-between">
-    <h3>Colaboradores</h3>
+    <h3>Procedimentos</h3>
     <div class="d-flex justify-content-between">
       <a *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" routerLink="/admin/procedimentos/incluir">
         <span class="icon">
@@ -20,14 +20,19 @@
   <div class="mt-3 d-none d-none d-md-flex">
     <table class="table border rounded table-striped align-middle">
       <thead>
-        <tr>
+        <tr class="text-center">
           <th></th>
           <th>Procedimento</th>
+          <th>Tempo Estimado de Duração</th>
           <th>Funcionamento</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
-        <tr *ngFor="let colaborador of dadosPaginados" class="align-items-center">
+        <tr *ngIf="dadosPaginados.length == 0">
+          <td colspan="4" class="text-center">Nenhum procedimento encontrado
+          </td>
+        </tr>
+        <tr *ngFor="let procedimento of dadosPaginados" class="align-items-center">
           <td>
             <div class="dropdown">
               <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
@@ -35,61 +40,101 @@
                 <i class="fas fa-ellipsis-v"></i>
               </button>
               <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
-                <li>
+                <!-- <li>
                   <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="visualizar(colaborador.id!)">
+                    (click)="visualizar(procedimento.id!)">
                     <i class="fas fa-eye"></i>&nbsp;Visualizar
                   </a>
-                </li>
+                </li> -->
                 <li *ngIf="userPodeEditar">
                   <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                    (click)="editar(colaborador.id!)">
+                    (click)="editar(procedimento.id!)">
                     <i class="fas fa-pen"></i>&nbsp;Editar
-                  </a>
-                </li>
-                <li *ngIf="userPodeExcluir">
-                  <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(colaborador)">
-                    <i class="fas fa-trash"></i>&nbsp;Excluir
                   </a>
                 </li>
               </ul>
             </div>
           </td>
-          <td colspan="2">
+          <td>
+            {{procedimento.nome}}
+          </td>
+          <td>
+            {{procedimento.tempoDuracao}} Minutos
+          </td>
+          <td>
+            <table>
+              <ng-container *ngIf="procedimento?.funcionamento">
+                <tr *ngFor="let funcionamento of procedimento.funcionamento">
+                  <ng-container *ngIf="funcionamento.horarioInicio">
+                    <td class="px-3">{{ funcionamento.diaSemana }}:</td>
+                    <td>
+                      <span>
+                        {{ funcionamento.horarioInicio }} às
+                        <span *ngIf="funcionamento.horarioInicioIntervalo">
+                          {{ funcionamento.horarioInicioIntervalo }} |
+                          {{ funcionamento.horarioTerminoIntervalo }} às
+                        </span>
+                        {{ funcionamento.horarioTermino }}
+                      </span>
+                    </td>
+                  </ng-container>
+                </tr>
+              </ng-container>
+            </table>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
   <div class="mt-3 d-md-none">
-    <div class="card p-3 mb-3" *ngFor="let colaborador of dadosPaginados">
+    <div class="card p-3 mb-3" *ngIf="dadosPaginados.length == 0">Nenhum procedimento encontrado</div>
+    <div class="card p-3 mb-3" *ngFor="let procedimento of dadosPaginados">
       <div class="d-flex justify-content-between mb-1">
+        <div>
+          <b>Procedimento: </b>{{procedimento.nome}}<br />
+          <b>Tempo Duração Esperado: </b>{{procedimento.tempoDuracao}} Minutos
+        </div>
         <div class="dropdown">
           <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
             aria-expanded="false">
             <i class="fas fa-ellipsis-v"></i>
           </button>
           <ul class="dropdown-menu border-dark" aria-labelledby="dropdownMenuButton">
-            <li>
+            <!-- <li>
               <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
                 (click)="visualizar(colaborador.id!)">
                 <i class="fas fa-eye"></i>&nbsp;Visualizar
               </a>
-            </li>
+            </li> -->
             <li *ngIf="userPodeEditar">
               <a class="dropdown-item mb-1" style="cursor: pointer;" title="Visualizar"
-                (click)="editar(colaborador.id!)">
+                (click)="editar(procedimento.id!)">
                 <i class="fas fa-pen"></i>&nbsp;Editar
-              </a>
-            </li>
-            <li *ngIf="userPodeExcluir">
-              <a class="dropdown-item mb-1" style="cursor: pointer;" (click)="excluir(colaborador)">
-                <i class="fas fa-trash"></i>&nbsp;Excluir
               </a>
             </li>
           </ul>
         </div>
       </div>
+      <b>Funcionamento:</b>
+      <table>
+        <ng-container *ngIf="procedimento?.funcionamento">
+          <tr *ngFor="let funcionamento of procedimento.funcionamento">
+            <ng-container *ngIf="funcionamento.horarioInicio">
+              <td>{{ funcionamento.diaSemana }}:</td>
+              <td>
+                <span>
+                  {{ funcionamento.horarioInicio }} às
+                  <span *ngIf="funcionamento.horarioInicioIntervalo">
+                    {{ funcionamento.horarioInicioIntervalo }} |
+                    {{ funcionamento.horarioTerminoIntervalo }} às
+                  </span>
+                  {{ funcionamento.horarioTermino }}
+                </span>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+      </table>
     </div>
   </div>
   <app-paginacao class="float-end" [totalItems]="todosDados.length" [itemsPerPage]="itensPorPagina"

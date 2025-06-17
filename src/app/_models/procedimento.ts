@@ -3,6 +3,10 @@ export interface Procedimento{
   nome: string;
   funcionamento: funcionamentoProcedimento[];
   tempoDuracao: number;
+  userCriacao?: string;
+  momentoCricao?: string;
+  userEdicao?: string
+  momentoEdicao?: string;
 }
 
 export interface funcionamentoProcedimento{

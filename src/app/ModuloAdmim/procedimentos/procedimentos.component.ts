@@ -9,6 +9,7 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../_services/auth.service';
+import { ProcedimentoService } from '../../_services/procedimento.service';
 
 declare var bootstrap: any;
 
@@ -36,23 +37,28 @@ export class ProcedimentosComponent implements OnInit {
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private loaderSercice: NgxUiLoaderService,
-    private authService: AuthService
+    private authService: AuthService,
+    private procedimentoService: ProcedimentoService
   ) { }
 
   ngOnInit(): void {
-    // this.loaderSercice.start();
+    this.loaderSercice.start();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.verificarRotaFilhaAtiva();
+        if (!this.rotaFilhaAtiva) {
+          this.buscarProcedimentos();
+          this.userPermissoes();
+        }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
+      this.buscarProcedimentos();
+      this.userPermissoes();
 
     }
-
-    this.userPermissoes();
   }
 
   private verificarRotaFilhaAtiva(): void {
@@ -92,6 +98,8 @@ export class ProcedimentosComponent implements OnInit {
     const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
     const fim = inicio + this.itensPorPagina;
     this.dadosPaginados = this.dadosFiltrados.slice(inicio, fim);
+
+    this.loaderSercice.stop();
   }
 
   onPaginaAlterada(novaPagina: number) {
@@ -139,12 +147,22 @@ export class ProcedimentosComponent implements OnInit {
     return `${dia}/${mes}/${ano}`;
   }
 
+  buscarProcedimentos() {
+    this.procedimentoService.buscarProcedimentos().subscribe({
+      next: (procedimentos: Procedimento[]) => {
+        this.todosDados = procedimentos;
+        this.dadosFiltrados = procedimentos;
+        this.paginarDados();
+      }
+    })
+  }
+
   visualizar(id: string) {
 
   }
 
   editar(id: string) {
-
+    this.router.navigate(['admin/procedimentos/editar', id]);
   }
 
   excluir(procedimento: Procedimento) {

@@ -3,23 +3,28 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { ProcedimentoService } from '../../../_services/procedimento.service';
+import { Procedimento } from '../../../_models/procedimento';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-inlcuir-procedimentos',
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './inlcuir-procedimentos.component.html',
   styleUrl: './inlcuir-procedimentos.component.scss'
 })
-export class InlcuirProcedimentosComponent{
+export class InlcuirProcedimentosComponent {
   form!: FormGroup
 
   constructor(
     private loader: NgxUiLoaderService,
-    private toastr : ToastrService,
-    // private
+    private toastr: ToastrService,
+    private procedimentoService: ProcedimentoService,
   ) {
     this.form = new FormGroup({
       nome: new FormControl('', [Validators.required]),
+      tempoDuracao: new FormControl('', [Validators.required]),
       funcionamento: new FormArray(this.criarDiasDaSemana())
     });
   }
@@ -53,13 +58,50 @@ export class InlcuirProcedimentosComponent{
 
 
   submit() {
-    if(!this.form.valid){
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
       return
     }
 
     this.loader.start();
-    this.loader.stop();
+
+    const formData = this.form.value;
+
+    const procedimento: Procedimento = {
+      nome: formData.nome.toUpperCase(),
+      tempoDuracao: formData.tempoDuracao,
+      funcionamento: formData.funcionamento
+        .filter((dia: any) => {
+          if (!dia.inicio || !dia.termino || dia.inicio >= dia.termino) return false;
+
+          if (dia.inicioIntervalo && dia.terminoIntervalo) {
+            return dia.inicioIntervalo <= dia.terminoIntervalo;
+          }
+
+          return true;
+        })
+        .map((dia: any) => ({
+          diaSemana: dia.diaDaSemana,
+          numeroDiaSemana: dia.numeroDiaDaSemana,
+          horarioInicio: dia.inicio,
+          horarioInicioIntervalo: dia.inicioIntervalo,
+          horarioTerminoIntervalo: dia.terminoIntervalo,
+          horarioTermino: dia.termino,
+          numeroAtendimento: ''
+        }))
+    };
+
+    this.procedimentoService.novoProcedimento(procedimento).subscribe({
+      next: (res: any) => {
+        this.form.reset();
+        this.toastr.success(res);
+        this.loader.stop();
+      },
+      error: (err: any) => {
+        this.toastr.error(err.message);
+        this.loader.stop();
+      }
+    });
   }
 
 }
