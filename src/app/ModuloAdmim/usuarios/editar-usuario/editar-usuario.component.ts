@@ -203,8 +203,6 @@ export class EditarUsuarioComponent implements OnInit {
     let permissoesInserir: Autorizacao[] = [];
 
 
-    console.log(permissoes);
-
     for (const grupo in permissoes) {
       if (permissoes.hasOwnProperty(grupo)) {
         const grupoPermissoes = permissoes[grupo];

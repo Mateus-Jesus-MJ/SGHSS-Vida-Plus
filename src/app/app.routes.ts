@@ -34,6 +34,9 @@ import { TeleConsultasComponent } from './ModuloSaude/tele-consultas/tele-consul
 import { AtendimentoComponent } from './ModuloSaude/tele-consultas/atendimento/atendimento.component';
 import { ProcedimentosComponent } from './ModuloAdmim/procedimentos/procedimentos.component';
 import { InlcuirProcedimentosComponent } from './ModuloAdmim/procedimentos/inlcuir-procedimentos/inlcuir-procedimentos.component';
+import { EditarProcedimentoComponent } from './ModuloAdmim/procedimentos/editar-procedimento/editar-procedimento.component';
+import { MedicamentosComponent } from './ModuloAdmim/medicamentos/medicamentos.component';
+import { IncluirMedicamentoComponent } from './ModuloAdmim/medicamentos/incluir-medicamento/incluir-medicamento.component';
 
 
 export const routes: Routes = [
@@ -146,7 +149,7 @@ export const routes: Routes = [
             component: InlcuirProcedimentosComponent,
             data: {
               tipoPermitido: 'pa',
-              funcionalidade: 'alas',
+              funcionalidade: 'procedimentos',
               acesso: 'incluir'
             }
           },
@@ -161,13 +164,34 @@ export const routes: Routes = [
           },
           {
             path: 'editar/:id',
-            component: EditarAlaComponent,
+            component: EditarProcedimentoComponent,
             data: {
               tipoPermitido: 'pa',
               funcionalidade: 'alas',
               acesso: 'editar'
             }
           },
+        ]
+      },
+      {
+        path: 'medicamentos',
+        component: MedicamentosComponent,
+        canActivateChild: [AuthGuardService],
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'medicamentos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirMedicamentoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'medicamentos',
+              acesso: 'incluir'
+            }
+          }
         ]
       },
       {

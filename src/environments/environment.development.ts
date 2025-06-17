@@ -37,6 +37,11 @@ export const environment = {
             label: 'Procedimentos',
             rota: 'procedimentos',
             permissoes: ['visualizar', 'incluir', 'editar']
+          },
+          {
+            label: 'Medicamentos',
+            rota: 'medicamentos',
+            permissoes: ['visualizar', 'incluir', 'editar']
           }
         ]
       }
