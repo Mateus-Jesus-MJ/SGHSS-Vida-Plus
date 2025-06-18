@@ -17,5 +17,5 @@ export interface Medicamento {
   momentoCriacao?: string;
   usuarioEdicao? : string;
   momentoEdicao?: string;
-
+  imagem? :string;
 }

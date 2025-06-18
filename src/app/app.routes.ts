@@ -37,6 +37,8 @@ import { InlcuirProcedimentosComponent } from './ModuloAdmim/procedimentos/inlcu
 import { EditarProcedimentoComponent } from './ModuloAdmim/procedimentos/editar-procedimento/editar-procedimento.component';
 import { MedicamentosComponent } from './ModuloAdmim/medicamentos/medicamentos.component';
 import { IncluirMedicamentoComponent } from './ModuloAdmim/medicamentos/incluir-medicamento/incluir-medicamento.component';
+import { EditarMedicamentoComponent } from './ModuloAdmim/medicamentos/editar-medicamento/editar-medicamento.component';
+import { EstoqueComponent } from './ModuloAdmim/estoque/estoque.component';
 
 
 export const routes: Routes = [
@@ -190,6 +192,45 @@ export const routes: Routes = [
               tipoPermitido: 'pa',
               funcionalidade: 'medicamentos',
               acesso: 'incluir'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarMedicamentoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'medicamentos',
+              acesso: 'editar'
+            }
+          }
+        ]
+      },
+      {
+        path: 'estoque',
+        component: EstoqueComponent,
+        canActivateChild: [AuthGuardService],
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'estoque',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirMedicamentoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'estoque',
+              acesso: 'incluir'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarMedicamentoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'estoque',
+              acesso: 'editar'
             }
           }
         ]

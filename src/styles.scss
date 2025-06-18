@@ -13489,3 +13489,22 @@ input[list] {
   font-weight: bold;
   margin-left: 5px;
 }
+
+.btn-circle {
+  background-color: transparent; /* Bootstrap primary */
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s ease;
+  border: 2px solid #0d6efd !important; /* borda branca */
+  box-sizing: border-box; /* garante que a borda não aumente o tamanho */
+}
+
+.btn-circle:hover {
+  background-color: #0b5ed7; /* Bootstrap primary darker */
+}
+

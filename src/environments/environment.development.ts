@@ -42,6 +42,11 @@ export const environment = {
             label: 'Medicamentos',
             rota: 'medicamentos',
             permissoes: ['visualizar', 'incluir', 'editar']
+          },
+          {
+            label: 'Estoque',
+            rota: 'estoque',
+            permissoes: ['visualizar', 'incluir']
           }
         ]
       }
@@ -151,5 +156,8 @@ export const environment = {
     { nome: 'Outubro', valor: 9 },
     { nome: 'Novembro', valor: 10 },
     { nome: 'Dezembro', valor: 11 },
-  ]
+  ],
+
+  formasFarmaceuticas: ['COMPRIMIDO', 'SOLUÇÃO ORAL', 'INJETÁVEL', 'POMADA'],
+  viasAdministracao: ['ORAL', 'INTRAVENOSA', 'TÓPICA', 'SUBLINGUAL'],
 };

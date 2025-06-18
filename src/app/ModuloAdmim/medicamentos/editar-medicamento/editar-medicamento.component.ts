@@ -1,34 +1,36 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Medicamento } from '../../../_models/medicamento';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { CommonModule } from '@angular/common';
-import { Medicamento } from '../../../_models/medicamento';
 import { MedicamentosService } from '../../../_services/medicamentos.service';
+import { CommonModule } from '@angular/common';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { environment } from '../../../../environments/environment.development';
 
 @Component({
-  selector: 'app-incluir-medicamento',
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, ImageCropperComponent],
-  templateUrl: './incluir-medicamento.component.html',
-  styleUrl: './incluir-medicamento.component.scss'
+  selector: 'app-editar-medicamento',
+  imports: [RouterModule, FormsModule, CommonModule, ReactiveFormsModule, ImageCropperComponent],
+  templateUrl: './editar-medicamento.component.html',
+  styleUrl: './editar-medicamento.component.scss'
 })
-export class IncluirMedicamentoComponent {
+export class EditarMedicamentoComponent implements OnInit {
   form!: FormGroup;
-  formasFarmaceuticas = environment.formasFarmaceuticas;
-  viasAdministracao = environment.viasAdministracao
+  medicamento!: Medicamento | null;
   imageChangedEvent: any = '';
   croppedImage: any = '';
   originalImage: any = '';
   imagemCortada: any = '';
+  formasFarmaceuticas = environment.formasFarmaceuticas;
+  viasAdministracao = environment.viasAdministracao
+
 
   constructor(
     private routeAcitive: ActivatedRoute,
     private router: Router,
     private toastr: ToastrService,
-    private ngxUiLoaderService: NgxUiLoaderService,
+    private loader: NgxUiLoaderService,
     private medicamentosService: MedicamentosService
   ) {
     this.form = new FormGroup({
@@ -66,6 +68,58 @@ export class IncluirMedicamentoComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.loader.start();
+    this.routeAcitive.paramMap.subscribe(params => {
+      const id = params.get('id')!;
+
+      if (id == null || id == "") {
+        this.toastr.error("Medicamento não encontrado");
+        this.router.navigateByUrl('admin/medicamento');
+        this.loader.stop();
+        return
+      }
+      this.buscarMedicamento(id);
+    })
+  }
+
+  buscarMedicamento(id: string) {
+    this.medicamentosService.buscarPorId(id).subscribe(
+      (medicamento) => {
+        if (medicamento) {
+          this.medicamento = medicamento;
+          this.populateForm(medicamento);
+        } else {
+          this.toastr.error("Medicamento não encontrado. Verifique o id informado e tente novamente\n se o problema persistir procure o administrador do sistema", "", { "progressBar": true });
+          this.loader.stop();
+        }
+      }
+    )
+  }
+
+  populateForm(medicamento: Medicamento) {
+    this.form.patchValue({
+      ean: medicamento.ean,
+      nomeComercial: medicamento.nomeComercial,
+      nomeGenerico: medicamento.nomeGenerico,
+      formaFarmaceutica: medicamento.formaFarmaceutica,
+      dosagem: medicamento.dosagem,
+      viaAdministracao: medicamento.viaAdministracao,
+      apresentacao: medicamento.apresentacao,
+      fabricante: medicamento.fabricante,
+      registroAnvisa: medicamento.registroAnvisa,
+      tarja: medicamento.tarja,
+      controlado: medicamento.controlado,
+      status: medicamento.status,
+      observacoes: medicamento.observacoes
+    });
+
+    this.imagemCortada = medicamento.imagem;
+    this.croppedImage = medicamento.imagem;
+
+    this.loader.stop();
+  }
+
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
     const reader = new FileReader();
@@ -87,30 +141,30 @@ export class IncluirMedicamentoComponent {
   }
 
   applyCrop(): void {
-    this.ngxUiLoaderService.start();
+    this.loader.start();
     if (this.croppedImage) {
       this.imagemCortada = this.croppedImage
     }
-    this.ngxUiLoaderService.stop();
+    this.loader.stop();
   }
 
   resetImage(): void {
-    this.croppedImage = '';  // Limpa a imagem cortada
-    this.imageChangedEvent = '';  // Limpa o evento de imagem
+    this.croppedImage = '';
+    this.imageChangedEvent = '';
   }
 
 
   submit() {
-
-    if (!this.form.valid) {
+   if (!this.form.valid) {
       this.form.markAllAsTouched();
       return
     }
 
-    this.ngxUiLoaderService.start();
+    this.loader.start();
     const formData = this.form.value;
 
     const medicamento: Medicamento = {
+      id: this.medicamento?.id,
       ean: formData.ean.toUpperCase().trim(),
       nomeComercial: formData.nomeComercial.toUpperCase().trim(),
       nomeGenerico: formData.nomeGenerico.toUpperCase().trim(),
@@ -124,20 +178,19 @@ export class IncluirMedicamentoComponent {
       controlado: formData.controlado.toUpperCase().trim(),
       status: formData.status.toUpperCase().trim(),
       observacoes: formData.observacoes.toUpperCase().trim(),
-      imagem: this.imagemCortada
+      imagem: this.imagemCortada || null,
     }
 
 
-    this.medicamentosService.incluir(medicamento).subscribe({
+    this.medicamentosService.editar(medicamento).subscribe({
       next: (res: any) => {
         this.form.reset();
         this.toastr.success(res);
-        this.imagemCortada = "";
-        this.ngxUiLoaderService.stop();
+        this.populateForm(medicamento);
       },
       error: (err: any) => {
-        this.toastr.error(err.message);
-        this.ngxUiLoaderService.stop();
+        this.toastr.error(err);
+        this.loader.stop();
       }
     });
   }

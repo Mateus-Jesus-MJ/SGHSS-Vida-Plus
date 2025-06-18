@@ -30,8 +30,8 @@ export class MedicamentosService {
     )
   }
 
-  bucarPorId(id: string): Observable<Medicamento | null> {
-    const q = doc(this.firestore, `${this.tabela}/${id}}`);
+  buscarPorId(id: string): Observable<Medicamento | null> {
+    const q = doc(this.firestore, `${this.tabela}/${id}`);
     return from(getDoc(q)).pipe(
       map(snapshot => {
         if (snapshot.exists()) {
@@ -79,40 +79,59 @@ export class MedicamentosService {
 
   editar(medicamento: Medicamento): Observable<any> {
     const q = query(this.registrosRef, where('EAN', '==', medicamento.ean));
+
     return new Observable(observer => {
-      Promise.all([
-        getDocs(q)
-      ]).then(([snapshot]) => {
-        const outroComMesmoCriterio = snapshot.docs.find(doc => doc.id !== medicamento.id);
+      Promise.all([getDocs(q)])
+        .then(([snapshot]) => {
+          const outroComMesmoCriterio = snapshot.docs.find(doc => doc.id !== medicamento.id);
 
-        if (outroComMesmoCriterio) {
-          observer.error("Erro ao cadastrar medicamento. Motivo: Esse medicamento já foi cadastrado!");
-          return;
-        }
+          if (outroComMesmoCriterio) {
+            observer.error("Erro ao cadastrar medicamento. Motivo: Esse medicamento já foi cadastrado!");
+            return;
+          }
 
-        const user = this.authService.getUsuario();
-        medicamento.usuarioEdicao = user?.usuario;
-        const now = new Date();
-        const pad = (n: number) => n.toString().padStart(2, '0');
-        const momentoCriacao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-        medicamento.momentoEdicao = momentoCriacao;
+          this.buscarPorId(medicamento.id!).subscribe({
+            next: (medicamentoOriginal) => {
 
-        const medicamentoDocRef = doc(this.firestore, this.tabela, medicamento.id!);
-        const { id, ...dadosParaAtualizar } = medicamento;
-        from(updateDoc(medicamentoDocRef, structuredClone(dadosParaAtualizar)))
-          .subscribe({
-            next: () => {
-              observer.next("Medicamento editado com sucesso!");
-              observer.complete();
+              if (!medicamentoOriginal) {
+                observer.error("Erro ao editar medicamento. Motivo: Medicamento não encontrado.");
+                return;
+              }
+
+              const user = this.authService.getUsuario();
+              medicamento.usuarioEdicao = user?.usuario;
+
+              const now = new Date();
+              const pad = (n: number) => n.toString().padStart(2, '0');
+              medicamento.momentoEdicao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+              medicamento.usuarioCriacao = medicamentoOriginal.usuarioCriacao || user?.usuario;
+              medicamento.momentoCriacao = medicamentoOriginal.momentoCriacao || medicamento.momentoEdicao;
+
+
+              // Atualiza o documento no Firestore
+              const medicamentoDocRef = doc(this.firestore, this.tabela, medicamento.id!);
+              const { id, ...dadosParaAtualizar } = medicamento;
+
+              from(updateDoc(medicamentoDocRef, structuredClone(dadosParaAtualizar))).subscribe({
+                next: () => {
+                  observer.next("Medicamento editado com sucesso!");
+                  observer.complete();
+                },
+                error: (error) => {
+                  observer.error(`Erro ao editar medicamento. Motivo: ${error}`);
+                  observer.complete();
+                }
+              });
             },
             error: (error) => {
-              observer.error(`Erro ao editar medicamento. Motivo: ${error}`);
-              observer.complete();
+              observer.error(`Erro ao buscar medicamento atual. Motivo: ${error}`);
             }
-          })
-      }).catch(error => {
-        observer.error(`Erro ao editar medicamento. Motivo: ${error}`);
-      });
+          });
+        })
+        .catch(error => {
+          observer.error(`Erro ao editar medicamento. Motivo: ${error}`);
+        });
     });
   }
 }

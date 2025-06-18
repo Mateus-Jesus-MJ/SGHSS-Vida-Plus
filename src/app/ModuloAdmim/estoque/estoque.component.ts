@@ -1,40 +1,40 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterModule } from '@angular/router';
-import { Medicamento } from '../../_models/medicamento';
+import { Saldo } from '../../_models/saldo';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { AuthService } from '../../_services/auth.service';
 import { MedicamentosService } from '../../_services/medicamentos.service';
 import { filter } from 'rxjs';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { SaldoService } from '../../_services/saldo.service';
 import { PaginacaoComponent } from "../_components/paginacao/paginacao.component";
 
 @Component({
-  selector: 'app-medicamentos',
-  imports: [RouterModule, CommonModule, ReactiveFormsModule, FormsModule, PaginacaoComponent],
-  templateUrl: './medicamentos.component.html',
-  styleUrl: './medicamentos.component.scss'
+  selector: 'app-estoque',
+  imports: [RouterModule, CommonModule, PaginacaoComponent],
+  templateUrl: './estoque.component.html',
+  styleUrl: './estoque.component.scss'
 })
-export class MedicamentosComponent implements OnInit {
+export class EstoqueComponent implements OnInit {
   rotaFilhaAtiva = false;
-  dados: Medicamento[] = [];
+  dados: Saldo[] = [];
   userPodeIncluir = false;
   userPodeEditar = false;
   userPodeExcluir = false;
   dadosFiltrados: any[] = [];
-  dadosPaginados: Medicamento[] = [];
+  dadosPaginados: Saldo[] = [];
   textoFiltro: string = '';
   paginaAtual = 1;
-  itensPorPagina = 25;
-  itemDetalhesAberto: string[] = [];
+  itensPorPagina = 10;
+
 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private loaderSercice: NgxUiLoaderService,
     private authService: AuthService,
-    private medicamentosService: MedicamentosService
+    private saldoService: SaldoService
   ) { }
 
   ngOnInit(): void {
@@ -43,14 +43,14 @@ export class MedicamentosComponent implements OnInit {
       .subscribe(() => {
         this.verificarRotaFilhaAtiva();
         if (!this.rotaFilhaAtiva) {
-          this.buscarmedicamentos();
+          this.buscarSaldo();
           this.userPermissoes();
         }
       });
     this.verificarRotaFilhaAtiva();
 
     if (!this.rotaFilhaAtiva) {
-      this.buscarmedicamentos();
+      this.buscarSaldo();
       this.userPermissoes();
     }
   }
@@ -81,16 +81,20 @@ export class MedicamentosComponent implements OnInit {
     );
   }
 
-  buscarmedicamentos() {
+  buscarSaldo() {
+    if (this.rotaFilhaAtiva) return
+
     this.loaderSercice.start();
-    this.medicamentosService.buscarTodos().subscribe({
-      next: (dados: Medicamento[]) => {
-        this.dados = dados;
-        this.dadosFiltrados = dados;
+
+    this.saldoService.buscarSaldosComInfoCompleta().subscribe({
+      next: (saldo: Saldo[]) => {
+        this.dados = saldo;
+        this.dadosFiltrados = saldo;
         this.paginarDados();
+        this.loaderSercice.stop();
       },
       error: () => {
-        this.toastr.error("Erro inesperado ao buscar medicamentos! Tente novamente mais tarde", "", { "progressBar": true })
+        this.toastr.error("Erro inesperado ao buscar saldo! Tente novamente mais tarde", "", { "progressBar": true })
         this.loaderSercice.stop();
       }
     })
@@ -99,9 +103,15 @@ export class MedicamentosComponent implements OnInit {
   paginarDados() {
     const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
     const fim = inicio + this.itensPorPagina;
-    this.dadosPaginados = this.dadosFiltrados.slice(inicio, fim);
 
-    this.loaderSercice.stop();
+
+    this.dadosFiltrados.sort((a, b) => {
+      const eanA = a.medicamento?.ean ?? '';
+      const eanB = b.medicamento?.ean ?? '';
+      return eanA.localeCompare(eanB); // Se quiser ordem numérica real: return +eanA - +eanB;
+    });
+
+    this.dadosPaginados = this.dadosFiltrados.slice(inicio, fim);
   }
 
   onPaginaAlterada(novaPagina: number) {
@@ -149,24 +159,36 @@ export class MedicamentosComponent implements OnInit {
     return `${dia}/${mes}/${ano}`;
   }
 
-  visualizar(id: string) {
+  incluirSaldo() {
+    let medicamentos = [
+      'BZEfP4SecYsYQ8WVWBSV',
+      'LT3XMKlAY5SlkYMy6XJ6',
+      'N0vTTVLNWWkT4diAfH3c',
+      'w18Gdf2fllcBX5zpk1vQ'
+    ]
 
-  }
+    let hospitais = [
+      '1DPxKD08pVj7zPyFNY7r',
+      '41jwAdQsLNQ6vPCR8nBe',
+      '8bSz5V9xeWXfjhsvHMCt',
+      'fr6tOIVo2mtmiEEdqL1E',
+    ]
 
-  editar(id: string) {
-    this.router.navigate(['/admin/medicamentos/editar', id]);
-  }
+    const quantidade = 10;
 
-  excluir(medicamento: Medicamento) {
-
-  }
-
-  toggleDetalhes(id: string) {
-    if(this.itemDetalhesAberto.includes(id)){
-      this.itemDetalhesAberto = this.itemDetalhesAberto.filter(i => i != id);
-    }else{
-      this.itemDetalhesAberto.push(id)
+    for (const hospitalId of hospitais) {
+      for (const medicamentoId of medicamentos) {
+        this.saldoService.receberMedicamento(hospitalId, medicamentoId, quantidade)
+          .subscribe({
+            next: (msg) => console.log(`Saldo atualizado: ${msg} - Hospital ${hospitalId}, Medicamento ${medicamentoId}`),
+            error: (err) => this.toastr.error(err, "", { progressBar: true })
+          });
+      }
     }
+
+    this.buscarSaldo();
   }
+
 
 }
+

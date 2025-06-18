@@ -1,0 +1,103 @@
+<router-outlet></router-outlet>
+<div *ngIf="!rotaFilhaAtiva">
+  <div class="d-flex justify-content-between">
+    <h3>Estoque</h3>
+    <div class="d-flex justify-content-between mx-2">
+      <a *ngIf="userPodeIncluir" class="btn btn-info btn-icon-split" routerLink="/admin/medicamentos/incluir">
+        <span class="icon">
+          <i class="fas fa-truck-loading"></i>
+        </span>
+        <span class="text px-4">
+          Receber Material
+        </span>
+      </a>
+      <div class="d-flex justify-content-between mx-2">
+        <a *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" routerLink="/admin/medicamentos/incluir">
+          <span class="icon">
+            <i class="fas fa-dolly"></i>
+          </span>
+          <span class="text px-4">
+            Baixar Material
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="card mt-3">
+    <div class="card-header d-flex justify-content-between">
+      <h5>Filtros</h5>
+      <div class="d-flex justify-content-between mx-2">
+        <button *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" (click)="incluirSaldo()">
+          <span class="icon">
+            <i class="fas fa-filter"></i>
+          </span>
+          <span class="text px-4">
+            Filtrar
+          </span>
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row mt-3">
+        <div class="col-xxl-2 col-lg-3">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" placeholder="" />
+            <label>EAN</label>
+          </div>
+        </div>
+        <div class="col-xxl-3 col-lg-4">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" placeholder="" />
+            <label>Nome Comercial</label>
+          </div>
+        </div>
+        <div class="col-xxl-3 col-lg-4">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" placeholder="" />
+            <label>Nome Generico</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-none d-none d-md-flex">
+    <div class="table-responsive">
+      <table class="table border rounded align-middle text-nowrap">
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Nome Comercial</th>
+            <th>Nome Genérico</th>
+            <th>Hospital</th>
+            <th>Saldo</th>
+            <th>Cidade</th>
+            <th>Fabricante</th>
+            <th>Forma</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dadosPaginados">
+            <td></td>
+            <td></td>
+            <td>
+                <img *ngIf="item.medicamento?.imagem" [src]="item.medicamento?.imagem" alt="Imagem do Medicamento"
+                  style="height: 100px; aspect-ratio: 1/1; object-fit: cover;" />
+                <div *ngIf="!item.medicamento?.imagem" class="bg-secondary" style="height: 100px; aspect-ratio: 1/1;"></div>
+            </td>
+            <td>{{item.medicamento?.nomeComercial}}</td>
+            <td>{{item.medicamento?.nomeGenerico}}</td>
+            <td>{{item.hospital?.razaoSocial}} | {{item.hospital?.nomeFantasia}}</td>
+            <td>{{item.quantidade}}</td>
+            <td>{{item.hospital?.endereco?.localidade}}</td>
+            <td>{{item.medicamento?.fabricante}}</td>
+            <td>{{item.medicamento?.formaFarmaceutica}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <app-paginacao class="float-end" [totalItems]="dadosFiltrados.length" [itemsPerPage]="itensPorPagina"
+    [currentPage]="paginaAtual" (pageChange)="onPaginaAlterada($event)"></app-paginacao>
+</div>
