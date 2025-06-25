@@ -3,31 +3,21 @@
   <div class="d-flex justify-content-between">
     <h3>Estoque</h3>
     <div class="d-flex justify-content-between mx-2">
-      <a *ngIf="userPodeIncluir" class="btn btn-info btn-icon-split" routerLink="/admin/medicamentos/incluir">
+      <a *ngIf="userPodeIncluir" class="btn btn-info btn-icon-split" routerLink="/admin/estoque/recebimento">
         <span class="icon">
           <i class="fas fa-truck-loading"></i>
         </span>
-        <span class="text px-4">
+        <span class="text px-1">
           Receber Material
         </span>
       </a>
-      <div class="d-flex justify-content-between mx-2">
-        <a *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" routerLink="/admin/medicamentos/incluir">
-          <span class="icon">
-            <i class="fas fa-dolly"></i>
-          </span>
-          <span class="text px-4">
-            Baixar Material
-          </span>
-        </a>
-      </div>
     </div>
   </div>
-  <div class="card mt-3">
+  <!-- <div class="card mt-3">
     <div class="card-header d-flex justify-content-between">
       <h5>Filtros</h5>
       <div class="d-flex justify-content-between mx-2">
-        <button *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" (click)="incluirSaldo()">
+        <button *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" (click)="filtrarLista()">
           <span class="icon">
             <i class="fas fa-filter"></i>
           </span>
@@ -59,7 +49,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   <div class="d-none d-none d-md-flex">
     <div class="table-responsive">
       <table class="table border rounded align-middle text-nowrap">

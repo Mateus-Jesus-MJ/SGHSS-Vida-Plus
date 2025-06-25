@@ -39,6 +39,7 @@ import { MedicamentosComponent } from './ModuloAdmim/medicamentos/medicamentos.c
 import { IncluirMedicamentoComponent } from './ModuloAdmim/medicamentos/incluir-medicamento/incluir-medicamento.component';
 import { EditarMedicamentoComponent } from './ModuloAdmim/medicamentos/editar-medicamento/editar-medicamento.component';
 import { EstoqueComponent } from './ModuloAdmim/estoque/estoque.component';
+import { RecebimentoEstoqueComponent } from './ModuloAdmim/estoque/recebimento-estoque/recebimento-estoque.component';
 
 
 export const routes: Routes = [
@@ -225,12 +226,12 @@ export const routes: Routes = [
             }
           },
           {
-            path: 'editar/:id',
-            component: EditarMedicamentoComponent,
+            path: 'recebimento',
+            component: RecebimentoEstoqueComponent,
             data: {
               tipoPermitido: 'pa',
               funcionalidade: 'estoque',
-              acesso: 'editar'
+              acesso: 'receber'
             }
           }
         ]

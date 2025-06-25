@@ -1,0 +1,252 @@
+<div class="d-flex justify-content-between mb-3">
+  <h3>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/medicamentos"><i class="fa fa-arrow-left"></i></a>
+    Recebimento de Medicamento
+  </h3>
+  <div class="d-flex justify-content-between d-none d-md-flex">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/medicamentos">
+      <span class="icon">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span class="text px-4">Voltar</span>
+    </a>
+    <button class="btn btn-primary btn-icon-split" (click)="submit()">
+      <span class="icon"><i class="fa fa-check"></i></span>
+      <span class="text px-4">Gravar</span>
+    </button>
+  </div>
+</div>
+
+<hr />
+
+<form class="m-3" [formGroup]="form">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="form-floating input-group mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="hospital" readonly
+        [class.is-invalid]="form.get('hospital')?.invalid && form.get('hospital')?.touched" />
+        <label>Hospital</label>
+        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalHospitais"
+          role="button"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-floating input-group mb-3">
+        <input type="text" class="form-control" placeholder="" formControlName="medicamento" readonly
+          [class.is-invalid]="form.get('medicamento')?.invalid && form.get('medicamento')?.touched" />
+        <label>Medicamento</label>
+        <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalMedicamentos"
+          role="button"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+
+    <div class="col-lg-3">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" formControlName="lote" placeholder="Lote">
+        <label for="lote" class="label-required">Lote</label>
+      </div>
+    </div>
+
+    <div class="col-lg-3">
+      <div class="form-floating mb-3">
+        <input type="number" class="form-control" formControlName="quantidade" placeholder="Quantidade" min="1">
+        <label for="quantidade" class="label-required">Quantidade</label>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <input type="date" class="form-control" formControlName="dataValidade">
+        <label for="dataValidade" class="label-required">Data de Validade</label>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="form-floating mb-3">
+        <input type="date" class="form-control" formControlName="dataRecebimento">
+        <label for="dataRecebimento" class="label-required">Data de Recebimento</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" formControlName="notaFiscal" placeholder="Nota Fiscal">
+        <label for="notaFiscal">Nota Fiscal (NFe)</label>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" formControlName="cnpj" placeholder="CNPJ" mask="00.000.000/0000-00">
+        <label for="notaFiscal">CNPJ</label>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" formControlName="fornecedor" placeholder="Fornecedor">
+        <label for="fornecedor" class="label-required">Fornecedor</label>
+      </div>
+    </div>
+
+
+    <div class="col-lg-12">
+      <div class="form-floating mb-3 border rounded">
+        <label for="observacoes">Observações</label>
+        <textarea class="form-control border-0 text-uppercase" id="observacoes" formControlName="observacoes"
+          placeholder="Observações" style="height: 150px; resize: none; padding-top: 45px;"></textarea>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="modal fade" id="modalMedicamentos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Medicamento</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="mt-3 d-flex justify-content-end">
+          <input type="text" class="form-control mb-3 float-end" placeholder="Buscar"
+            [(ngModel)]="textoFiltroMedicamentos" style="max-width: 400px;" (ngModelChange)="filtrarLista()" />
+        </div>
+        <div class="mt-3 d-none d-none d-md-flex">
+          <div class="table-responsive">
+            <table class="table border rounded align-middle text-nowrap">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Imagem</th>
+                  <th>Código / EAN</th>
+                  <th>Nome Comercial</th>
+                  <th>Nome Genérico</th>
+                  <th>Fabricante</th>
+                  <th>Forma</th>
+                  <th>Dosagem</th>
+                  <th>Via</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let item of MedicamentosPaginados">
+                  <tr class="align-items-center" [id]="item.ean"
+                    [ngClass]="{'bg-secondary': item.status === 'INATIVO'}">
+                    <td>
+                      <i class="fa fa-check text-success" (click)="selecionarMedicamento(item)" role="button"></i>
+                    </td>
+                    <td>
+                      <img *ngIf="item.imagem" [src]="item.imagem" alt="Imagem do Hospital"
+                        style="height: 100px; aspect-ratio: 1/1;" />
+                    </td>
+                    <td>{{ item.ean }}</td>
+                    <td>{{ item.nomeComercial }}</td>
+                    <td>{{ item.nomeGenerico }}</td>
+                    <td>{{ item.fabricante }}</td>
+                    <td>{{ item.formaFarmaceutica }}</td>
+                    <td>{{ item.dosagem }}</td>
+                    <td>{{ item.viaAdministracao }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="mt-3 d-md-none">
+          <div class="card p-3 mb-3" *ngFor="let item of MedicamentosPaginados"
+            [ngClass]="{'bg-secondary': item.status === 'INATIVO'}">
+            <div class="d-flex justify-content-between mb-1">
+              <div>
+                <img *ngIf="item.imagem" [src]="item.imagem" alt="Imagem do Hospital"
+                  style="height: 100px; aspect-ratio: 1/1;" />
+              </div>
+              <div>
+              </div>
+            </div>
+            <label><b>Código / EAN:</b> {{item.ean}}</label>
+            <label><b>Nome Comercial:</b> {{item.nomeComercial}}</label>
+            <label><b>Nome Genérico:</b> {{item.nomeGenerico}}</label>
+            <label><b>Fabricante:</b> {{item.fabricante}}</label>
+            <label><b>Forma Farmaceutica:</b> {{item.formaFarmaceutica}}</label>
+            <label><b>Dosagem:</b> {{item.dosagem}}</label>
+            <label><b>Via:</b> {{item.viaAdministracao}}</label>
+          </div>
+        </div>
+        <app-paginacao class="float-end" [totalItems]="medicamentosFiltrados.length"
+          [itemsPerPage]="medicamentosPorPagina" [currentPage]="paginaAtual"
+          (pageChange)="onPaginaAlterada($event)"></app-paginacao>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalHospitais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Medicamento</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="mt-3 d-flex justify-content-end">
+          <input type="text" class="form-control mb-3 float-end" placeholder="Buscar"
+            [(ngModel)]="textoFiltroMedicamentos" style="max-width: 400px;" (ngModelChange)="filtrarLista()" />
+        </div>
+        <div class="mt-3 d-none d-none d-md-flex">
+    <table class="table border rounded table-striped align-middle">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Imagem</th>
+          <th>Razão Social</th>
+          <th>Nome Fantasia</th>
+          <th>CNPJ</th>
+          <th>Cidade</th>
+          <th>Endereço</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr *ngFor="let hospital of hospitais" class="align-items-center">
+          <td>
+            <i class="fa fa-check text-success" role="button" (click)="selecionarHospital(hospital)"></i>
+          </td>
+          <td>
+            <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+              style="height: 100px; aspect-ratio: 1/1;" />
+          </td>
+          <td>{{hospital.razaoSocial}}</td>
+          <td>{{hospital.nomeFantasia}}</td>
+          <td>{{ hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
+          <td>{{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</td>
+          <td>{{hospital.endereco.logradouro}}, {{hospital.endereco.numero}}, {{hospital.endereco.bairro}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-3 d-md-none">
+    <div class="card p-3 mb-3" *ngFor="let hospital of hospitais">
+      <div class="d-flex justify-content-between mb-1">
+        <div>
+          <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+            style="height: 100px; aspect-ratio: 1/1;" />
+        </div>
+        <div class="dropdown">
+
+        </div>
+      </div>
+      <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
+      <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
+      <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}
+      </label>
+      <label><b>Cidade:</b> {{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</label>
+      <label><b>Endereço:</b> {{hospital.endereco.logradouro}}, {{hospital.endereco.numero}},
+        {{hospital.endereco.bairro}}</label>
+    </div>
+  </div>
+        <app-paginacao class="float-end" [totalItems]="medicamentosFiltrados.length"
+          [itemsPerPage]="medicamentosPorPagina" [currentPage]="paginaAtual"
+          (pageChange)="onPaginaAlterada($event)"></app-paginacao>
+      </div>
+    </div>
+  </div>
+</div>

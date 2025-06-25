@@ -1,5 +1,6 @@
 import { Hospital } from "./Hospital";
 import { Medicamento } from "./medicamento";
+import { RecebimentoMedicamento } from "./recebimento";
 
 export interface Saldo {
   id?: string;
@@ -10,4 +11,5 @@ export interface Saldo {
   quantidade: number;
   momentoAtualizacao?: string;
   usuarioAtualizacao?: string;
+  recebimentos: RecebimentoMedicamento[]
 }

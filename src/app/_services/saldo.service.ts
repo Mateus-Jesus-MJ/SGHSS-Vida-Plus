@@ -5,6 +5,7 @@ import { Saldo } from '../_models/saldo';
 import { forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 import { MedicamentosService } from './medicamentos.service';
 import { HospitalService } from './hospital.service';
+import { RecebimentoMedicamento } from '../_models/recebimento';
 
 @Injectable({
   providedIn: 'root'
@@ -53,11 +54,11 @@ export class SaldoService {
   }
 
 
-  receberMedicamento(hospitalId: string, medicamentoId: string, quantidadeRecebida: number): Observable<string> {
+  receberMedicamento(recebimento: RecebimentoMedicamento): Observable<string> {
     const q = query(
       this.registrosRef,
-      where('hospitalId', '==', hospitalId),
-      where('medicamentoId', '==', medicamentoId)
+      where('hospitalId', '==', recebimento.hospitalId),
+      where('medicamentoId', '==', recebimento.medicamentoId)
     );
 
 
@@ -67,19 +68,25 @@ export class SaldoService {
     const momentoAtual = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
     const usuario = this.authService.getUsuario();
 
+    recebimento.usuarioRecebimento = usuario?.usuario;
+    recebimento.momentoRecebimento = momentoAtual;
+
     return new Observable(observer => {
       getDocs(q).then(snapshot => {
         if (!snapshot.empty) {
           // Saldo existente → atualizar
           const docRef = snapshot.docs[0].ref;
           const saldoAtual = snapshot.docs[0].data() as Saldo;
-          const novaQuantidade = saldoAtual.quantidade + quantidadeRecebida;
+          const novaQuantidade = saldoAtual.quantidade + recebimento.quantidade;
 
+          let recebimentos = saldoAtual.recebimentos ?? [];
+          recebimentos.push(recebimento);
 
           updateDoc(docRef, {
             quantidade: novaQuantidade,
+            recebimentos: recebimentos,
             momentoAtualizacao: momentoAtual,
-            usuarioAtualizacao: usuario?.nome
+            usuarioAtualizacao: usuario?.usuario
           }).then(() => {
             observer.next("Saldo atualizado com sucesso!");
             observer.complete();
@@ -89,12 +96,17 @@ export class SaldoService {
 
         } else {
           // Saldo não existe → criar
+
+          let recebimentos = [];
+          recebimentos.push(recebimento);
+
           const novoSaldo: Saldo = {
-            hospitalId,
-            medicamentoId,
-            quantidade: quantidadeRecebida,
+            hospitalId: recebimento.hospitalId,
+            medicamentoId: recebimento.medicamentoId,
+            quantidade: recebimento.quantidade,
             momentoAtualizacao: momentoAtual,
-            usuarioAtualizacao: usuario?.nome
+            usuarioAtualizacao: usuario?.nome,
+            recebimentos: recebimentos
           };
 
           addDoc(this.registrosRef, novoSaldo).then(() => {

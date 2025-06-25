@@ -158,37 +158,5 @@ export class EstoqueComponent implements OnInit {
     const [ano, mes, dia] = dataIso.split('-');
     return `${dia}/${mes}/${ano}`;
   }
-
-  incluirSaldo() {
-    let medicamentos = [
-      'BZEfP4SecYsYQ8WVWBSV',
-      'LT3XMKlAY5SlkYMy6XJ6',
-      'N0vTTVLNWWkT4diAfH3c',
-      'w18Gdf2fllcBX5zpk1vQ'
-    ]
-
-    let hospitais = [
-      '1DPxKD08pVj7zPyFNY7r',
-      '41jwAdQsLNQ6vPCR8nBe',
-      '8bSz5V9xeWXfjhsvHMCt',
-      'fr6tOIVo2mtmiEEdqL1E',
-    ]
-
-    const quantidade = 10;
-
-    for (const hospitalId of hospitais) {
-      for (const medicamentoId of medicamentos) {
-        this.saldoService.receberMedicamento(hospitalId, medicamentoId, quantidade)
-          .subscribe({
-            next: (msg) => console.log(`Saldo atualizado: ${msg} - Hospital ${hospitalId}, Medicamento ${medicamentoId}`),
-            error: (err) => this.toastr.error(err, "", { progressBar: true })
-          });
-      }
-    }
-
-    this.buscarSaldo();
-  }
-
-
 }
 
