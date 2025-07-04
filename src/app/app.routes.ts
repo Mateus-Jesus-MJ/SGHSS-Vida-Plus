@@ -40,6 +40,8 @@ import { IncluirMedicamentoComponent } from './ModuloAdmim/medicamentos/incluir-
 import { EditarMedicamentoComponent } from './ModuloAdmim/medicamentos/editar-medicamento/editar-medicamento.component';
 import { EstoqueComponent } from './ModuloAdmim/estoque/estoque.component';
 import { RecebimentoEstoqueComponent } from './ModuloAdmim/estoque/recebimento-estoque/recebimento-estoque.component';
+import { LeitosComponent } from './ModuloAdmim/leitos/leitos.component';
+import { IncluirLeitoComponent } from './ModuloAdmim/leitos/incluir-leito/incluir-leito.component';
 
 
 export const routes: Routes = [
@@ -135,6 +137,27 @@ export const routes: Routes = [
               acesso: 'editar'
             }
           },
+        ]
+      },
+      {
+        path: 'leitos',
+        component: LeitosComponent,
+        canActivateChild: [AuthGuardService],
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'leitos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirLeitoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'leitos',
+              acesso: 'incluir'
+            }
+          }
         ]
       },
       {

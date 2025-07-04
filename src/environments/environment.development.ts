@@ -34,6 +34,11 @@ export const environment = {
             permissoes: ['visualizar', 'incluir', 'editar']
           },
           {
+            label: 'Leitos',
+            rota: 'leitos',
+            permissoes:['visualizar','incluir','excluir']
+          },
+          {
             label: 'Procedimentos',
             rota: 'procedimentos',
             permissoes: ['visualizar', 'incluir', 'editar']
