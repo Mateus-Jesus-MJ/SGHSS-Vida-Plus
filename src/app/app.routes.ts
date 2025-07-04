@@ -42,6 +42,7 @@ import { EstoqueComponent } from './ModuloAdmim/estoque/estoque.component';
 import { RecebimentoEstoqueComponent } from './ModuloAdmim/estoque/recebimento-estoque/recebimento-estoque.component';
 import { LeitosComponent } from './ModuloAdmim/leitos/leitos.component';
 import { IncluirLeitoComponent } from './ModuloAdmim/leitos/incluir-leito/incluir-leito.component';
+import { EditarLeitoComponent } from './ModuloAdmim/leitos/editar-leito/editar-leito.component';
 
 
 export const routes: Routes = [
@@ -156,6 +157,15 @@ export const routes: Routes = [
               tipoPermitido: 'pa',
               funcionalidade: 'leitos',
               acesso: 'incluir'
+            }
+          },
+          {
+            path: 'editar/:id',
+            component: EditarLeitoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'leitos',
+              acesso: 'editar'
             }
           }
         ]

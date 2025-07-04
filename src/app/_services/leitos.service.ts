@@ -1,10 +1,11 @@
 import { inject, Injectable } from "@angular/core";
 import { addDoc, arrayRemove, arrayUnion, collection, CollectionReference, deleteDoc, doc, DocumentReference, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { Leito } from "../_models/leito";
-import { from, Observable, switchMap } from "rxjs";
+import { catchError, from, map, Observable, of, switchMap } from "rxjs";
 import { Ala } from "../_models/ala";
 import { fr } from "date-fns/locale";
 import { Hospital } from "../_models/Hospital";
+import { AuthService } from "./auth.service";
 
 
 @Injectable({
@@ -14,6 +15,7 @@ export class LeitosService {
     private firestore = inject(Firestore);
     private tabela = 'leitos';
     private leitosRef = collection(this.firestore, this.tabela) as CollectionReference<Leito>
+    private authService = inject(AuthService);
 
 
 
@@ -60,6 +62,40 @@ export class LeitosService {
         );
     }
 
+    buscarPorId(id: string): Observable<Leito | null> {
+        const leitoRef = doc(this.firestore, `${this.tabela}/${id}`);
+
+        return from(getDoc(leitoRef)).pipe(
+            switchMap(snapshot => {
+                if (!snapshot.exists()) return of(null);
+
+                const data = snapshot.data() as Leito;
+                const leitoComId: Leito = { id: snapshot.id, ...data };
+
+                const hospitalRef = doc(this.firestore, `hospitais/${data.idHospital}`);
+
+                return from(getDoc(hospitalRef)).pipe(
+                    map(hospitalSnap => {
+                        const hospitalData = hospitalSnap.exists() ? hospitalSnap.data() as Hospital : undefined;
+                        const hospitalCompleto = hospitalData ? { id: hospitalSnap.id, ...hospitalData } : undefined;
+
+                        let alaEncontrada: Ala | undefined;
+
+                        if (hospitalCompleto?.alas && Array.isArray(hospitalCompleto.alas)) {
+                            alaEncontrada = hospitalCompleto.alas.find(a => a.id === data.idAla);
+                        }
+
+                        return {
+                            ...leitoComId,
+                            hospital: hospitalCompleto,
+                            ala: alaEncontrada
+                        } as Leito;
+                    })
+                );
+            })
+        );
+    }
+
     incluir(leito: Leito): Observable<any> {
         const qleito = query(this.leitosRef, where('codigo', '==', leito.codigo));
 
@@ -72,6 +108,14 @@ export class LeitosService {
                     observer.complete();
                 }
 
+                const user = this.authService.getUsuario();
+                const now = new Date();
+                const pad = (n: number) => n.toString().padStart(2, '0');
+                const momentoCriacao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+                leito.usuarioCriacao = user?.usuario;
+                leito.momentoCriacao = momentoCriacao
+
                 addDoc(this.leitosRef, structuredClone(leito)).then(() => {
                     observer.next("Leito adicionado com sucesso!");
                     observer.complete();
@@ -80,6 +124,49 @@ export class LeitosService {
                 });
             }).catch(error => {
                 observer.error(`Erro ao cadastrar Leito. Motivo: ${error}`);
+            });
+        });
+    }
+
+
+    editar(leito: Leito): Observable<any> {
+        const qleito = query(this.leitosRef, where('codigo ', '==', leito.codigo));
+
+        return new Observable(observer => {
+            Promise.all([
+                getDocs(qleito)
+            ]).then(([snapshot]) => {
+                const outroCargoMesmoNome = snapshot.docs.find(doc => doc.id !== leito.id)
+
+                if (outroCargoMesmoNome) {
+                    observer.error("Erro ao editar cargo. Motivo: Esse cargo já foi cadastrado!");
+                    return;
+                }
+
+                const user = this.authService.getUsuario();
+                const now = new Date();
+                const pad = (n: number) => n.toString().padStart(2, '0');
+                const momentoCriacao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+                leito.usuarioEdicao = user?.usuario;
+                leito.momentoEdicao = momentoCriacao;
+
+                const leitoDocRef = doc(this.firestore, this.tabela, leito.id!);
+                const { id, ...dadosParaAtualizar } = leito;
+
+                from(updateDoc(leitoDocRef, structuredClone(dadosParaAtualizar)))
+                    .subscribe({
+                        next: () => {
+                            observer.next("Leito editado com sucesso!");
+                            observer.complete();
+                        },
+                        error: (error) => {
+                            observer.error(`Erro ao editar leito. Motivo: ${error}`);
+                            observer.complete();
+                        }
+                    })
+            }).catch(error => {
+                observer.error(`Erro ao editar leito. Motivo: ${error}`);
             });
         });
     }

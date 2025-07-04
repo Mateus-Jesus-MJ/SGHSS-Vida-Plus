@@ -1,0 +1,179 @@
+<div class="d-flex justify-content-between mb-3">
+    <h3>
+        <a class="d-md-none btn btn-secondary" routerLink="/admin/cargos"><i class="fa fa-arrow-left"></i></a>
+        Incluir Leito
+    </h3>
+    <div class="d-flex justify-content-between d-none d-none d-md-flex">
+        <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/leitos">
+            <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span class="text px-4">
+                Voltar
+            </span>
+        </a>
+        <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="form.invalid"
+            aria-label="Gravar hospital">
+            <span class="icon">
+                <i class="fa fa-check"></i>
+            </span>
+            <span class="text px-4">
+                Gravar
+            </span>
+        </button>
+    </div>
+</div>
+<hr />
+<form class="m-3" [formGroup]="form">
+    <div class="row mt-3">
+        <div class="col-lg-4">
+            <div class="form-floating">
+                <select class="form-select" id="status" *ngIf="leito.status != 'OCUPADO'"
+                    [class.is-invalid]="form.get('status')?.invalid && form.get('status')?.touched"
+                    [disabled]="leito?.status === 'OCUPADO'">
+                    <option value="DISPONIVEL">Disponivel</option>
+                    <option value="RESERVADO">Reservado</option>
+                    <option value="INATIVO">Inativo</option>
+                </select>
+                <input type="text" class="form-control text-uppercase" id="status" placeholder="" *ngIf="leito.status == 'OCUPADO'" formControlName="status" readonly
+                    [class.is-invalid]="form.get('status')?.invalid && form.get('status')?.touched" />
+                <label for="status">Status</label>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-lg-4">
+            <div class="form-floating mb-4">
+                <input type="text" class="form-control text-uppercase" id="codigo" placeholder=""
+                    formControlName="codigo"
+                    [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched" />
+                <label for="codigo">Código</label>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-floating input-group mb-4">
+                <input type="text" class="form-control" placeholder="" formControlName="hospital" readonly
+                    [class.is-invalid]="form.get('hospital')?.invalid && form.get('hospital')?.touched" />
+                <label for="hospital">Hospital</label>
+                <button class="input-group-text px-3 bg-white" role="button" data-bs-toggle="modal"
+                    data-bs-target="#modalHospitais"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-floating input-group mb-4">
+                <input type="text" class="form-control" placeholder="" formControlName="ala" readonly
+                    [class.is-invalid]="form.get('ala')?.invalid && form.get('ala')?.touched" />
+                <label for="ala">Ala</label>
+                <button class="input-group-text px-3 bg-white" role="button" data-bs-toggle="modal"
+                    data-bs-target="#modalAlas"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="form-floating mb-3 border rounded">
+                <label for="descricao">Descrição</label>
+                <textarea class="form-control border-0 text-uppercase" id="descricao" formControlName="descricao"
+                    placeholder="Descrição" style="height: 150px; resize: none; padding-top: 45px;"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalHospitais" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o hospital</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mt-3 d-none d-none d-md-flex">
+                        <table class="table border rounded table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Imagem</th>
+                                    <th>Razão Social</th>
+                                    <th>Nome Fantasia</th>
+                                    <th>CNPJ</th>
+                                    <th>Cidade</th>
+                                    <th>Endereço</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                <tr *ngFor="let hospital of hospitais" class="align-items-center">
+                                    <td>
+                                        <i class="fa fa-check text-success" role="button"
+                                            (click)="selecionarHospital(hospital)"></i>
+                                    </td>
+                                    <td>
+                                        <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+                                            style="height: 100px; aspect-ratio: 1/1;" />
+                                    </td>
+                                    <td>{{hospital.razaoSocial}}</td>
+                                    <td>{{hospital.nomeFantasia}}</td>
+                                    <td>{{ hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
+                                    <td>{{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</td>
+                                    <td>{{hospital.endereco.logradouro}}, {{hospital.endereco.numero}},
+                                        {{hospital.endereco.bairro}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3 d-md-none">
+                        <div class="card p-3 mb-3" *ngFor="let hospital of hospitais">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div>
+                                    <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+                                        style="height: 100px; aspect-ratio: 1/1;" />
+                                </div>
+                                <div class="dropdown">
+
+                                </div>
+                            </div>
+                            <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
+                            <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
+                            <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}
+                            </label>
+                            <label><b>Cidade:</b> {{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</label>
+                            <label><b>Endereço:</b> {{hospital.endereco.logradouro}}, {{hospital.endereco.numero}},
+                                {{hospital.endereco.bairro}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalAlas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione a Ala</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mt-3 d-none d-none d-md-flex">
+                        <table *ngIf="alas.length > 0" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Nome</th>
+                                    <th>Responsável</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                <tr *ngFor="let ala of alas">
+                                    <td><i class="fa fa-check text-success" role="button"
+                                            (click)="selecionarAla(ala)"></i></td>
+                                    <td>{{ ala.nome }}</td>
+                                    <td>{{ ala.responsavel?.nome || 'Não informado' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Caso não haja alas -->
+                        <div *ngIf="alas.length === 0" class="alert alert-warning mt-2">
+                            O hospital selecionado não possui alas cadastradas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

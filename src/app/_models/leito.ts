@@ -11,6 +11,11 @@ export interface Leito{
     hospital?: Hospital;
     status: string;
     equipamentos: EquipamentosLeito[];    
+    usuarioCriacao?: string;
+    momentoCriacao?: string;
+    usuarioEdicao?: string;
+    momentoEdicao?: string;
+
 }
 
 export interface EquipamentosLeito{

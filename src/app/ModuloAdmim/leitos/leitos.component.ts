@@ -151,7 +151,7 @@ export class LeitosComponent implements OnInit {
   }
 
   editar(id: string) {
-
+    this.router.navigate(['admin/leitos/editar', id]);
   }
 
 }
