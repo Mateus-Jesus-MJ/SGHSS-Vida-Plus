@@ -9,10 +9,11 @@ import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { SaldoService } from '../../_services/saldo.service';
 import { PaginacaoComponent } from "../_components/paginacao/paginacao.component";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-estoque',
-  imports: [RouterModule, CommonModule, PaginacaoComponent],
+  imports: [RouterModule, CommonModule, PaginacaoComponent, ReactiveFormsModule, FormsModule],
   templateUrl: './estoque.component.html',
   styleUrl: './estoque.component.scss'
 })
@@ -131,25 +132,20 @@ export class EstoqueComponent implements OnInit {
   aplicarFiltro() {
     const texto = this.textoFiltro.toLowerCase();
 
-    this.dadosFiltrados = this.dados.filter((dado) =>
-      Object.entries(dado).some(([chave, valor]) => {
-        let valorStr = '';
+    this.dadosFiltrados = this.dados.filter((dado: Saldo) => {
+      const camposParaFiltrar = [
+        dado.hospital?.razaoSocial || '',
+        dado.medicamento?.nomeGenerico || '',
+        dado.medicamento?.nomeComercial || '',
+        String(dado.quantidade),
+        dado.momentoAtualizacao ? this.formatarData(dado.momentoAtualizacao) : '',
+        dado.usuarioAtualizacao || '',
+      ];
 
-        if (typeof valor === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(valor)) {
-          // Detecta data ISO e formata para dd/MM/yyyy
-          valorStr = this.formatarData(valor);
-        } else if (valor != null && typeof valor === 'object') {
-          // Se for objeto, verificar campos específicos como colaborador.nome
-          if ('nome' in valor && typeof valor['nome'] === 'string') {
-            valorStr = valor['nome'];
-          }
-        } else if (valor != null) {
-          valorStr = String(valor);
-        }
-
-        return valorStr.toLowerCase().includes(texto);
-      })
-    );
+      return camposParaFiltrar.some((campo) =>
+        campo.toLowerCase().includes(texto)
+      );
+    });
 
     this.paginarDados();
   }

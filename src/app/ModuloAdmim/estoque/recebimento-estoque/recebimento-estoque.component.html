@@ -1,10 +1,10 @@
 <div class="d-flex justify-content-between mb-3">
   <h3>
-    <a class="d-md-none btn btn-secondary" routerLink="/admin/medicamentos"><i class="fa fa-arrow-left"></i></a>
+    <a class="d-md-none btn btn-secondary" routerLink="/admin/estoque"><i class="fa fa-arrow-left"></i></a>
     Recebimento de Medicamento
   </h3>
   <div class="d-flex justify-content-between d-none d-md-flex">
-    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/medicamentos">
+    <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/estoque">
       <span class="icon">
         <i class="fas fa-arrow-left"></i>
       </span>
@@ -24,7 +24,7 @@
     <div class="col-lg-6">
       <div class="form-floating input-group mb-3">
         <input type="text" class="form-control" placeholder="" formControlName="hospital" readonly
-        [class.is-invalid]="form.get('hospital')?.invalid && form.get('hospital')?.touched" />
+          [class.is-invalid]="form.get('hospital')?.invalid && form.get('hospital')?.touched" />
         <label>Hospital</label>
         <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalHospitais"
           role="button"><i class="fas fa-search"></i></button>
@@ -187,65 +187,57 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-
-        <div class="mt-3 d-flex justify-content-end">
-          <input type="text" class="form-control mb-3 float-end" placeholder="Buscar"
-            [(ngModel)]="textoFiltroMedicamentos" style="max-width: 400px;" (ngModelChange)="filtrarLista()" />
-        </div>
         <div class="mt-3 d-none d-none d-md-flex">
-    <table class="table border rounded table-striped align-middle">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Imagem</th>
-          <th>Razão Social</th>
-          <th>Nome Fantasia</th>
-          <th>CNPJ</th>
-          <th>Cidade</th>
-          <th>Endereço</th>
-        </tr>
-      </thead>
-      <tbody class="table-group-divider">
-        <tr *ngFor="let hospital of hospitais" class="align-items-center">
-          <td>
-            <i class="fa fa-check text-success" role="button" (click)="selecionarHospital(hospital)"></i>
-          </td>
-          <td>
-            <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
-              style="height: 100px; aspect-ratio: 1/1;" />
-          </td>
-          <td>{{hospital.razaoSocial}}</td>
-          <td>{{hospital.nomeFantasia}}</td>
-          <td>{{ hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
-          <td>{{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</td>
-          <td>{{hospital.endereco.logradouro}}, {{hospital.endereco.numero}}, {{hospital.endereco.bairro}}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="mt-3 d-md-none">
-    <div class="card p-3 mb-3" *ngFor="let hospital of hospitais">
-      <div class="d-flex justify-content-between mb-1">
-        <div>
-          <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
-            style="height: 100px; aspect-ratio: 1/1;" />
+          <table class="table border rounded table-striped align-middle">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Imagem</th>
+                <th>Razão Social</th>
+                <th>Nome Fantasia</th>
+                <th>CNPJ</th>
+                <th>Cidade</th>
+                <th>Endereço</th>
+              </tr>
+            </thead>
+            <tbody class="table-group-divider">
+              <tr *ngFor="let hospital of hospitais" class="align-items-center">
+                <td>
+                  <i class="fa fa-check text-success" role="button" (click)="selecionarHospital(hospital)"></i>
+                </td>
+                <td>
+                  <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+                    style="height: 100px; aspect-ratio: 1/1;" />
+                </td>
+                <td>{{hospital.razaoSocial}}</td>
+                <td>{{hospital.nomeFantasia}}</td>
+                <td>{{ hospital.cnpj | mask: "00.000.000/0000-00" }}</td>
+                <td>{{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</td>
+                <td>{{hospital.endereco.logradouro}}, {{hospital.endereco.numero}}, {{hospital.endereco.bairro}}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="dropdown">
+        <div class="mt-3 d-md-none">
+          <div class="card p-3 mb-3" *ngFor="let hospital of hospitais">
+            <div class="d-flex justify-content-between mb-1">
+              <div>
+                <img *ngIf="hospital.imagem" [src]="hospital.imagem" alt="Imagem do Hospital"
+                  style="height: 100px; aspect-ratio: 1/1;" />
+              </div>
+              <div class="dropdown">
 
+              </div>
+            </div>
+            <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
+            <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
+            <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}
+            </label>
+            <label><b>Cidade:</b> {{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</label>
+            <label><b>Endereço:</b> {{hospital.endereco.logradouro}}, {{hospital.endereco.numero}},
+              {{hospital.endereco.bairro}}</label>
+          </div>
         </div>
-      </div>
-      <label><b>Razão Social:</b> {{hospital.razaoSocial}}</label>
-      <label><b>Nome Fantasia:</b> {{hospital.nomeFantasia}}</label>
-      <label><b>CNPJ:</b> {{ hospital.cnpj | mask: "00.000.000/0000-00" }}
-      </label>
-      <label><b>Cidade:</b> {{hospital.endereco.localidade}} - {{hospital.endereco.uf}}</label>
-      <label><b>Endereço:</b> {{hospital.endereco.logradouro}}, {{hospital.endereco.numero}},
-        {{hospital.endereco.bairro}}</label>
-    </div>
-  </div>
-        <app-paginacao class="float-end" [totalItems]="medicamentosFiltrados.length"
-          [itemsPerPage]="medicamentosPorPagina" [currentPage]="paginaAtual"
-          (pageChange)="onPaginaAlterada($event)"></app-paginacao>
       </div>
     </div>
   </div>
