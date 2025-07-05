@@ -1,12 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Consulta } from '../../../_models/consulta';
+import { Consulta, SolicitacaoProcedimento } from '../../../_models/consulta';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { ToastrService } from 'ngx-toastr';
 import { ConsultasService } from '../../../_services/consultas.service';
 import { NgxMaskPipe } from 'ngx-mask';
+import { Procedimento } from '../../../_models/procedimento';
+import { ProcedimentoService } from '../../../_services/procedimento.service';
+import { showAlert } from '../../../_util.ts/sweetalert-util';
+import { PacienteService } from '../../../_services/paciente.service';
+import { Paciente } from '../../../_models/Paciente';
 
 @Component({
   selector: 'app-atendimento',
@@ -18,6 +23,7 @@ export class AtendimentoComponent implements OnInit {
   form!: FormGroup;
   consulta!: Consulta;
   agora = Date();
+  procedimentos: Procedimento[] = [];
 
 
   constructor(
@@ -25,13 +31,16 @@ export class AtendimentoComponent implements OnInit {
     private routeAcitive: ActivatedRoute,
     private loader: NgxUiLoaderService,
     private toastr: ToastrService,
-    private consultaService: ConsultasService
+    private procedimentoService: ProcedimentoService,
+    private consultaService: ConsultasService,
+    private pacienteService: PacienteService
   ) {
     this.form = new FormGroup({
       status: new FormControl('MARCADO', Validators.required),
       medicamentoAdicionar: new FormControl('', Validators.required),
       medicamentoQuantidade: new FormControl('', Validators.required),
       medicamentoPeriodo: new FormControl('', Validators.required),
+      diagnostico: new FormControl('', Validators.required),
     });
   }
 
@@ -55,9 +64,40 @@ export class AtendimentoComponent implements OnInit {
       next: (consulta: Consulta | null) => {
         if (consulta != null) {
           this.consulta = consulta;
-          this.adicionarSolicitacaoProcedimento();
+          this.buscarPaciente();
+        }
+      },
+      error: (error) => {
+        this.toastr.error(error);
+        this.loader.stop();
+      }
+    })
+  }
+
+  buscarPaciente(){
+    this.pacienteService.buscarPacientePeloId(this.consulta.idPaciente!).subscribe({
+      next:(paciente: Paciente | null) =>{
+        if(paciente){
+          this.consulta.paciente = paciente!;
+          this.consulta.idPaciente = paciente.id!
+          this.buscarProcedimentos();
+        }else{
+          this.toastr.error("Paciente não encontrado, se o problema persistir entre em contato com o administrador do sistema!","",{progressBar: true});
           this.loader.stop();
         }
+      },
+      error: (error) => {
+        this.toastr.error(error);
+        this.loader.stop();
+      }
+    })
+  }
+
+  buscarProcedimentos() {
+    this.procedimentoService.buscarProcedimentos().subscribe({
+      next: (procedimentos: Procedimento[]) => {
+        this.procedimentos = procedimentos;
+        this.loader.stop();
       },
       error: (error) => {
         this.toastr.error(error);
@@ -100,8 +140,8 @@ export class AtendimentoComponent implements OnInit {
     const quantidade = this.form.get("medicamentoQuantidade")?.value.toUpperCase();
     const periodo = this.form.get("medicamentoPeriodo")?.value.toUpperCase();
 
-    if(!medicamento && !quantidade && !periodo){
-      this.toastr.error("É necessário informar o medicamento, quantidade e período.","", {progressBar: true});
+    if (!medicamento && !quantidade && !periodo) {
+      this.toastr.error("É necessário informar o medicamento, quantidade e período.", "", { progressBar: true });
       return;
     }
 
@@ -118,25 +158,36 @@ export class AtendimentoComponent implements OnInit {
     })
   }
 
-  adicionarSolicitacaoProcedimento(){
-    if(!this.consulta.solicitacoes){
+  adicionarSolicitacaoProcedimento(procedimento: Procedimento) {
+    if (!this.consulta.solicitacoes) {
       this.consulta.solicitacoes = [];
     }
 
-    this.consulta.solicitacoes?.push({
-      procedimento: 'RAIO X'
-    })
+    const solicitacao: SolicitacaoProcedimento = {
+      procedimento: procedimento
+    }
 
-    this.consulta.solicitacoes?.push({
-      procedimento: 'ENDOSCOPIA'
-    })
-
-    this.consulta.solicitacoes?.push({
-      procedimento: 'RESSONANCIA MAGENETICA COM CONTRASTE'
-    })
+    this.consulta.solicitacoes.push(solicitacao);
   }
 
 
-  submit() { }
-
+  submit() {
+    showAlert('Tem certeza?', `Deseja mesmo encerrar a consulta da paciente ${this.consulta.paciente?.nome}?`, 'question', 'danger')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.loader.start();
+          this.consulta.diagnostico = this.form.get("diagnostico")!.value.toUpperCase();
+          this.consultaService.EncerrarConsulta(this.consulta).subscribe({
+            next: (res: any) => {
+              this.toastr.success(res);
+              this.router.navigateByUrl('/atendimento/teleconsultas');
+            },
+             error: (err: any) => {
+              this.toastr.error(err);
+              this.loader.stop();
+            }
+          });
+        }
+      });
+  }
 }

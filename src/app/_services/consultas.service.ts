@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDoc, getDocs, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, CollectionReference, deleteDoc, doc, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { catchError, Cons, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 import { Consulta } from '../_models/consulta';
 import { HospitalService } from './hospital.service';
 import { Turno } from '../_models/Turno';
-import { Paciente } from '../_models/Paciente';
+import { Paciente, Pronturario } from '../_models/Paciente';
 import { ZoomService } from './zoom.service';
 
 @Injectable({
@@ -189,6 +189,62 @@ export class ConsultasService {
         return of(`Erro ao desmarcada o consulta. Motivo: ${error}`)
       })
     );
+  }
+
+  EncerrarConsulta(consulta: Consulta): Observable<any> {
+
+    console.log(consulta);
+
+    const pacientesCollection = collection(this.firestore, 'pacientes');
+
+    return new Observable(observer => {
+      //Atualiza a consulta com status ENCERRADO
+      const consultaDocRef = doc(this.firestore, 'consultas', consulta.id!);
+      const { id, ...dadosAtualizados } = {
+        ...consulta,
+        status: 'ENCERRADO'
+      };
+
+      //Busca o paciente pelo ID
+      const pacienteDocRef = doc(this.firestore, 'pacientes', consulta.idPaciente);
+
+      getDoc(pacienteDocRef).then(pacienteSnap => {
+        if (!pacienteSnap.exists()) {
+          observer.error('Paciente não encontrado');
+          return;
+        }
+
+        const pacienteData = pacienteSnap.data() as Paciente;
+
+        let prontuario: Pronturario = pacienteData.prontuario || {
+          consultas: [],
+          procedimentos: []
+        };
+
+        // Verifica se já existe um prontuário, se não, cria
+        prontuario.consultas = prontuario.consultas || [];
+        prontuario.procedimentos = prontuario.procedimentos || [];
+
+        prontuario.consultas.push(dadosAtualizados);
+
+
+        //Atualiza a consulta e o paciente em paralelo
+        Promise.all([
+          updateDoc(consultaDocRef, structuredClone(dadosAtualizados)),
+          updateDoc(pacienteDocRef, { prontuario: structuredClone(prontuario) })
+        ])
+          .then(() => {
+            observer.next('Consulta encerrada e prontuário atualizado com sucesso!');
+            observer.complete();
+          })
+          .catch(error => {
+            observer.error(`Erro ao encerrar consulta. Motivo: ${error}`);
+          });
+
+      }).catch(error => {
+        observer.error(`Erro ao buscar paciente. Motivo: ${error}`);
+      });
+    });
   }
 }
 

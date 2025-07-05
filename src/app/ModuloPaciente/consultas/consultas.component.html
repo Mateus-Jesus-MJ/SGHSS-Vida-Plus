@@ -26,6 +26,7 @@
           <th>Horário</th>
           <th>Horário</th>
           <th>Especialidade</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody class="table-group-divider">
@@ -68,6 +69,7 @@
               *ngFor="let especialidade of consulta.medico?.especialidades; let last = last; let first = first"><span
                 *ngIf="!first">&nbsp;</span>{{especialidade.especialidade}}<span *ngIf="!last">,</span></label>
           </td>
+          <td>{{ consulta.status }}</td>
         </tr>
       </tbody>
     </table>
@@ -111,6 +113,7 @@
       <label><b>especialidades: </b> <label
           *ngFor="let especialidade of consulta.medico?.especialidades; let last = last; let first = first"><span
             *ngIf="!first">&nbsp;</span>{{especialidade.especialidade}}<span *ngIf="!last">,</span></label></label>
+      <label><b>Status:</b> {{consulta.status}}</label>
     </div>
   </div>
   <app-paginacao class="float-end" [totalItems]="todosDados.length" [itemsPerPage]="itensPorPagina"

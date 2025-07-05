@@ -1,6 +1,7 @@
 import { Colaborador } from "./colaborador";
 import { Hospital } from "./Hospital";
 import { Paciente } from "./Paciente";
+import { Procedimento } from "./procedimento";
 
 export interface Consulta {
   id?: string;
@@ -15,7 +16,8 @@ export interface Consulta {
   hospital?: Hospital
   status: string;
   receita?: medicamentosReceita[];
-  solicitacoes?: solicitacoesProcedimento[];
+  solicitacoes?: SolicitacaoProcedimento[];
+  diagnostico?: string;
 }
 
 export interface medicamentosReceita {
@@ -25,8 +27,7 @@ export interface medicamentosReceita {
   periodo: string;
 }
 
-export interface solicitacoesProcedimento {
+export interface SolicitacaoProcedimento {
   id?: string;
-  procedimento: string;
-  // procedimento:
+  procedimento: Partial<Procedimento>;
 }

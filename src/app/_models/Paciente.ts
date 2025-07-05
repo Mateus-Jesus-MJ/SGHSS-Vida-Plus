@@ -1,3 +1,5 @@
+import { Consulta } from "./consulta";
+import { Procedimento } from "./procedimento";
 import { User } from "./User";
 
 export interface Paciente {
@@ -17,4 +19,11 @@ export interface Paciente {
      telefone1: string;
      telefone2: string;
      usuario?: User
+     prontuario?: Pronturario;
+}
+
+export interface Pronturario{
+     id?: string;
+     consultas: Consulta[];
+     procedimentos: Procedimento[];
 }
