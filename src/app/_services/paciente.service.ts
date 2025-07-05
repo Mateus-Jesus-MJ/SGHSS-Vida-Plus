@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
-import { Paciente } from '../_models/Paciente';
-import { addDoc, collection, CollectionReference, doc, Firestore, getDoc, getDocs, query, snapToData, where } from '@angular/fire/firestore';
-import { catchError, from, map, Observable, of } from 'rxjs';
+import { Paciente, ProcedimentoProntuario } from '../_models/Paciente';
+import { addDoc, collection, CollectionReference, doc, Firestore, getDoc, getDocs, query, snapToData, updateDoc, where } from '@angular/fire/firestore';
+import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { error } from 'jquery';
+import { Procedimento } from '../_models/procedimento';
 
 @Injectable({
   providedIn: 'root'
@@ -57,4 +58,64 @@ export class PacienteService {
     const pacientesCollection = collection(this.firestore, 'pacientes');
     return addDoc(pacientesCollection, structuredClone(paciente));
   }
+
+  novoProcedimentoPaciente(procedimento: ProcedimentoProntuario): Observable<any> {
+    const data = new Date(procedimento.data);
+    if (isNaN(data.getTime())) {
+      return throwError(() => new Error('Data de marcação inválida.'));
+    }
+
+    const diaSemana = data.getDay();
+    const horarioMarcacao = data.toTimeString().slice(0, 5);
+
+    const funcionamento = procedimento.procedimento.funcionamento.find(f => f.numeroDiaSemana === diaSemana);
+
+    if (!funcionamento) {
+      return throwError(() => new Error('Procedimento não funciona nesse dia.'));
+    }
+
+    const dentroDoHorario =
+      (horarioMarcacao >= funcionamento.horarioInicio && horarioMarcacao < funcionamento.horarioInicioIntervalo) ||
+      (horarioMarcacao >= funcionamento.horarioTerminoIntervalo && horarioMarcacao < funcionamento.horarioTermino);
+
+    if (!dentroDoHorario) {
+      return throwError(() => new Error('Horário fora do período de funcionamento.'));
+    }
+
+    const user = this.authService.getUsuario();
+    const now = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const momentoCriacao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+    procedimento.usuarioMarcacao = user?.usuario;
+    procedimento.momentoMarcacao = momentoCriacao;
+
+    return this.buscarPacienteLogado().pipe(
+      switchMap(paciente => {
+        if (!paciente.prontuario) {
+          paciente.prontuario = {
+            consultas: [],
+            procedimentos: []
+          };
+        }
+
+        if (!paciente.prontuario.procedimentos) {
+          paciente.prontuario.procedimentos = [];
+        }
+
+        paciente.prontuario.procedimentos.push(procedimento);
+
+        const pacienteDocRef = doc(this.pacienteCollection, paciente.id!);
+
+        return from(updateDoc(pacienteDocRef, {
+          prontuario: paciente.prontuario
+        })).pipe(
+            map(() => 'Procedimento marcado com sucesso!')
+        );
+      }),
+      catchError(() => throwError(() => new Error('Erro ao consultar ou atualizar os dados do paciente.')))
+    );
+  }
+
+
 }

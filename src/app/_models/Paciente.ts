@@ -22,8 +22,19 @@ export interface Paciente {
      prontuario?: Pronturario;
 }
 
-export interface Pronturario{
+export interface Pronturario {
      id?: string;
      consultas: Consulta[];
-     procedimentos: Procedimento[];
+     procedimentos: ProcedimentoProntuario[];
+}
+
+export interface ProcedimentoProntuario {
+     procedimento: Procedimento;
+     data: string;
+     status: string;
+     resultado?: string;
+     usuarioMarcacao?: string;
+     momentoMarcacao?: string;
+     usuarioRealizacao?: string;
+     momentoRealizacao?: string;
 }

@@ -1,0 +1,93 @@
+<div class="d-flex justify-content-between mb-3">
+    <h3>
+        <a class="d-md-none btn btn-secondary" routerLink="/admin/leitos"><i class="fa fa-arrow-left"></i></a>
+        Marcar Procedimento
+    </h3>
+    <div class="d-flex justify-content-between d-none d-none d-md-flex">
+        <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/leitos">
+            <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span class="text px-4">
+                Voltar
+            </span>
+        </a>
+        <button class="btn btn-primary btn-icon-split" (click)="submit()" [disabled]="form.invalid"
+            aria-label="Gravar hospital">
+            <span class="icon">
+                <i class="fa fa-check"></i>
+            </span>
+            <span class="text px-4">
+                Gravar
+            </span>
+        </button>
+    </div>
+</div>
+<hr />
+<form class="m-3" [formGroup]="form">
+    <div class="row mt-5">
+        <div class="col-lg-4">
+            <div class="form-floating input-group mb-4">
+                <input type="text" class="form-control" placeholder="" formControlName="procedimento" readonly
+                    [class.is-invalid]="form.get('procedimento')?.invalid && form.get('procedimento')?.touched" />
+                <label for="hospital">Procedimento</label>
+                <button class="input-group-text px-3 bg-white" role="button" data-bs-toggle="modal"
+                    data-bs-target="#modalProcedimentos"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-floating mb-4">
+                <input type="date" class="form-control" placeholder="" formControlName="data"
+                    [class.is-invalid]="form.get('data')?.invalid && form.get('data')?.touched" />
+                <label for="ala">Data</label>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-floating mb-4">
+                <input type="time" class="form-control" placeholder="" formControlName="horario"
+                    [class.is-invalid]="form.get('horario')?.invalid && form.get('horario')?.touched" />
+                <label for="ala">Horário</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalProcedimentos" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o {{titleModal}}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mt-3 d-none d-none d-md-flex">
+                        <table *ngIf="procedimentos.length > 0" class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px;"></th>
+                                    <th>Nome</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                <tr *ngFor="let item of procedimentos">
+                                    <td><i class="fa fa-check text-success" role="button"
+                                            (click)="selecioparProcedimento(item)"></i></td>
+                                    <td>{{ item.nome }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Caso não haja alas -->
+                        <div *ngIf="procedimentos.length === 0" class="alert alert-warning mt-2">
+                            Não existe procedimentos disponiveis
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</form>

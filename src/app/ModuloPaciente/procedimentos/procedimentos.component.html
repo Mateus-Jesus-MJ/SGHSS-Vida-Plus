@@ -1,0 +1,42 @@
+<router-outlet></router-outlet>
+<div *ngIf="!rotaFilhaAtiva">
+  <div class="d-flex justify-content-between">
+    <h3>Procedimentos</h3>
+    <div class="d-flex justify-content-between">
+      <a class="btn btn-primary btn-icon-split" routerLink="/paciente/procedimentos/incluir">
+        <span class="icon">
+          <i class="fas fa-calendar-day"></i>
+        </span>
+        <span class="text px-4">
+          Marcar
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="mt-3 d-flex justify-content-end">
+    <input type="text" class="form-control mb-3 float-end" placeholder="Buscar" [(ngModel)]="textoFiltro"
+      style="max-width: 400px;" (ngModelChange)="filtrarLista()" />
+  </div>
+  <div class="mt-3 d-none d-none d-md-flex">
+    <table class="table border rounded table-striped align-middle">
+      <thead>
+        <tr>
+            <th></th>
+            <th>Data</th>
+            <th>Procedimento</th>
+            <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of dadosPaginados">
+            <td></td>
+            <td>{{item.data | date:'dd/MM/yyyy'}}</td>
+            <td>{{item.procedimento.nome}}</td>
+            <td>{{item.status}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+   <app-paginacao class="float-end" [totalItems]="dadosFiltrados.length" [itemsPerPage]="itensPorPagina"
+    [currentPage]="paginaAtual" (pageChange)="onPaginaAlterada($event)"></app-paginacao>
+</div>

@@ -43,6 +43,8 @@ import { RecebimentoEstoqueComponent } from './ModuloAdmim/estoque/recebimento-e
 import { LeitosComponent } from './ModuloAdmim/leitos/leitos.component';
 import { IncluirLeitoComponent } from './ModuloAdmim/leitos/incluir-leito/incluir-leito.component';
 import { EditarLeitoComponent } from './ModuloAdmim/leitos/editar-leito/editar-leito.component';
+import { ProcedimentosPacienteComponent } from './ModuloPaciente/procedimentos/procedimentos.component';
+import { ProcedimentoPacienteIncluirComponent } from './ModuloPaciente/procedimentos/procedimento-paciente-incluir/procedimento-paciente-incluir.component';
 
 
 export const routes: Routes = [
@@ -471,6 +473,17 @@ export const routes: Routes = [
           {
             path: 'incluir',
             component: IncluirConsultasPacienteComponent
+          }
+        ]
+      },
+      {
+        path: 'procedimentos',
+        component: ProcedimentosPacienteComponent,
+        canActivate: [AuthGuardService],
+        children:[
+          {
+            path: 'incluir',
+            component: ProcedimentoPacienteIncluirComponent
           }
         ]
       },
