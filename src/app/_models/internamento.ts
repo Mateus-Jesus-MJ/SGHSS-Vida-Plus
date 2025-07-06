@@ -21,6 +21,19 @@ export interface precricaoInternamento {
     id?: string;
     processo: string;
     periodo: string;
-    idMedico: string;
+    quantidade: string;
+    idMedico?: string;
     medico?: string;
+    momentoInclusao?: string;
+    ultimaRealizacao?: string;
+    usuarioUltimaRealizacao?: string;
+    momentoRegistro?: string;
+    realizacoes? : RealizacaoPrescricao[]
+}
+
+export interface RealizacaoPrescricao{
+     id?: string;
+     ultimaRealizacao?: string;
+     usuarioUltimaRealizacao: string;
+     momentoRegistro: string;
 }

@@ -102,12 +102,17 @@ export const environment = {
   MenuAtendimento: [
     {
       grupo: {
-        label: 'Tele Consulta',
+        label: 'Antendimento',
         filhos: [
           {
             label: 'Tele Consulta',
             rota: 'teleconsultas',
             permissoes: ['visualizar', 'atender', 'remover']
+          },
+          {
+            label: 'Internamentos',
+            rota: 'internamentos',
+            permissoes: ['visualizar', 'editar', 'prescricao','medicacao']
           },
         ]
       }

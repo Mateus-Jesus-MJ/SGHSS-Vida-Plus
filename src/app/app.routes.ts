@@ -48,6 +48,7 @@ import { ProcedimentoPacienteIncluirComponent } from './ModuloPaciente/procedime
 import { ProntuarioComponent } from './ModuloPaciente/prontuario/prontuario.component';
 import { InternamentosComponent } from './ModuloAdmim/internamentos/internamentos.component';
 import { IncluirInternamentoComponent } from './ModuloAdmim/internamentos/incluir-internamento/incluir-internamento.component';
+import { VisualizarInternamentoComponent } from './ModuloAdmim/internamentos/visualizar-internamento/visualizar-internamento.component';
 
 
 export const routes: Routes = [
@@ -471,6 +472,26 @@ export const routes: Routes = [
               funcionalidade: 'teleconsulta',
               acesso: 'atender'
             }
+          }
+        ]
+      },
+      {
+        path: 'internamentos',
+        component: InternamentosComponent,
+        data: {
+          tipoPermitido: 'ps',
+          funcionalidade: 'internamentos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'visualizar/:id',
+            component: VisualizarInternamentoComponent,
+            data: {
+              tipoPermitido: 'ps',
+              funcionalidade: 'internamentos',
+              acesso: 'visualizar'
+            },
           }
         ]
       },

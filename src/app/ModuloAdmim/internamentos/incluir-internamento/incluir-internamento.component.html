@@ -146,14 +146,14 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Medicamento</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Leito</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
 
                 <div class="mt-3 d-flex justify-content-end">
                     <input type="text" class="form-control mb-3 float-end" placeholder="Buscar"
-                        [(ngModel)]="textoFiltroPaciente" style="max-width: 400px;" (ngModelChange)="filtrarLeitos()" />
+                        [(ngModel)]="textoFiltroLeito" style="max-width: 400px;" (ngModelChange)="filtrarLeitos()" />
                 </div>
                 <div class="mt-3">
                     <table class="table border rounded table-striped align-middle">

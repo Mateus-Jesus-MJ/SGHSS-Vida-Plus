@@ -61,8 +61,8 @@ export class InternamentosComponent implements OnInit {
   }
 
   userPermissoes() {
-    this.userPodeIncluir = this.temPermissao('hospitais', 'incluir');
-    this.userPodeEditar = this.temPermissao('hospitais', 'editar');
+    this.userPodeIncluir = this.temPermissao('internamentos', 'incluir');
+    this.userPodeEditar = this.temPermissao('internamentos', 'editar');
   }
 
   temPermissao(funcionalidade: string, permissao: string): boolean {
@@ -149,6 +149,11 @@ export class InternamentosComponent implements OnInit {
     formatarData(dataIso: string): string {
       const [ano, mes, dia] = dataIso.split('-');
       return `${dia}/${mes}/${ano}`;
+    }
+
+
+    visualizarInternamento(id: string){
+      this.router.navigate(['/atendimento/internamentos/visualizar',id]);
     }
 
 }

@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { addDoc, arrayRemove, arrayUnion, collection, CollectionReference, deleteDoc, doc, DocumentReference, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { AuthService } from "./auth.service";
 import { Internamento } from "../_models/internamento";
-import { from, lastValueFrom, Observable, switchMap } from "rxjs";
+import { from, lastValueFrom, Observable, of, switchMap } from "rxjs";
 import { LeitosService } from "./leitos.service";
 import { Paciente } from "../_models/Paciente";
 
@@ -57,8 +57,41 @@ export class IntenamentoService {
     );
   }
 
+  buscarPorId(id: string): Observable<Internamento | null> {
+    const internamentoRef = doc(this.firestore, `${this.tabela}/${id}`);
 
-  incluir(internamento: Internamento): Observable<any>{
+    return from(getDoc(internamentoRef)).pipe(
+      switchMap(async snapshot => {
+        if (!snapshot.exists()) return null;
+
+        const data = snapshot.data() as Internamento;
+        const internamento: Internamento = { id: snapshot.id, ...data };
+
+        if (internamento.idPaciente) {
+          const pacienteRef = doc(this.firestore, `pacientes/${internamento.idPaciente}`);
+          const pacienteSnap = await getDoc(pacienteRef);
+          if (pacienteSnap.exists()) {
+            (internamento as any).paciente = {
+              id: pacienteSnap.id,
+              ...pacienteSnap.data()
+            } as Paciente;
+          }
+        }
+
+        if (internamento.idLeito) {
+          const leitoCompleto = await lastValueFrom(this.leitosService.buscarPorId(internamento.idLeito));
+          if (leitoCompleto) {
+            (internamento as any).leito = leitoCompleto;
+          }
+        }
+
+        return internamento;
+      })
+    );
+  }
+
+
+  incluir(internamento: Internamento): Observable<any> {
     const conferencia = query(
       this.collectionRef,
       where('idPaciente', '==', internamento.idPaciente),
@@ -107,4 +140,52 @@ export class IntenamentoService {
       });
     });
   }
+
+  atualizar(internamentoAtualizado: Internamento): Observable<string> {
+    return new Observable(observer => {
+      const internamentoRef = doc(this.firestore, `internamentos/${internamentoAtualizado.id}`) as DocumentReference<Internamento>;
+
+      getDoc(internamentoRef).then(snapshot => {
+        if (!snapshot.exists()) {
+          observer.error("Internamento não encontrado.");
+          return;
+        }
+
+        const internamentoOriginal = snapshot.data() as Internamento;
+        const operacoes: Promise<any>[] = [];
+
+        if (internamentoOriginal.idLeito !== internamentoAtualizado.idLeito) {
+          if (internamentoOriginal.idLeito) {
+            const leitoAntigoRef = doc(this.firestore, `leitos/${internamentoOriginal.idLeito}`);
+            operacoes.push(updateDoc(leitoAntigoRef, { status: 'DISPONÍVEL' }));
+          }
+
+          if (internamentoAtualizado.idLeito) {
+            const leitoNovoRef = doc(this.firestore, `leitos/${internamentoAtualizado.idLeito}`);
+            operacoes.push(updateDoc(leitoNovoRef, { status: 'OCUPADO' }));
+          }
+        }
+
+        // Clona e remove campos que não devem ser salvos
+        const dadosParaSalvar = structuredClone(internamentoAtualizado);
+        delete (dadosParaSalvar as any).paciente;
+        delete (dadosParaSalvar as any).leito;
+
+        operacoes.push(updateDoc(internamentoRef, dadosParaSalvar as Record<string, any>));
+
+        Promise.all(operacoes)
+          .then(() => {
+            observer.next("Internamento atualizado com sucesso.");
+            observer.complete();
+          })
+          .catch(error => {
+            observer.error(`Erro ao atualizar internamento. Motivo: ${error}`);
+          });
+
+      }).catch(error => {
+        observer.error(`Erro ao buscar internamento original. Motivo: ${error}`);
+      });
+    });
+  }
+
 }

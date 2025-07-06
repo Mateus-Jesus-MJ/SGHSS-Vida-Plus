@@ -40,7 +40,7 @@
             <tbody class="table-group-divider">
                 <tr *ngFor="let item of dadosPaginados">
                     <td>
-                        <i class="fa fa-eye" role="button"></i>
+                        <i class="fa fa-eye" role="button" (click)="visualizarInternamento(item.id)"></i>
                     </td>
                     <td>{{ item.leito?.codigo }}</td>
                     <td>{{item.paciente?.nome}}</td>
@@ -51,21 +51,22 @@
             </tbody>
         </table>
     </div>
-    <!-- <div class="mt-3 d-md-none">
-        <div class="card p-3 mb-3" *ngFor="let leito of dadosPaginados">
+    <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let item of dadosPaginados">
             <div class="d-flex justify-content-between mb-1">
                 <div>
-                    <label><b>Código:</b> {{leito.codigo}}</label><br />
-                    <label><b>Ala:</b> {{leito.ala!.nome}}</label>
+                    <label><b>Leito:</b> {{item.leito.codigo}}</label><br />
+                    <label><b>Paciente:</b> {{item.paciente?.nome }}</label><br />
                 </div>
                 <div>
-                    
+                    <i class="fa fa-eye" role="button" (click)="visualizarInternamento(item.id)"></i>
                 </div>
             </div>
-            <label><b>Hospital:</b> {{leito.hospital!.razaoSocial}}</label>
-            <label><b>Status:</b> {{leito.status}}</label>
+            <label><b>Hospital:</b> {{item.leito.hospital!.razaoSocial}}</label>
+            <label><b>Ala:</b> {{item.leito.ala!.nome}}</label>
+            <label><b>Status:</b> {{item.status}}</label>
         </div>
-    </div> -->
+    </div>
     <app-paginacao class="float-end" [totalItems]="dadosFiltrados.length" [itemsPerPage]="itensPorPagina"
         [currentPage]="paginaAtual" (pageChange)="onPaginaAlterada($event)"></app-paginacao>
 </div>

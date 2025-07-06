@@ -196,7 +196,7 @@ export class IncluirInternamentoComponent implements OnInit {
   }
 
   onPaginaAlteradaLeito(novaPagina: number) {
-    this.paginaAtualPacientes = novaPagina;
+    this.paginaAtualLeitos = novaPagina;
     this.paginarLeitos();
   }
 
