@@ -45,6 +45,7 @@ import { IncluirLeitoComponent } from './ModuloAdmim/leitos/incluir-leito/inclui
 import { EditarLeitoComponent } from './ModuloAdmim/leitos/editar-leito/editar-leito.component';
 import { ProcedimentosPacienteComponent } from './ModuloPaciente/procedimentos/procedimentos.component';
 import { ProcedimentoPacienteIncluirComponent } from './ModuloPaciente/procedimentos/procedimento-paciente-incluir/procedimento-paciente-incluir.component';
+import { ProntuarioComponent } from './ModuloPaciente/prontuario/prontuario.component';
 
 
 export const routes: Routes = [
@@ -480,12 +481,16 @@ export const routes: Routes = [
         path: 'procedimentos',
         component: ProcedimentosPacienteComponent,
         canActivate: [AuthGuardService],
-        children:[
+        children: [
           {
             path: 'incluir',
             component: ProcedimentoPacienteIncluirComponent
           }
         ]
+      }, {
+        path: 'prontuario',
+        component: ProntuarioComponent,
+        canActivate: [AuthGuardService],
       },
       {
         path: 'meuperfil/:id',

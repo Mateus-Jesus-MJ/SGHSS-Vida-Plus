@@ -1,0 +1,77 @@
+<div *ngIf="paciente">
+
+    <h5>Prontuario</h5>
+    <div *ngIf="!paciente!.prontuario">Não existe prontuario para esse paciente</div>
+    <div *ngIf="paciente!.prontuario">
+        <div class="row">
+            <div class="col-xxl-2 col-xl-3 col-lg-4 mb-3">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="list-consulta-list"
+                        data-bs-toggle="list" href="#list-consulta" role="tab"
+                        aria-controls="list-consulta">Consultas</a>
+                    <a class="list-group-item list-group-item-action" id="list-procedimentos-list" data-bs-toggle="list"
+                        href="#list-procedimentos" role="tab" aria-controls="list-procedimentos">Procedimentos</a>
+                </div>
+            </div>
+            <div class="col-xxl-10 col-xl-3 col-lg-8">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="list-consulta" role="tabpanel"
+                        aria-labelledby="list-consulta-list">
+                        <div *ngIf="paciente!.prontuario!.consultas!.length > 0">
+                            <div class="d-flex justify-content-center">
+                                <h5 class="mb-3">Consultas</h5>
+                            </div>
+                            <div *ngFor="let item of paciente!.prontuario.consultas">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Consulta em {{ item.data | date:'dd/MM/yyyy' }} às
+                                            {{item.hora }}</h5>
+                                        <p *ngIf="item.diagnostico"><b>Diagnóstico:</b> {{ item.diagnostico }}<br />
+                                            <b>Médico:</b> {{ item.medico?.nome }}
+                                        </p>
+                                        <div *ngIf="item.receita!.length > 0">
+                                            <b>Receita:</b>
+                                            <ul class="mb-2">
+                                                <li *ngFor="let r of item.receita">
+                                                    {{ r.medicamento }} - {{ r.quantidade }} - {{ r.periodo }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div *ngIf="item.solicitacoes!.length > 0">
+                                            <b>Solicitações:</b>
+                                            <ul>
+                                                <li *ngFor="let s of item.solicitacoes">
+                                                    {{ s.procedimento?.nome }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="paciente?.prontuario?.consultas?.length === 0">
+                            <p class="text-muted">Nenhuma consulta anterior registrada no prontuário.</p>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="list-procedimentos" role="tabpanel"
+                        aria-labelledby="list-procedimentos-list">
+                        <div class="d-flex justify-content-center">
+                            <h5 class="mb-3">Procedimentos</h5>
+                        </div>
+                        <div *ngFor="let item of paciente!.prontuario.procedimentos">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Procedimento: {{item.procedimento.nome }}</h5>
+                                    <p>
+                                        <b>Data:</b> {{item.data | date: 'dd/MM/yyyy hh:mm'}}<br />
+                                        <b>Status:</b> {{item.status}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
