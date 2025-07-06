@@ -46,6 +46,8 @@ import { EditarLeitoComponent } from './ModuloAdmim/leitos/editar-leito/editar-l
 import { ProcedimentosPacienteComponent } from './ModuloPaciente/procedimentos/procedimentos.component';
 import { ProcedimentoPacienteIncluirComponent } from './ModuloPaciente/procedimentos/procedimento-paciente-incluir/procedimento-paciente-incluir.component';
 import { ProntuarioComponent } from './ModuloPaciente/prontuario/prontuario.component';
+import { InternamentosComponent } from './ModuloAdmim/internamentos/internamentos.component';
+import { IncluirInternamentoComponent } from './ModuloAdmim/internamentos/incluir-internamento/incluir-internamento.component';
 
 
 export const routes: Routes = [
@@ -268,6 +270,27 @@ export const routes: Routes = [
               tipoPermitido: 'pa',
               funcionalidade: 'estoque',
               acesso: 'receber'
+            }
+          }
+        ]
+      },
+      {
+        path: 'internamentos',
+        component: InternamentosComponent,
+        canActivateChild: [AuthGuardService],
+        data: {
+          tipoPermitido: 'pa',
+          funcionalidade: 'internamentos',
+          acesso: 'visualizar'
+        },
+        children: [
+          {
+            path: 'incluir',
+            component: IncluirInternamentoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'internamentos',
+              acesso: 'incluir'
             }
           }
         ]

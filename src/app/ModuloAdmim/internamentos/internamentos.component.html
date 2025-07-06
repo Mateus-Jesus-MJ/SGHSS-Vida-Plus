@@ -1,0 +1,57 @@
+<router-outlet></router-outlet>
+<div *ngIf="!rotaFilhaAtiva">
+    <div class="d-flex justify-content-between">
+        <h3>Internamentos</h3>
+        <div class="d-flex justify-content-between">
+            <a *ngIf="userPodeIncluir" class="btn btn-primary btn-icon-split" routerLink="/admin/internamentos/incluir">
+                <span class="icon">
+                    <i class="fa fa-plus"></i>
+                </span>
+                <span class="text px-4">
+                    Incluir
+                </span>
+            </a>
+        </div>
+    </div>
+    <div class="mt-3 d-none d-none d-md-flex">
+        <table class="table border rounded table-striped align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Leito</th>
+                    <th>Paciente</th>
+                    <th>Hospital</th>
+                    <th>Ala</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                <tr *ngFor="let item of internamentos">
+                    <td>
+                        <i class="fa fa-eye" role="button"></i>
+                    </td>
+                    <td>{{ item.leito?.codigo }}</td>
+                    <td>{{item.paciente?.nome}}</td>
+                    <td>{{ item.leito?.hospital?.razaoSocial }}</td>
+                    <td>{{ item.leito?.ala?.nome }}</td>
+                    <td>{{ item.status }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <div class="mt-3 d-md-none">
+        <div class="card p-3 mb-3" *ngFor="let leito of dadosPaginados">
+            <div class="d-flex justify-content-between mb-1">
+                <div>
+                    <label><b>Código:</b> {{leito.codigo}}</label><br />
+                    <label><b>Ala:</b> {{leito.ala!.nome}}</label>
+                </div>
+                <div>
+                    
+                </div>
+            </div>
+            <label><b>Hospital:</b> {{leito.hospital!.razaoSocial}}</label>
+            <label><b>Status:</b> {{leito.status}}</label>
+        </div>
+    </div> -->
+</div>

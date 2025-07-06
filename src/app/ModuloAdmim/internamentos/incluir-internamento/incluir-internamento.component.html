@@ -1,0 +1,284 @@
+<div class="d-flex justify-content-between mb-3">
+    <h3>
+        <a class="d-md-none btn btn-secondary" routerLink="/admin/estoque"><i class="fa fa-arrow-left"></i></a>
+        Incluir Internação
+    </h3>
+    <div class="d-flex justify-content-between d-none d-md-flex">
+        <a class="btn btn-secondary btn-icon-split me-3" routerLink="/admin/estoque">
+            <span class="icon">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span class="text px-4">Voltar</span>
+        </a>
+        <button class="btn btn-primary btn-icon-split" (click)="submit()">
+            <span class="icon"><i class="fa fa-check"></i></span>
+            <span class="text px-4">Gravar</span>
+        </button>
+    </div>
+</div>
+
+<hr />
+
+<form class="m-3" [formGroup]="form">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="medicoSolicitante"
+                    [class.is-invalid]="form.get('medicoSolicitante')?.invalid && form.get('medicoSolicitante')?.touched" />
+                <label>Médico Solicitante</label>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="crmMedico"
+                    [class.is-invalid]="form.get('crmMedico')?.invalid && form.get('crmMedico')?.touched" />
+                <label>CRM Médico</label>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-floating input-group mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="paciente" readonly
+                    [class.is-invalid]="form.get('paciente')?.invalid && form.get('paciente')?.touched" />
+                <label>Paciente</label>
+                <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalPacientes"
+                    role="button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="cpf" readonly
+                    [class.is-invalid]="form.get('cpf')?.invalid && form.get('cpf')?.touched" mask="000.000.000-00" />
+                <label>CPF</label>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control" placeholder="" formControlName="dataNascimento" readonly
+                    [class.is-invalid]="form.get('dataNascimento')?.invalid && form.get('dataNascimento')?.touched" />
+                <label>Data de Nascimento</label>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <button *ngIf="pacienteSelecionado" class="btn btn-info btn-icon-split mb-3" data-bs-toggle="modal"
+                data-bs-target="#modalProntuario">
+                <span class="icon"><i class="fas fa-clipboard-list"></i></span>
+                <span class="text px-4">Vizualizar Prontuário</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="form-floating input-group mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="leito" readonly
+                    [class.is-invalid]="form.get('leito')?.invalid && form.get('leito')?.touched" />
+                <label>Leito</label>
+                <button class="input-group-text px-3 bg-white" data-bs-toggle="modal" data-bs-target="#modalLeitos"
+                    role="button"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="col-lg-6 col-xxl-5">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="hospital" readonly
+                    [class.is-invalid]="form.get('hospital')?.invalid && form.get('hospital')?.touched" />
+                <label>Hospital</label>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" placeholder="" formControlName="ala" readonly
+                    [class.is-invalid]="form.get('ala')?.invalid && form.get('ala')?.touched" />
+                <label>Ala</label>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="modalPacientes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Paciente</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mt-3 d-flex justify-content-end">
+                    <input type="text" class="form-control mb-3 float-end" placeholder="Buscar"
+                        [(ngModel)]="textoFiltroPaciente" style="max-width: 400px;"
+                        (ngModelChange)="filtrarPacientes()" />
+                </div>
+                <div class="mt-3">
+                    <table class="table border rounded align-middle">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Data de Nascimento</th>
+                                <th>Endereço</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let item of pacientesPaginados">
+                                <tr class="align-items-center">
+                                    <td>
+                                        <i class="fa fa-check text-success" (click)="selecionarPaciente(item)"
+                                            role="button"></i>
+                                    </td>
+                                    <td>{{ item.nome }}</td>
+                                    <td>{{ item.cpf | mask: '000.000.000-00' }}</td>
+                                    <td>{{ item.dataNascimento | date: 'dd/MM/yyyy' }}</td>
+                                    <td>{{ item.enderecoLogradouro }}, {{item.enderecoBairro}},
+                                        {{item.enderecoMunicipio}}-{{item.enderecoUF}}</td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+                <app-paginacao class="float-end" [totalItems]="pacientesFiltrados.length"
+                    [itemsPerPage]="pacientesPorPagina" [currentPage]="paginaAtualPacientes"
+                    (pageChange)="onPaginaAlterada($event)"></app-paginacao>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalLeitos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Selecione o Medicamento</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mt-3 d-flex justify-content-end">
+                    <input type="text" class="form-control mb-3 float-end" placeholder="Buscar"
+                        [(ngModel)]="textoFiltroPaciente" style="max-width: 400px;" (ngModelChange)="filtrarLeitos()" />
+                </div>
+                <div class="mt-3">
+                    <table class="table border rounded table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Código</th>
+                                <th>Ala</th>
+                                <th>Hospital</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            <tr *ngFor="let leito of leitosPaginados">
+                                <td>
+                                    <i class="fa fa-check text-success" (click)="selecionarLeito(leito)"
+                                        role="button"></i>
+                                </td>
+                                <td>{{leito.codigo}}</td>
+                                <td>{{ leito.ala!.nome }}</td>
+                                <td>{{ leito.hospital!.razaoSocial }}</td>
+                                <td>{{ leito.status }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-paginacao class="float-end" [totalItems]="leitosFiltrados.length" [itemsPerPage]="leitosPorPagina"
+                    [currentPage]="paginaAtualLeitos" (pageChange)="onPaginaAlteradaLeito($event)"></app-paginacao>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalProntuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Prontuario Paciente</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" *ngIf="pacienteSelecionado?.prontuario">
+                <h5>Prontuario</h5>
+                <div *ngIf="!pacienteSelecionado!.prontuario">Não existe prontuario para esse paciente</div>
+                <div *ngIf="pacienteSelecionado!.prontuario">
+                    <div class="row">
+                        <div class="col-xxl-2 col-xl-3 col-lg-4 mb-3">
+                            <div class="list-group" id="list-tab" role="tablist">
+                                <a class="list-group-item list-group-item-action active" id="list-consulta-list"
+                                    data-bs-toggle="list" href="#list-consulta" role="tab"
+                                    aria-controls="list-consulta">Consultas</a>
+                                <a class="list-group-item list-group-item-action" id="list-procedimentos-list"
+                                    data-bs-toggle="list" href="#list-procedimentos" role="tab"
+                                    aria-controls="list-procedimentos">Procedimentos</a>
+                            </div>
+                        </div>
+                        <div class="col-xxl-10 col-xl-3 col-lg-8">
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="list-consulta" role="tabpanel"
+                                    aria-labelledby="list-consulta-list">
+                                    <div *ngIf="pacienteSelecionado!.prontuario!.consultas!.length > 0">
+                                        <div class="d-flex justify-content-center">
+                                            <h5 class="mb-3">Consultas</h5>
+                                        </div>
+                                        <div *ngFor="let item of pacienteSelecionado!.prontuario.consultas">
+                                            <div class="card shadow-sm h-100">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Consulta em {{ item.data | date:'dd/MM/yyyy'
+                                                        }} às
+                                                        {{item.hora }}</h5>
+                                                    <p *ngIf="item.diagnostico"><b>Diagnóstico:</b> {{
+                                                        item.diagnostico}} <br />
+                                                        <b>Médico:</b> {{ item.medico?.nome }}
+                                                        <br />
+                                                        <b>CRA:</b> {{ item.medico?.crm }}
+                                                    </p>
+                                                    <div *ngIf="item.receita!.length > 0">
+                                                        <b>Receita:</b>
+                                                        <ul class="mb-2">
+                                                            <li *ngFor="let r of item.receita">
+                                                                {{ r.medicamento }} - {{ r.quantidade }} - {{ r.periodo
+                                                                }}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div *ngIf="item.solicitacoes!.length > 0">
+                                                        <b>Solicitações:</b>
+                                                        <ul>
+                                                            <li *ngFor="let s of item.solicitacoes">
+                                                                {{ s.procedimento?.nome }}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="pacienteSelecionado?.prontuario?.consultas?.length === 0">
+                                        <p class="text-muted">Nenhuma consulta anterior registrada no prontuário.</p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-procedimentos" role="tabpanel"
+                                    aria-labelledby="list-procedimentos-list">
+                                    <div class="d-flex justify-content-center">
+                                        <h5 class="mb-3">Procedimentos</h5>
+                                    </div>
+                                    <div *ngFor="let item of pacienteSelecionado!.prontuario.procedimentos">
+                                        <div class="card shadow-sm h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Procedimento: {{item.procedimento.nome }}</h5>
+                                                <p>
+                                                    <b>Data:</b> {{item.data | date: 'dd/MM/yyyy hh:mm'}}<br />
+                                                    <b>Status:</b> {{item.status}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" *ngIf="!pacienteSelecionado?.prontuario">
+                Nenhum prontuário encontrado!
+            </div>
+        </div>
+    </div>
+</div>

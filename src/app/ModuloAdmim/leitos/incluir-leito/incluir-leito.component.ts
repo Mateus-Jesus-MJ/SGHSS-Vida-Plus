@@ -93,7 +93,7 @@ export class IncluirLeitoComponent implements OnInit {
       descricao : form.descricao.toUpperCase(),
       idHospital: this.hospitalSelecionado!.id!,
       idAla: this.alaSelecionada!.id!,
-      status: 'Disponivel',
+      status: 'DISPONÍVEL',
       equipamentos : []
     }
 

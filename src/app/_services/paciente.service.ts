@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Paciente, ProcedimentoProntuario } from '../_models/Paciente';
-import { addDoc, collection, CollectionReference, doc, Firestore, getDoc, getDocs, query, snapToData, updateDoc, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, doc, Firestore, getDoc, getDocs, query, snapToData, updateDoc, where } from '@angular/fire/firestore';
 import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { error } from 'jquery';
@@ -34,6 +34,19 @@ export class PacienteService {
         throw new Error('Paciente não encontrado');
       })
     );
+  }
+
+  buscarPacientesPorCriterios(filtros: { [chave: string]: any }): Observable<Paciente[]> {
+    let q = query(this.pacienteCollection);
+
+    for (const campo in filtros) {
+      const valor = filtros[campo];
+      if (valor !== null && valor !== undefined && valor !== '') {
+        q = query(q, where(campo, '==', valor));
+      }
+    }
+
+    return collectionData(q, { idField: 'id' }) as Observable<Paciente[]>;
   }
 
   buscarPacientePeloId(id: string) {
@@ -110,7 +123,7 @@ export class PacienteService {
         return from(updateDoc(pacienteDocRef, {
           prontuario: paciente.prontuario
         })).pipe(
-            map(() => 'Procedimento marcado com sucesso!')
+          map(() => 'Procedimento marcado com sucesso!')
         );
       }),
       catchError(() => throwError(() => new Error('Erro ao consultar ou atualizar os dados do paciente.')))

@@ -52,6 +52,11 @@ export const environment = {
             label: 'Estoque',
             rota: 'estoque',
             permissoes: ['visualizar', 'incluir']
+          },
+          {
+            label: 'Intenamentos',
+            rota: 'internamentos',
+            permissoes: ['visualizar','incluir','editar']
           }
         ]
       }
