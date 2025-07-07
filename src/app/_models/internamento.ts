@@ -29,6 +29,8 @@ export interface precricaoInternamento {
     usuarioUltimaRealizacao?: string;
     momentoRegistro?: string;
     realizacoes? : RealizacaoPrescricao[]
+    numeroDeAplicações: number;
+    status: boolean;
 }
 
 export interface RealizacaoPrescricao{
@@ -36,4 +38,5 @@ export interface RealizacaoPrescricao{
      ultimaRealizacao?: string;
      usuarioUltimaRealizacao: string;
      momentoRegistro: string;
+     acao: string;
 }

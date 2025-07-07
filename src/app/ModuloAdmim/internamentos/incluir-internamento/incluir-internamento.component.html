@@ -207,6 +207,9 @@
                                 <a class="list-group-item list-group-item-action" id="list-procedimentos-list"
                                     data-bs-toggle="list" href="#list-procedimentos" role="tab"
                                     aria-controls="list-procedimentos">Procedimentos</a>
+                                <a class="list-group-item list-group-item-action" id="list-internamentos-list"
+                                    data-bs-toggle="list" href="#list-internamentos" role="tab"
+                                    aria-controls="list-internamentos">Internamentos</a>
                             </div>
                         </div>
                         <div class="col-xxl-10 col-xl-3 col-lg-8">
@@ -267,6 +270,36 @@
                                                     <b>Data:</b> {{item.data | date: 'dd/MM/yyyy hh:mm'}}<br />
                                                     <b>Status:</b> {{item.status}}
                                                 </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-internamentos" role="tabpanel"
+                                    aria-labelledby="list-internamentos-list">
+                                    <div class="d-flex justify-content-center">
+                                        <h5 class="mb-3">Internamentos</h5>
+                                    </div>
+                                    <div *ngFor="let item of pacienteSelecionado!.prontuario.internacoes">
+                                        <div class="card shadow-sm h-100">
+                                            <div class="card-body">
+                                                <label>Data Inicio : {{item.momentoInclusao | date:
+                                                    'dd/MM/yyyy'}}
+                                                </label><br />
+                                                <label>Data Terminio : {{item.momentoEdicao | date:
+                                                    'dd/MM/yyyy'}}
+                                                </label>
+                                                <br />
+                                                <label class="mt-3">Prescrição:</label>
+                                                <div *ngFor="let item of item.prescricao">
+                                                    <hr />
+                                                    <div class="d-flex justify-content-between">
+                                                        <div>
+                                                            <b>Procedimento / Medicamento:</b> {{ item.processo }}<br />
+                                                        </div>
+                                                    </div>
+                                                    <b>Quantidade:</b> {{ item.quantidade }}<br />
+                                                    <b>PERÍODO:</b> TOMAR {{ item.periodo }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

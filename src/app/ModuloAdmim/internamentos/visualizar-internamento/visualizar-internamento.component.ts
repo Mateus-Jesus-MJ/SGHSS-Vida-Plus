@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { CommonModule, Location } from '@angular/common';
-import { Internamento, precricaoInternamento } from '../../../_models/internamento';
+import { Internamento, precricaoInternamento, RealizacaoPrescricao } from '../../../_models/internamento';
 import { IntenamentoService } from '../../../_services/intenamento.service';
 import { NgxMaskPipe } from 'ngx-mask';
 import { AuthService } from '../../../_services/auth.service';
@@ -29,7 +29,7 @@ export class VisualizarInternamentoComponent implements OnInit {
   leitosPaginados: Leito[] = [];
   paginaAtualLeitos = 1;
   leitosPorPagina = 10;
-  textoFiltroLeito = '';  
+  textoFiltroLeito = '';
   modalInstanceLeitos: any;
   userPodeEditar = false;
   userPodeMedicar = false;
@@ -156,7 +156,9 @@ export class VisualizarInternamentoComponent implements OnInit {
       periodo: this.form.get("medicamentoPeriodo")?.value.toUpperCase(),
       quantidade: this.form.get("medicamentoQuantidade")?.value.toUpperCase(),
       medico: user?.id,
-      momentoInclusao: new Date().toString()
+      momentoInclusao: new Date().toString(),
+      numeroDeAplicações: 0,
+      status: true
     }
 
     this.internamento.prescricao.push(prescricao);
@@ -172,13 +174,32 @@ export class VisualizarInternamentoComponent implements OnInit {
     this.internamento.prescricao = this.internamento.prescricao?.filter(e =>
       e.processo.toUpperCase() != prescricao.processo.toUpperCase() &&
       e.quantidade.toUpperCase() != prescricao.quantidade.toUpperCase() &&
-      e.periodo.toUpperCase() != prescricao.periodo.toUpperCase()
+      e.periodo.toUpperCase() != prescricao.periodo.toUpperCase() &&
+      e.momentoInclusao != prescricao.momentoInclusao
     );
 
-    this.loader.stopBackground();
+    if (!prescricao.realizacoes) {
+      prescricao.realizacoes = [];
+    }
 
+    const user = this.authService.getUsuario();
+    const realizacao: RealizacaoPrescricao = {
+      usuarioUltimaRealizacao: user!.usuario,
+      momentoRegistro: new Date().toString(),
+      acao: "REMOVIDO DA PRESCRIÇÃO"
+    }
+
+    prescricao.status = false;
+
+    this.internamento.prescricao?.push(prescricao);
+    prescricao.realizacoes.push(realizacao);
+
+    this.loader.stopBackground();
   }
 
+  get prescricoesAtivas(): precricaoInternamento[] {
+    return this.internamento?.prescricao?.filter(p => p.status === true) || [];
+  }
 
   buscarLeitos() {
     this.loader.start();
@@ -255,10 +276,6 @@ export class VisualizarInternamentoComponent implements OnInit {
     return `${dia}/${mes}/${ano}`;
   }
 
-
-
-
-
   submit() {
     showAlert('Tem certeza?', `Deseja mesmo alterar o prontuario de internamento do paciente ${this.internamento.paciente?.nome}?`, 'question', 'danger')
       .then((result) => {
@@ -268,6 +285,27 @@ export class VisualizarInternamentoComponent implements OnInit {
           this.internamentoService.atualizar(this.internamento).subscribe({
             next: (res: any) => {
               this.toastr.success(res);
+              this.loader.stop();
+            },
+            error: (err: any) => {
+              this.toastr.error(err);
+              this.loader.stop();
+            }
+          });
+        }
+      });
+  }
+
+  liberarAltaPaciente() {
+    showAlert('Tem certeza?', `Deseja mesmo dar alta para o paciente ${this.internamento.paciente?.nome}?`, 'question', 'danger')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.loader.start();
+
+          this.internamentoService.liberarInternamento(this.internamento.id!).subscribe({
+            next: (res: any) => {
+              this.toastr.success(res);
+              this.buscarInternamento(this.internamento.id!);
               this.loader.stop();
             },
             error: (err: any) => {

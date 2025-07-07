@@ -1,4 +1,5 @@
 import { Consulta } from "./consulta";
+import { Internamento } from "./internamento";
 import { Procedimento } from "./procedimento";
 import { User } from "./User";
 
@@ -26,6 +27,7 @@ export interface Pronturario {
      id?: string;
      consultas: Consulta[];
      procedimentos: ProcedimentoProntuario[];
+     internacoes?: Internamento[];
 }
 
 export interface ProcedimentoProntuario {

@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { addDoc, arrayRemove, arrayUnion, collection, CollectionReference, deleteDoc, doc, DocumentReference, Firestore, getDoc, getDocs, query, updateDoc, where } from '@angular/fire/firestore';
 import { AuthService } from "./auth.service";
 import { Internamento } from "../_models/internamento";
-import { from, lastValueFrom, Observable, of, switchMap } from "rxjs";
+import { catchError, forkJoin, from, lastValueFrom, map, Observable, of, switchMap, throwError } from "rxjs";
 import { LeitosService } from "./leitos.service";
 import { Paciente } from "../_models/Paciente";
 
@@ -141,7 +141,7 @@ export class IntenamentoService {
     });
   }
 
-  atualizar(internamentoAtualizado: Internamento): Observable<string> {
+  atualizar(internamentoAtualizado: Internamento): Observable<any> {
     return new Observable(observer => {
       const internamentoRef = doc(this.firestore, `internamentos/${internamentoAtualizado.id}`) as DocumentReference<Internamento>;
 
@@ -166,7 +166,14 @@ export class IntenamentoService {
           }
         }
 
-        // Clona e remove campos que não devem ser salvos
+        const user = this.authService.getUsuario();
+        const now = new Date();
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        const momentoEdicao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+        internamentoAtualizado.UsuarioEdicao = user?.usuario;
+        internamentoAtualizado.momentoEdicao = momentoEdicao;
+
         const dadosParaSalvar = structuredClone(internamentoAtualizado);
         delete (dadosParaSalvar as any).paciente;
         delete (dadosParaSalvar as any).leito;
@@ -186,6 +193,114 @@ export class IntenamentoService {
         observer.error(`Erro ao buscar internamento original. Motivo: ${error}`);
       });
     });
+  }
+
+  // liberarInternamento(idInternamento: string): Observable<any> {
+  //   const internamentoRef = doc(
+  //     this.firestore,
+  //     `${this.tabela}/${idInternamento}`
+  //   ) as DocumentReference<{ idLeito?: string; status?: string }>;
+
+
+  //   return from(getDoc(internamentoRef)).pipe(
+  //     switchMap(snapshot => {
+  //       if (!snapshot.exists()) {
+  //         return throwError(() => new Error('Internamento não encontrado.'));
+  //       }
+  //       const data = snapshot.data();
+  //       const idLeito = data.idLeito;
+
+  //       const user = this.authService.getUsuario();
+  //       const now = new Date();
+  //       const pad = (n: number) => n.toString().padStart(2, '0');
+  //       const momentoEdicao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  //       const updInternamento = updateDoc(internamentoRef, { status: 'LIBERADO', UsuarioEdicao: user?.usuario, momentoEdicao: momentoEdicao });
+
+  //       if (idLeito) {
+  //         const leitoRef = doc(this.firestore, `leitos/${idLeito}`);
+  //         const updLeito = updateDoc(leitoRef, { status: 'DISPONIVEL' });
+  //         return forkJoin([from(updInternamento), from(updLeito)]);
+  //       } else {
+  //         return forkJoin([from(updInternamento)]);
+  //       }
+  //     }),
+  //     map(() => 'Internamento liberado e leito disponibilizado com sucesso.'),
+  //     catchError(err =>
+  //       of(`Erro ao liberar internamento: ${err.message || err}`)
+  //     )
+  //   );
+  // }
+  liberarInternamento(idInternamento: string): Observable<string> {
+    const internamentoRef = doc(this.firestore, `${this.tabela}/${idInternamento}`);
+
+    return from(getDoc(internamentoRef)).pipe(
+      switchMap(snapshot => {
+        if (!snapshot.exists()) {
+          return throwError(() => new Error('Internamento não encontrado.'));
+        }
+
+        const internamento = snapshot.data() as Internamento;
+        const idLeito = internamento.idLeito;
+        const idPaciente = internamento.idPaciente;
+        if (!idPaciente) {
+          return throwError(() => new Error('Paciente não associado ao internamento.'));
+        }
+
+        const user = this.authService.getUsuario();
+        const now = new Date();
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        const momentoEdicao = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+        const atualizacaoInternamento = updateDoc(internamentoRef, {
+          status: 'LIBERADO',
+          UsuarioEdicao: user?.usuario,
+          momentoEdicao: momentoEdicao
+        });
+
+        const atualizacaoLeito = idLeito
+          ? updateDoc(doc(this.firestore, `leitos/${idLeito}`), { status: 'DISPONIVEL' })
+          : Promise.resolve();
+
+        const prontuarioRef = doc(this.firestore, `pacientes/${idPaciente}`);
+
+        const atualizacaoProntuario = getDoc(prontuarioRef).then(pacienteSnap => {
+          if (!pacienteSnap.exists()) {
+            throw new Error('Paciente não encontrado para atualizar prontuário.');
+          }
+
+          const pacienteData = pacienteSnap.data() as Paciente;
+          const prontuario = pacienteData.prontuario || {
+            consultas: [],
+            procedimentos: [],
+            internacoes: []
+          };
+
+
+          prontuario.internacoes = prontuario.internacoes || [];
+          prontuario.internacoes.push({
+            ...internamento,
+            status: 'LIBERADO',
+            momentoEdicao,
+            UsuarioEdicao: user?.usuario
+          });
+
+          return updateDoc(prontuarioRef, {
+            prontuario
+          });
+        });
+
+        // Executa tudo junto
+        return forkJoin([
+          from(atualizacaoInternamento),
+          from(atualizacaoLeito),
+          from(atualizacaoProntuario)
+        ]);
+      }),
+      map(() => 'Internamento liberado, leito disponível e prontuário atualizado.'),
+      catchError(err =>
+        throwError(() => new Error(`Erro ao liberar internamento: ${err.message || err}`))
+      )
+    );
   }
 
 }

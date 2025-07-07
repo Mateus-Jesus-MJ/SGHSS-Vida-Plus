@@ -6,7 +6,8 @@
             Visualizar Internamento
         </h3>
         <div class="d-flex justify-content-between d-none d-none d-md-flex">
-            <a class="btn btn-secondary btn-icon-split me-3" (click)="voltar()">
+            <a class="btn btn-secondary btn-icon-split" [ngClass]="{'me-3' : internamento.status != 'LIBERADO'}"
+                (click)="voltar()">
                 <span class="icon">
                     <i class="fas fa-arrow-left"></i>
                 </span>
@@ -14,7 +15,17 @@
                     Voltar
                 </span>
             </a>
-            <button *ngIf="userPodeEditar" class="btn btn-primary btn-icon-split" (click)="submit()">
+            <button *ngIf="userPodePrescrever && internamento.status != 'LIBERADO'"
+                class="btn btn-success btn-icon-split me-3" (click)="liberarAltaPaciente()">
+                <span class="icon">
+                    <i class="fas fa-walking fa-flip-horizontal"></i>
+                </span>
+                <span class="text px-1">
+                    Liberar Alta do Paciente
+                </span>
+            </button>
+            <button *ngIf="userPodeEditar && internamento.status != 'LIBERADO'" class="btn btn-primary btn-icon-split "
+                (click)="submit()">
                 <span class="icon">
                     <i class="fa fa-check"></i>
                 </span>
@@ -51,7 +62,8 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h5>Dados do Leito</h5>
-                    <button *ngIf="userPodeEditar" class="btn btn-primary btn-icon-split" (click)="buscarLeitos()" >
+                    <button *ngIf="userPodeEditar && internamento.status != 'LIBERADO'"
+                        class="btn btn-primary btn-icon-split" (click)="buscarLeitos()">
                         <span class="icon">
                             <i class="fa fa-pen"></i>
                         </span>
@@ -79,34 +91,32 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between">
                     <h5>Prescrição</h5>
-                    <button *ngIf="userPodePrescrever" class="btn btn-primary btn-icon-split" data-bs-toggle="modal"
-                        data-bs-target="#modalPrescricao">
+                    <button *ngIf="userPodePrescrever && internamento.status != 'LIBERADO'"
+                        class="btn btn-primary btn-icon-split" data-bs-toggle="modal" data-bs-target="#modalPrescricao">
                         <span class="icon">
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-pen"></i>
                         </span>
                         <span class="text px-4">
-                            Adicionar
+                            Editar
                         </span>
                     </button>
                 </div>
             </div>
             <div class="card-body">
                 <div class="card-body">
-                    <div class="text-center" *ngIf="internamento.prescricao?.length != 0">
-                        <h5>
-                            Prescrição:
-                        </h5>
+                    <div class="text-center" *ngIf="prescricoesAtivas.length > 0">
+                        <h5>Prescrição:</h5>
                     </div>
-                    <div class="mt-3" *ngFor="let item of internamento.prescricao">
+
+                    <div class="mt-3" *ngFor="let item of prescricoesAtivas">
                         <hr />
                         <div class="d-flex justify-content-between">
                             <div>
-                                <b>Procedimento / Medicamento:</b> {{item.processo}}<br />
+                                <b>Procedimento / Medicamento:</b> {{ item.processo }}<br />
                             </div>
-                            <i class="fa fa-trash text-danger" role="button" (click)="removerPrescricao(item)"></i>
                         </div>
-                        <b>Quantidade:</b> {{item.quantidade}}<br />
-                        <b>PERÍODO:</b> TOMAR {{item.periodo}}
+                        <b>Quantidade:</b> {{ item.quantidade }}<br />
+                        <b>PERÍODO:</b> TOMAR {{ item.periodo }}
                     </div>
                 </div>
             </div>
@@ -199,6 +209,30 @@
                                     <div class="d-flex justify-content-center">
                                         <h5 class="mb-3">Internamentos</h5>
                                     </div>
+                                    <div *ngFor="let item of internamento.paciente!.prontuario.internacoes">
+                                        <div class="card shadow-sm h-100">
+                                            <div class="card-body">
+                                                <label>Data Inicio : {{item.momentoInclusao | date:
+                                                    'dd/MM/yyyy'}}
+                                                </label><br />
+                                                <label>Data Terminio : {{item.momentoEdicao | date:
+                                                    'dd/MM/yyyy'}}
+                                                </label>
+                                                <br />
+                                                <label class="mt-3">Prescrição:</label>
+                                                <div *ngFor="let item of item.prescricao">
+                                                    <hr />
+                                                    <div class="d-flex justify-content-between">
+                                                        <div>
+                                                            <b>Procedimento / Medicamento:</b> {{ item.processo }}<br />
+                                                        </div>
+                                                    </div>
+                                                    <b>Quantidade:</b> {{ item.quantidade }}<br />
+                                                    <b>PERÍODO:</b> TOMAR {{ item.periodo }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -256,21 +290,20 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="text-center">
-                                        <h5>
-                                            Prescrição:
-                                        </h5>
+                                        <h5>Prescrição:</h5>
                                     </div>
-                                    <div class="mt-3" *ngFor="let item of internamento.prescricao">
+
+                                    <div class="mt-3" *ngFor="let item of prescricoesAtivas">
                                         <hr />
                                         <div class="d-flex justify-content-between">
                                             <div>
-                                                <b>Procedimento / Medicamento:</b> {{item.processo}}<br />
+                                                <b>Procedimento / Medicamento:</b> {{ item.processo }}<br />
                                             </div>
                                             <i class="fa fa-trash text-danger" role="button"
                                                 (click)="removerPrescricao(item)"></i>
                                         </div>
-                                        <b>Quantidade:</b> {{item.quantidade}}<br />
-                                        <b>PERÍODO:</b> TOMAR {{item.periodo}}
+                                        <b>Quantidade:</b> {{ item.quantidade }}<br />
+                                        <b>PERÍODO:</b> TOMAR {{ item.periodo }}
                                     </div>
                                 </div>
                             </div>
