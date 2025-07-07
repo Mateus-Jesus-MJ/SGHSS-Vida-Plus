@@ -293,6 +293,15 @@ export const routes: Routes = [
               funcionalidade: 'internamentos',
               acesso: 'incluir'
             }
+          },
+          {
+             path: 'visualizar/:id',
+            component: VisualizarInternamentoComponent,
+            data: {
+              tipoPermitido: 'pa',
+              funcionalidade: 'internamentos',
+              acesso: 'visualizar'
+            }
           }
         ]
       },

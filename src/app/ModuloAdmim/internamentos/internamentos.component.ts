@@ -99,34 +99,34 @@ export class InternamentosComponent implements OnInit {
   paginarDados() {
       const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
       const fim = inicio + this.itensPorPagina;
-  
-  
+
+
       this.dadosFiltrados.sort((a, b) => {
         const eanA = a.medicamento?.ean ?? '';
         const eanB = b.medicamento?.ean ?? '';
         return eanA.localeCompare(eanB); // Se quiser ordem numérica real: return +eanA - +eanB;
       });
-  
+
       this.dadosPaginados = this.dadosFiltrados.slice(inicio, fim);
     }
-  
+
     onPaginaAlterada(novaPagina: number) {
       this.paginaAtual = novaPagina;
       this.paginarDados();
     }
-  
+
     ngOnChanges() {
       this.aplicarFiltro();
     }
-  
+
     filtrarLista() {
       this.paginaAtual = 1;
       this.aplicarFiltro();
     }
-  
+
     aplicarFiltro() {
       const texto = this.textoFiltro.toLowerCase();
-  
+
       this.dadosFiltrados = this.dados.filter((dado: Internamento) => {
         const camposParaFiltrar = [
           dado.leito!.hospital?.razaoSocial || '',
@@ -137,15 +137,15 @@ export class InternamentosComponent implements OnInit {
           dado.status || '',
           dado.medicoSolicitante || '',
         ];
-  
+
         return camposParaFiltrar.some((campo) =>
           campo.toLowerCase().includes(texto)
         );
       });
-  
+
       this.paginarDados();
     }
-  
+
     formatarData(dataIso: string): string {
       const [ano, mes, dia] = dataIso.split('-');
       return `${dia}/${mes}/${ano}`;
@@ -153,7 +153,7 @@ export class InternamentosComponent implements OnInit {
 
 
     visualizarInternamento(id: string){
-      this.router.navigate(['/atendimento/internamentos/visualizar',id]);
+      this.router.navigate([this.router.url + '/visualizar',id]);
     }
 
 }
